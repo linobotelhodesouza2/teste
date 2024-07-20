@@ -131,7 +131,6 @@
         @media (max-width: 600px) {
             .container {
                 flex-direction: column;
-                overflow-x: hidden;
             }
 
             .column {
@@ -180,13 +179,13 @@
                 <div class="lr" id="lrDisplay"></div>
             </div>
             <button class="save-button" onclick="saveToFirebase()">Salvar no Firebase</button>
+            <div class="chart-container">
+                <canvas id="lineChart"></canvas>
+            </div>
         </div>
         <div class="column">
             <div class="chart-container">
                 <canvas id="percentageChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <canvas id="lineChart"></canvas>
             </div>
         </div>
         <div class="column">
