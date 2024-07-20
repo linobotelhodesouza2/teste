@@ -124,7 +124,7 @@
             width: 50%;
         }
 
-        .history-chart {
+        .history-chart, .line-chart-container {
             width: 45%;
         }
 
@@ -143,12 +143,12 @@
                 align-items: flex-start;
             }
 
-            .history-details, .history-chart {
+            .history-details, .history-chart, .line-chart-container {
                 width: 100%;
                 margin-bottom: 10px;
             }
 
-            .chart-container, .history-chart canvas {
+            .chart-container, .history-chart canvas, .line-chart-container canvas {
                 width: 100% !important;
                 height: 200px !important;
             }
@@ -191,6 +191,9 @@
                     <option value="">Selecione uma data</option>
                 </select>
                 <div id="historyDisplay" class="history-display"></div>
+                <div class="line-chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -401,7 +404,75 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', loadHistoryDropdown);
+        function loadLineChart() {
+            const dropdown = document.getElementById('historyDropdown');
+
+            dropdown.addEventListener('change', function() {
+                const selectedKey = this.value;
+
+                if (!selectedKey) return;
+
+                database.ref('laminaData').orderByChild('timestamp').limitToLast(2).once('value', (snapshot) => {
+                    const data = [];
+                    snapshot.forEach((childSnapshot) => {
+                        data.push(childSnapshot.val());
+                    });
+
+                    if (data.length === 2) {
+                        const [prevData, currentData] = data;
+                        const totalPrev = prevData.lc + prevData.m + prevData.lr;
+                        const totalCurr = currentData.lc + currentData.m + currentData.lr;
+                        const prevPercent = {
+                            lc: prevData.lc / totalPrev * 100,
+                            m: prevData.m / totalPrev * 100,
+                            lr: prevData.lr / totalPrev * 100
+                        };
+                        const currPercent = {
+                            lc: currentData.lc / totalCurr * 100,
+                            m: currentData.m / totalCurr * 100,
+                            lr: currentData.lr / totalCurr * 100
+                        };
+
+                        const ctx = document.getElementById('lineChart').getContext('2d');
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ['LC', 'M', 'LR'],
+                                datasets: [
+                                    {
+                                        label: 'Variação de % (Último vs Penúltimo)',
+                                        data: [
+                                            currPercent.lc - prevPercent.lc,
+                                            currPercent.m - prevPercent.m,
+                                            currPercent.lr - prevPercent.lr
+                                        ],
+                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                        fill: true,
+                                        tension: 0.1
+                                    }
+                                ]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: (value) => value.toFixed(2)
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHistoryDropdown();
+            loadLineChart();
+        });
     </script>
 </body>
 </html>
