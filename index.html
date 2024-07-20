@@ -129,11 +129,11 @@
             <h2>Lançamento Antes</h2>
             <form id="laminaFormBefore">
                 <label for="lcBefore">LC:</label>
-                <input type="number" id="lcBefore" name="lcBefore" maxlength="3" oninput="updateRuler('Before')">
+                <input type="number" id="lcBefore" name="lcBefore" maxlength="3">
                 <label for="mBefore">M:</label>
-                <input type="number" id="mBefore" name="mBefore" maxlength="3" oninput="updateRuler('Before')">
+                <input type="number" id="mBefore" name="mBefore" maxlength="3">
                 <label for="lrBefore">LR:</label>
-                <input type="number" id="lrBefore" name="lrBefore" maxlength="3" oninput="updateRuler('Before')">
+                <input type="number" id="lrBefore" name="lrBefore" maxlength="3">
             </form>
             <div class="ruler">
                 <div class="lc lcBefore" id="lcDisplayBefore"></div>
@@ -149,11 +149,11 @@
             <h2>Lançamento Depois</h2>
             <form id="laminaFormAfter">
                 <label for="lcAfter">LC:</label>
-                <input type="number" id="lcAfter" name="lcAfter" maxlength="3" oninput="updateRuler('After')">
+                <input type="number" id="lcAfter" name="lcAfter" maxlength="3">
                 <label for="mAfter">M:</label>
-                <input type="number" id="mAfter" name="mAfter" maxlength="3" oninput="updateRuler('After')">
+                <input type="number" id="mAfter" name="mAfter" maxlength="3">
                 <label for="lrAfter">LR:</label>
-                <input type="number" id="lrAfter" name="lrAfter" maxlength="3" oninput="updateRuler('After')">
+                <input type="number" id="lrAfter" name="lrAfter" maxlength="3">
             </form>
             <div class="ruler">
                 <div class="lc lcAfter" id="lcDisplayAfter"></div>
@@ -342,7 +342,7 @@
                 }
             }
 
-            const ref = database.ref(`laminaData/${data.timestamp}`);
+            const ref = database.ref(`laminaData/${timestamp}`);
             ref.set(data)
                 .then(() => {
                     alert('Dados salvos com sucesso!');
@@ -384,7 +384,8 @@
                 const mPercentAfter = data.after.mPercent;
                 const lrPercentAfter = data.after.lrPercent;
 
-                document.getElementById('historyInfo').innerHTML = `
+                const historyInfo = document.getElementById('historyInfo');
+                historyInfo.innerHTML = `
                     <p><strong>LC Antes:</strong> ${data.before.lc}</p>
                     <p><strong>M Antes:</strong> ${data.before.m}</p>
                     <p><strong>LR Antes:</strong> ${data.before.lr}</p>
@@ -402,31 +403,25 @@
                     historyChart = new Chart(ctx, {
                         type: 'bar',
                         data: {
-                            labels: ['LC', 'M', 'LR'],
+                            labels: ['LC Antes', 'M Antes', 'LR Antes', 'LC Depois', 'M Depois', 'LR Depois'],
                             datasets: [
                                 {
                                     label: 'Antes',
-                                    data: [lcPercentBefore, mPercentBefore, lrPercentBefore],
-                                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                                    borderColor: 'rgba(54, 162, 235, 1)',
+                                    data: [lcPercentBefore, mPercentBefore, lrPercentBefore, 0, 0, 0],
+                                    backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
+                                    borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
                                     borderWidth: 1
                                 },
                                 {
                                     label: 'Depois',
-                                    data: [lcPercentAfter, mPercentAfter, lrPercentAfter],
-                                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    data: [0, 0, 0, lcPercentAfter, mPercentAfter, lrPercentAfter],
+                                    backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
+                                    borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
                                     borderWidth: 1
                                 }
                             ]
                         },
                         options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    max: 100
-                                }
-                            },
                             plugins: {
                                 datalabels: {
                                     anchor: 'end',
@@ -435,6 +430,13 @@
                                     font: {
                                         weight: 'bold'
                                     }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    display: true,
+                                    beginAtZero: true,
+                                    max: 100
                                 }
                             }
                         },
