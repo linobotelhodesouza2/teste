@@ -10,20 +10,33 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 20px;
-            padding: 10px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .column {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
         }
 
         .form-container {
-            margin-bottom: 20px;
             width: 100%;
         }
 
         form {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
         }
 
         label, input {
@@ -71,7 +84,6 @@
 
         .chart-container {
             width: 100%;
-            margin-bottom: 20px;
         }
 
         .save-button {
@@ -117,6 +129,15 @@
         }
 
         @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .column {
+                width: 100%;
+                padding: 10px;
+            }
+
             .history-item {
                 flex-direction: column;
                 align-items: flex-start;
@@ -139,32 +160,39 @@
     <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database-compat.js"></script>
 </head>
 <body>
-    <div class="form-container">
-        <form id="laminaForm">
-            <label for="lc">LC:</label>
-            <input type="number" id="lc" name="lc" maxlength="3">
-            <label for="m">M:</label>
-            <input type="number" id="m" name="m" maxlength="3">
-            <label for="lr">LR:</label>
-            <input type="number" id="lr" name="lr" maxlength="3">
-            <button type="button" onclick="updateRuler()">Inserir</button>
-        </form>
-    </div>
-    <div class="ruler">
-        <div class="lc" id="lcDisplay"></div>
-        <div class="m" id="mDisplay"></div>
-        <div class="lr" id="lrDisplay"></div>
-    </div>
-    <div class="chart-container">
-        <canvas id="percentageChart"></canvas>
-    </div>
-    <button class="save-button" onclick="saveToFirebase()">Salvar no Firebase</button>
-
-    <div class="history-container">
-        <select class="history-dropdown" id="historyDropdown" onchange="loadHistory(this.value)">
-            <option value="">Selecione uma data</option>
-        </select>
-        <div id="historyDisplay" class="history-display"></div>
+    <div class="container">
+        <div class="column">
+            <div class="form-container">
+                <form id="laminaForm">
+                    <label for="lc">LC:</label>
+                    <input type="number" id="lc" name="lc" maxlength="3">
+                    <label for="m">M:</label>
+                    <input type="number" id="m" name="m" maxlength="3">
+                    <label for="lr">LR:</label>
+                    <input type="number" id="lr" name="lr" maxlength="3">
+                    <button type="button" onclick="updateRuler()">Inserir</button>
+                </form>
+            </div>
+            <div class="ruler">
+                <div class="lc" id="lcDisplay"></div>
+                <div class="m" id="mDisplay"></div>
+                <div class="lr" id="lrDisplay"></div>
+            </div>
+            <button class="save-button" onclick="saveToFirebase()">Salvar no Firebase</button>
+        </div>
+        <div class="column">
+            <div class="chart-container">
+                <canvas id="percentageChart"></canvas>
+            </div>
+        </div>
+        <div class="column">
+            <div class="history-container">
+                <select class="history-dropdown" id="historyDropdown" onchange="loadHistory(this.value)">
+                    <option value="">Selecione uma data</option>
+                </select>
+                <div id="historyDisplay" class="history-display"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -256,21 +284,21 @@
                 timestamp: Date.now()
             };
 
-            database.ref('laminaData').push(data)
-                .then(() => {
-                    alert('Dados salvos com sucesso no Firebase!');
+            database.ref('laminaData').push(data, (error) => {
+                if (error) {
+                    alert('Erro ao salvar dados no Firebase.');
+                } else {
+                    alert('Dados salvos com sucesso!');
                     loadHistoryDropdown();
-                })
-                .catch((error) => {
-                    console.error('Erro ao salvar dados no Firebase:', error);
-                });
+                }
+            });
         }
 
         function loadHistoryDropdown() {
             const dropdown = document.getElementById('historyDropdown');
             dropdown.innerHTML = '<option value="">Selecione uma data</option>';
 
-            database.ref('laminaData').once('value', (snapshot) => {
+            database.ref('laminaData').orderByChild('timestamp').once('value', (snapshot) => {
                 snapshot.forEach((childSnapshot) => {
                     const data = childSnapshot.val();
                     const date = new Date(data.timestamp);
