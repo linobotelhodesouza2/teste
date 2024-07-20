@@ -153,6 +153,12 @@
                 height: 200px !important;
             }
         }
+
+        @media (min-width: 601px) {
+            .chart-container#line-chart-container {
+                height: 400px;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -184,7 +190,7 @@
             <div class="chart-container">
                 <canvas id="percentageChart"></canvas>
             </div>
-            <div class="chart-container">
+            <div class="chart-container" id="line-chart-container">
                 <canvas id="lineChart"></canvas>
             </div>
         </div>
