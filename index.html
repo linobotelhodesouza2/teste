@@ -3,33 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Régua de Lâmina com Gráficos</title>
+    <title>Régua de Lâmina com Gráfico</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 20px;
-            padding: 0 10px;
+            margin-top: 50px;
         }
 
         .form-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .section {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         form {
             display: flex;
-            flex-wrap: wrap;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
         }
 
         label, input {
@@ -39,14 +30,13 @@
         input {
             width: 50px; /* Pequeno o suficiente para 3 números */
             text-align: center;
-            margin: 5px;
         }
 
         .ruler {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
+            width: 80%;
             height: 50px; /* Altura da lâmina */
             background-color: #f0f0f0; /* Cor da lâmina */
             border: 2px solid #000; /* Borda da lâmina */
@@ -77,7 +67,7 @@
         }
 
         .chart-container {
-            width: 100%;
+            width: 80%;
             margin-top: 10px; /* Ajusta o espaço entre o gráfico e o formulário */
         }
 
@@ -86,9 +76,8 @@
         }
 
         .history-container {
-            width: 100%;
-            max-width: 1200px;
             margin-top: 30px;
+            width: 80%;
             display: flex;
             flex-direction: column;
         }
@@ -96,26 +85,22 @@
         .history-dropdown {
             width: 100%;
             padding: 10px;
-            margin-bottom: 10px;
         }
 
         .history-display {
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
+            margin-top: 10px; /* Ajusta o espaço entre os dados e o gráfico */
         }
 
         .history-info {
-            width: 100%;
-            max-width: 50%;
-            padding: 10px;
+            width: 50%;
         }
 
         .history-chart {
-            width: 100%;
-            max-width: 50%;
-            padding: 10px;
+            width: 50%;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -125,48 +110,25 @@
 </head>
 <body>
     <div class="form-container">
-        <div class="section">
-            <h2>Lançamento Antes</h2>
-            <form id="laminaFormBefore">
-                <label for="lcBefore">LC:</label>
-                <input type="number" id="lcBefore" name="lcBefore" maxlength="3">
-                <label for="mBefore">M:</label>
-                <input type="number" id="mBefore" name="mBefore" maxlength="3">
-                <label for="lrBefore">LR:</label>
-                <input type="number" id="lrBefore" name="lrBefore" maxlength="3">
-            </form>
-            <div class="ruler">
-                <div class="lc lcBefore" id="lcDisplayBefore"></div>
-                <div class="m mBefore" id="mDisplayBefore"></div>
-                <div class="lr lrBefore" id="lrDisplayBefore"></div>
-            </div>
-            <div class="chart-container">
-                <canvas id="percentageChartBefore"></canvas>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Lançamento Depois</h2>
-            <form id="laminaFormAfter">
-                <label for="lcAfter">LC:</label>
-                <input type="number" id="lcAfter" name="lcAfter" maxlength="3">
-                <label for="mAfter">M:</label>
-                <input type="number" id="mAfter" name="mAfter" maxlength="3">
-                <label for="lrAfter">LR:</label>
-                <input type="number" id="lrAfter" name="lrAfter" maxlength="3">
-            </form>
-            <div class="ruler">
-                <div class="lc lcAfter" id="lcDisplayAfter"></div>
-                <div class="m mAfter" id="mDisplayAfter"></div>
-                <div class="lr lrAfter" id="lrDisplayAfter"></div>
-            </div>
-            <div class="chart-container">
-                <canvas id="percentageChartAfter"></canvas>
-            </div>
-        </div>
-
-        <button class="save-button" onclick="saveToFirebase()">Salvar no Firebase</button>
+        <form id="laminaForm">
+            <label for="lc">LC:</label>
+            <input type="number" id="lc" name="lc" maxlength="3">
+            <label for="m">M:</label>
+            <input type="number" id="m" name="m" maxlength="3">
+            <label for="lr">LR:</label>
+            <input type="number" id="lr" name="lr" maxlength="3">
+            <button type="button" onclick="updateRuler()">Inserir</button>
+        </form>
     </div>
+    <div class="ruler">
+        <div class="lc" id="lcDisplay"></div>
+        <div class="m" id="mDisplay"></div>
+        <div class="lr" id="lrDisplay"></div>
+    </div>
+    <div class="chart-container">
+        <canvas id="percentageChart"></canvas>
+    </div>
+    <button class="save-button" onclick="saveToFirebase()">Salvar no Firebase</button>
 
     <div class="history-container">
         <select class="history-dropdown" id="historyDropdown" onchange="loadHistory(this.value)">
@@ -196,175 +158,102 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        function updateRuler(type) {
-            const lcValue = parseFloat(document.getElementById(`lc${type}`).value) || 0;
-            const mValue = parseFloat(document.getElementById(`m${type}`).value) || 0;
-            const lrValue = parseFloat(document.getElementById(`lr${type}`).value) || 0;
+        function updateRuler() {
+            const lcValue = parseFloat(document.getElementById('lc').value) || 0;
+            const mValue = parseFloat(document.getElementById('m').value) || 0;
+            const lrValue = parseFloat(document.getElementById('lr').value) || 0;
 
             const total = lcValue + mValue + lrValue;
             const lcPercent = total ? (lcValue / total) * 100 : 0;
             const mPercent = total ? (mValue / total) * 100 : 0;
             const lrPercent = total ? (lrValue / total) * 100 : 0;
 
-            document.getElementById(`lcDisplay${type}`).innerText = lcValue;
-            document.getElementById(`mDisplay${type}`).innerText = mValue;
-            document.getElementById(`lrDisplay${type}`).innerText = lrValue;
+            document.getElementById('lcDisplay').innerText = lcValue;
+            document.getElementById('mDisplay').innerText = mValue;
+            document.getElementById('lrDisplay').innerText = lrValue;
 
-            updateChart(`${type}`, [lcPercent, mPercent, lrPercent]);
+            updateChart([lcPercent, mPercent, lrPercent]);
         }
 
-        let chartBefore, chartAfter;
+        let chart;
 
-        function updateChart(type, data) {
-            const ctx = document.getElementById(`percentageChart${type}`).getContext('2d');
-            if (type === 'Before') {
-                if (chartBefore) {
-                    chartBefore.data.datasets[0].data = data;
-                    chartBefore.update();
-                } else {
-                    chartBefore = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['LC', 'M', 'LR'],
-                            datasets: [{
-                                data: data,
-                                backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
-                                borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            plugins: {
-                                datalabels: {
-                                    anchor: 'end',
-                                    align: 'top',
-                                    formatter: (value) => `${value.toFixed(2)}%`,
-                                    font: {
-                                        weight: 'bold'
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    display: false,
-                                    beginAtZero: true,
-                                    max: 100
-                                }
-                            }
-                        },
-                        plugins: [ChartDataLabels]
-                    });
-                }
+        function updateChart(data) {
+            const ctx = document.getElementById('percentageChart').getContext('2d');
+            if (chart) {
+                chart.data.datasets[0].data = data;
+                chart.update();
             } else {
-                if (chartAfter) {
-                    chartAfter.data.datasets[0].data = data;
-                    chartAfter.update();
-                } else {
-                    chartAfter = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['LC', 'M', 'LR'],
-                            datasets: [{
-                                data: data,
-                                backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
-                                borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            plugins: {
-                                datalabels: {
-                                    anchor: 'end',
-                                    align: 'top',
-                                    formatter: (value) => `${value.toFixed(2)}%`,
-                                    font: {
-                                        weight: 'bold'
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    display: false,
-                                    beginAtZero: true,
-                                    max: 100
+                chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['LC', 'M', 'LR'],
+                        datasets: [{
+                            data: data,
+                            backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
+                            borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                formatter: (value) => `${value.toFixed(2)}%`,
+                                font: {
+                                    weight: 'bold'
                                 }
                             }
                         },
-                        plugins: [ChartDataLabels]
-                    });
-                }
+                        scales: {
+                            y: {
+                                display: false,
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
+                });
             }
         }
 
         function saveToFirebase() {
-            const lcBefore = parseFloat(document.getElementById('lcBefore').value) || 0;
-            const mBefore = parseFloat(document.getElementById('mBefore').value) || 0;
-            const lrBefore = parseFloat(document.getElementById('lrBefore').value) || 0;
-            const lcAfter = parseFloat(document.getElementById('lcAfter').value) || 0;
-            const mAfter = parseFloat(document.getElementById('mAfter').value) || 0;
-            const lrAfter = parseFloat(document.getElementById('lrAfter').value) || 0;
+            const lcValue = parseFloat(document.getElementById('lc').value) || 0;
+            const mValue = parseFloat(document.getElementById('m').value) || 0;
+            const lrValue = parseFloat(document.getElementById('lr').value) || 0;
 
-            const totalBefore = lcBefore + mBefore + lrBefore;
-            const lcPercentBefore = totalBefore ? (lcBefore / totalBefore) * 100 : 0;
-            const mPercentBefore = totalBefore ? (mBefore / totalBefore) * 100 : 0;
-            const lrPercentBefore = totalBefore ? (lrBefore / totalBefore) * 100 : 0;
-
-            const totalAfter = lcAfter + mAfter + lrAfter;
-            const lcPercentAfter = totalAfter ? (lcAfter / totalAfter) * 100 : 0;
-            const mPercentAfter = totalAfter ? (mAfter / totalAfter) * 100 : 0;
-            const lrPercentAfter = totalAfter ? (lrAfter / totalAfter) * 100 : 0;
-
-            const timestamp = new Date().toISOString();
             const data = {
-                before: {
-                    lc: lcBefore,
-                    m: mBefore,
-                    lr: lrBefore,
-                    lcPercent: lcPercentBefore,
-                    mPercent: mPercentBefore,
-                    lrPercent: lrPercentBefore
-                },
-                after: {
-                    lc: lcAfter,
-                    m: mAfter,
-                    lr: lrAfter,
-                    lcPercent: lcPercentAfter,
-                    mPercent: mPercentAfter,
-                    lrPercent: lrPercentAfter
-                },
-                timestamp: timestamp
+                lc: lcValue,
+                m: mValue,
+                lr: lrValue,
+                timestamp: Date.now()
             };
 
-            if (confirm('Deseja editar a data e hora de lançamento?')) {
-                const newTimestamp = prompt('Digite a nova data e hora no formato YYYY-MM-DDTHH:MM:SSZ', timestamp);
-                if (newTimestamp) {
-                    data.timestamp = newTimestamp;
-                }
-            }
-
-            const ref = database.ref(`laminaData/${timestamp}`);
-            ref.set(data)
+            database.ref('laminaData').push(data)
                 .then(() => {
-                    alert('Dados salvos com sucesso!');
+                    alert('Dados salvos com sucesso no Firebase!');
                     loadHistoryDropdown();
                 })
                 .catch((error) => {
-                    alert('Erro ao salvar dados: ' + error.message);
+                    console.error('Erro ao salvar dados no Firebase:', error);
                 });
         }
 
         function loadHistoryDropdown() {
             const dropdown = document.getElementById('historyDropdown');
-            dropdown.innerHTML = '<option value="">Selecione uma data</option>'; // Reset dropdown
+            dropdown.innerHTML = '<option value="">Selecione uma data</option>';
 
             database.ref('laminaData').once('value', (snapshot) => {
                 snapshot.forEach((childSnapshot) => {
-                    const key = childSnapshot.key;
                     const data = childSnapshot.val();
-                    const date = new Date(data.timestamp).toLocaleString();
+                    const date = new Date(data.timestamp);
+                    const dateString = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+
                     const option = document.createElement('option');
-                    option.value = key;
-                    option.textContent = date;
+                    option.value = childSnapshot.key;
+                    option.textContent = dateString;
+
                     dropdown.appendChild(option);
                 });
             });
@@ -377,49 +266,32 @@
 
             database.ref(`laminaData/${key}`).once('value', (snapshot) => {
                 const data = snapshot.val();
-                const lcPercentBefore = data.before.lcPercent;
-                const mPercentBefore = data.before.mPercent;
-                const lrPercentBefore = data.before.lrPercent;
-                const lcPercentAfter = data.after.lcPercent;
-                const mPercentAfter = data.after.mPercent;
-                const lrPercentAfter = data.after.lrPercent;
+                const lcPercent = (data.lc / (data.lc + data.m + data.lr)) * 100;
+                const mPercent = (data.m / (data.lc + data.m + data.lr)) * 100;
+                const lrPercent = (data.lr / (data.lc + data.m + data.lr)) * 100;
 
                 const historyInfo = document.getElementById('historyInfo');
                 historyInfo.innerHTML = `
-                    <p><strong>LC Antes:</strong> ${data.before.lc}</p>
-                    <p><strong>M Antes:</strong> ${data.before.m}</p>
-                    <p><strong>LR Antes:</strong> ${data.before.lr}</p>
-                    <p><strong>LC Depois:</strong> ${data.after.lc}</p>
-                    <p><strong>M Depois:</strong> ${data.after.m}</p>
-                    <p><strong>LR Depois:</strong> ${data.after.lr}</p>
+                    <p><strong>LC:</strong> ${data.lc}</p>
+                    <p><strong>M:</strong> ${data.m}</p>
+                    <p><strong>LR:</strong> ${data.lr}</p>
                 `;
 
                 const ctx = document.getElementById('historyChart').getContext('2d');
                 if (historyChart) {
-                    historyChart.data.datasets[0].data = [lcPercentBefore, mPercentBefore, lrPercentBefore];
-                    historyChart.data.datasets[1].data = [lcPercentAfter, mPercentAfter, lrPercentAfter];
+                    historyChart.data.datasets[0].data = [lcPercent, mPercent, lrPercent];
                     historyChart.update();
                 } else {
                     historyChart = new Chart(ctx, {
                         type: 'bar',
                         data: {
-                            labels: ['LC Antes', 'M Antes', 'LR Antes', 'LC Depois', 'M Depois', 'LR Depois'],
-                            datasets: [
-                                {
-                                    label: 'Antes',
-                                    data: [lcPercentBefore, mPercentBefore, lrPercentBefore, 0, 0, 0],
-                                    backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
-                                    borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
-                                    borderWidth: 1
-                                },
-                                {
-                                    label: 'Depois',
-                                    data: [0, 0, 0, lcPercentAfter, mPercentAfter, lrPercentAfter],
-                                    backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
-                                    borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
-                                    borderWidth: 1
-                                }
-                            ]
+                            labels: ['LC', 'M', 'LR'],
+                            datasets: [{
+                                data: [lcPercent, mPercent, lrPercent],
+                                backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
+                                borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
+                                borderWidth: 1
+                            }]
                         },
                         options: {
                             plugins: {
@@ -434,7 +306,7 @@
                             },
                             scales: {
                                 y: {
-                                    display: true,
+                                    display: false,
                                     beginAtZero: true,
                                     max: 100
                                 }
