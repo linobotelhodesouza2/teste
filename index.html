@@ -241,7 +241,6 @@
                     data: {
                         labels: ['LC', 'M', 'LR'],
                         datasets: [{
-                            label: 'Porcentagem',
                             data: data,
                             backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
                             borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
@@ -264,6 +263,16 @@
                                 display: false,
                                 beginAtZero: true,
                                 max: 100
+                            },
+                            x: {
+                                ticks: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
                             }
                         }
                     },
@@ -374,6 +383,16 @@
                                 display: false,
                                 beginAtZero: true,
                                 max: 100
+                            },
+                            x: {
+                                ticks: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
                             }
                         }
                     },
