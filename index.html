@@ -100,55 +100,98 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-4 p-3">
-                <h3>Inserir Dados</h3>
-                <form id="laminaForm" class="form-inline">
+                <h3>Inserir Dados Faca Superior</h3>
+                <form id="laminaFormSuperior" class="form-inline">
                     <div class="form-group mx-sm-3 mb-2">
-                        <label for="lc" class="sr-only">LC:</label>
-                        <input type="number" id="lc" name="lc" class="form-control" placeholder="LC" maxlength="3">
+                        <label for="lcSuperior" class="sr-only">LC:</label>
+                        <input type="number" id="lcSuperior" name="lc" class="form-control" placeholder="LC" maxlength="3">
                     </div>
                     <div class="form-group mx-sm-3 mb-2">
-                        <label for="m" class="sr-only">M:</label>
-                        <input type="number" id="m" name="m" class="form-control" placeholder="M" maxlength="3">
+                        <label for="mSuperior" class="sr-only">M:</label>
+                        <input type="number" id="mSuperior" name="m" class="form-control" placeholder="M" maxlength="3">
                     </div>
                     <div class="form-group mx-sm-3 mb-2">
-                        <label for="lr" class="sr-only">LR:</label>
-                        <input type="number" id="lr" name="lr" class="form-control" placeholder="LR" maxlength="3">
+                        <label for="lrSuperior" class="sr-only">LR:</label>
+                        <input type="number" id="lrSuperior" name="lr" class="form-control" placeholder="LR" maxlength="3">
                     </div>
-                    <button type="button" class="btn btn-primary mb-2" onclick="updateRuler()">Inserir</button>
+                    <button type="button" class="btn btn-primary mb-2" onclick="updateRuler('Superior')">Inserir</button>
                 </form>
                 <div class="ruler">
-                    <div class="lc" id="lcDisplay"></div>
-                    <div class="m" id="mDisplay"></div>
-                    <div class="lr" id="lrDisplay"></div>
+                    <div class="lc" id="lcDisplaySuperior"></div>
+                    <div class="m" id="mDisplaySuperior"></div>
+                    <div class="lr" id="lrDisplaySuperior"></div>
                 </div>
-                <button class="btn btn-success save-button" onclick="saveToFirebase()">Salvar no Firebase</button>
+                <button class="btn btn-success save-button" onclick="saveToFirebase('Superior')">Salvar no Firebase</button>
+
+                <h3>Inserir Dados Faca Inferior</h3>
+                <form id="laminaFormInferior" class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="lcInferior" class="sr-only">LC:</label>
+                        <input type="number" id="lcInferior" name="lc" class="form-control" placeholder="LC" maxlength="3">
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="mInferior" class="sr-only">M:</label>
+                        <input type="number" id="mInferior" name="m" class="form-control" placeholder="M" maxlength="3">
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="lrInferior" class="sr-only">LR:</label>
+                        <input type="number" id="lrInferior" name="lr" class="form-control" placeholder="LR" maxlength="3">
+                    </div>
+                    <button type="button" class="btn btn-primary mb-2" onclick="updateRuler('Inferior')">Inserir</button>
+                </form>
+                <div class="ruler">
+                    <div class="lc" id="lcDisplayInferior"></div>
+                    <div class="m" id="mDisplayInferior"></div>
+                    <div class="lr" id="lrDisplayInferior"></div>
+                </div>
+                <button class="btn btn-success save-button" onclick="saveToFirebase('Inferior')">Salvar no Firebase</button>
             </div>
             <div class="col-md-4 p-3">
-                <h3>Gráfico de Barras</h3>
+                <h3>Gráfico de Barras Faca Superior</h3>
                 <div class="chart-container">
-                    <canvas id="percentageChart"></canvas>
+                    <canvas id="percentageChartSuperior"></canvas>
+                </div>
+                <h3>Gráfico de Barras Faca Inferior</h3>
+                <div class="chart-container">
+                    <canvas id="percentageChartInferior"></canvas>
                 </div>
             </div>
             <div class="col-md-4 p-3">
-                <h3>Histórico</h3>
+                <h3>Histórico Faca Superior</h3>
                 <div class="history-container">
                     <div class="form-group">
-                        <select class="form-control mb-2" id="historyDropdown1" onchange="updateLineChart()">
+                        <select class="form-control mb-2" id="historyDropdownSuperior1" onchange="updateLineChart('Superior')">
                             <option value="">Selecione a primeira data</option>
                         </select>
-                        <select class="form-control mb-2" id="historyDropdown2" onchange="updateLineChart()">
+                        <select class="form-control mb-2" id="historyDropdownSuperior2" onchange="updateLineChart('Superior')">
                             <option value="">Selecione a segunda data</option>
                         </select>
                     </div>
-                    <div id="historyDisplay" class="history-display"></div>
+                    <div id="historyDisplaySuperior" class="history-display"></div>
+                </div>
+                <h3>Histórico Faca Inferior</h3>
+                <div class="history-container">
+                    <div class="form-group">
+                        <select class="form-control mb-2" id="historyDropdownInferior1" onchange="updateLineChart('Inferior')">
+                            <option value="">Selecione a primeira data</option>
+                        </select>
+                        <select class="form-control mb-2" id="historyDropdownInferior2" onchange="updateLineChart('Inferior')">
+                            <option value="">Selecione a segunda data</option>
+                        </select>
+                    </div>
+                    <div id="historyDisplayInferior" class="history-display"></div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
-                <h3>Gráfico de Linha</h3>
+                <h3>Gráfico de Linha Faca Superior</h3>
                 <div class="chart-container">
-                    <canvas id="lineChart"></canvas>
+                    <canvas id="lineChartSuperior" style="max-width: 100%; height: 300px;"></canvas>
+                </div>
+                <h3>Gráfico de Linha Faca Inferior</h3>
+                <div class="chart-container">
+                    <canvas id="lineChartInferior" style="max-width: 100%; height: 300px;"></canvas>
                 </div>
             </div>
         </div>
@@ -166,83 +209,145 @@
             appId: "1:746305842581:web:0059c0e45f82fd07a01a9c"
         };
 
-        // Inicializando Firebase
+        // Inicializa o Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        function updateRuler() {
-            const lcValue = parseFloat(document.getElementById('lc').value) || 0;
-            const mValue = parseFloat(document.getElementById('m').value) || 0;
-            const lrValue = parseFloat(document.getElementById('lr').value) || 0;
+        let percentageChartSuperior, percentageChartInferior, lineChartSuperior, lineChartInferior;
 
-            const total = lcValue + mValue + lrValue;
-            const lcPercent = total ? (lcValue / total) * 100 : 0;
-            const mPercent = total ? (mValue / total) * 100 : 0;
-            const lrPercent = total ? (lrValue / total) * 100 : 0;
+        function updateRuler(type) {
+            const lcValue = document.getElementById('lc' + type).value;
+            const mValue = document.getElementById('m' + type).value;
+            const lrValue = document.getElementById('lr' + type).value;
 
-            document.getElementById('lcDisplay').innerText = lcValue;
-            document.getElementById('mDisplay').innerText = mValue;
-            document.getElementById('lrDisplay').innerText = lrValue;
+            document.getElementById('lcDisplay' + type).textContent = lcValue;
+            document.getElementById('mDisplay' + type).textContent = mValue;
+            document.getElementById('lrDisplay' + type).textContent = lrValue;
 
-            updateBarChart([lcPercent.toFixed(2), mPercent.toFixed(2), lrPercent.toFixed(2)]);
-
-            // Limpa os campos após a atualização
-            document.getElementById('lc').value = '';
-            document.getElementById('m').value = '';
-            document.getElementById('lr').value = '';
+            updateCharts(type);
         }
 
-        let barChart, lineChart;
+        function updateCharts(type) {
+            const lcValue = parseFloat(document.getElementById('lc' + type).value) || 0;
+            const mValue = parseFloat(document.getElementById('m' + type).value) || 0;
+            const lrValue = parseFloat(document.getElementById('lr' + type).value) || 0;
 
-        function updateBarChart(data) {
-            const ctx = document.getElementById('percentageChart').getContext('2d');
-            if (barChart) {
-                barChart.data.datasets[0].data = data;
-                barChart.update();
-            } else {
-                barChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['LC', 'M', 'LR'],
-                        datasets: [{
-                            data: data,
-                            backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
-                            borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        plugins: {
-                            datalabels: {
-                                anchor: 'end',
-                                align: 'top',
-                                formatter: (value) => value + '%',
-                                font: {
-                                    weight: 'bold'
-                                }
-                            }
+            const total = lcValue + mValue + lrValue;
+
+            const percentages = {
+                lc: ((lcValue / total) * 100).toFixed(2),
+                m: ((mValue / total) * 100).toFixed(2),
+                lr: ((lrValue / total) * 100).toFixed(2)
+            };
+
+            const ctx = document.getElementById('percentageChart' + type).getContext('2d');
+            if (type === 'Superior') {
+                if (percentageChartSuperior) {
+                    percentageChartSuperior.data.datasets[0].data = [percentages.lc, percentages.m, percentages.lr];
+                    percentageChartSuperior.update();
+                } else {
+                    percentageChartSuperior = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['LC', 'M', 'LR'],
+                            datasets: [{
+                                label: 'Porcentagem',
+                                data: [percentages.lc, percentages.m, percentages.lr],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(75, 192, 192, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
                         },
-                        scales: {
-                            y: {
-                                display: false,
-                                beginAtZero: true,
-                                max: 100
+                        options: {
+                            plugins: {
+                                datalabels: {
+                                    anchor: 'end',
+                                    align: 'top',
+                                    formatter: (value) => `${value}%`,
+                                    color: '#000',
+                                    font: {
+                                        weight: 'bold'
+                                    }
+                                }
                             },
-                            x: {
-                                ticks: {
-                                    display: false
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function (value) {
+                                            return value + '%';
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                });
+                    });
+                }
+            } else {
+                if (percentageChartInferior) {
+                    percentageChartInferior.data.datasets[0].data = [percentages.lc, percentages.m, percentages.lr];
+                    percentageChartInferior.update();
+                } else {
+                    percentageChartInferior = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['LC', 'M', 'LR'],
+                            datasets: [{
+                                label: 'Porcentagem',
+                                data: [percentages.lc, percentages.m, percentages.lr],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(75, 192, 192, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                datalabels: {
+                                    anchor: 'end',
+                                    align: 'top',
+                                    formatter: (value) => `${value}%`,
+                                    color: '#000',
+                                    font: {
+                                        weight: 'bold'
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function (value) {
+                                            return value + '%';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
             }
         }
 
-        function saveToFirebase() {
-            const lcValue = parseFloat(document.getElementById('lc').value) || 0;
-            const mValue = parseFloat(document.getElementById('m').value) || 0;
-            const lrValue = parseFloat(document.getElementById('lr').value) || 0;
+        function saveToFirebase(type) {
+            const lcValue = parseFloat(document.getElementById('lc' + type).value) || 0;
+            const mValue = parseFloat(document.getElementById('m' + type).value) || 0;
+            const lrValue = parseFloat(document.getElementById('lr' + type).value) || 0;
 
             const data = {
                 lc: lcValue,
@@ -251,24 +356,29 @@
                 timestamp: Date.now()
             };
 
-            database.ref('laminaData').push(data, (error) => {
+            database.ref('laminaData' + type).push(data, (error) => {
                 if (error) {
                     alert('Erro ao salvar dados no Firebase.');
                 } else {
                     alert('Dados salvos com sucesso!');
-                    loadHistoryDropdown();
-                    updateLineChart();
+                    loadHistoryDropdown(type);
+                    updateLineChart(type);
                 }
             });
+
+            // Limpar inputs após salvar
+            document.getElementById('lc' + type).value = '';
+            document.getElementById('m' + type).value = '';
+            document.getElementById('lr' + type).value = '';
         }
 
-        function loadHistoryDropdown() {
-            const dropdown1 = document.getElementById('historyDropdown1');
-            const dropdown2 = document.getElementById('historyDropdown2');
+        function loadHistoryDropdown(type) {
+            const dropdown1 = document.getElementById('historyDropdown' + type + '1');
+            const dropdown2 = document.getElementById('historyDropdown' + type + '2');
             dropdown1.innerHTML = '<option value="">Selecione a primeira data</option>';
             dropdown2.innerHTML = '<option value="">Selecione a segunda data</option>';
 
-            database.ref('laminaData').orderByChild('timestamp').once('value', (snapshot) => {
+            database.ref('laminaData' + type).orderByChild('timestamp').once('value', (snapshot) => {
                 snapshot.forEach((childSnapshot) => {
                     const data = childSnapshot.val();
                     const date = new Date(data.timestamp);
@@ -285,72 +395,143 @@
             });
         }
 
-        function updateLineChart() {
-            const key1 = document.getElementById('historyDropdown1').value;
-            const key2 = document.getElementById('historyDropdown2').value;
+        function updateLineChart(type) {
+            const key1 = document.getElementById('historyDropdown' + type + '1').value;
+            const key2 = document.getElementById('historyDropdown' + type + '2').value;
 
             if (!key1 || !key2) return;
 
             Promise.all([
-                database.ref('laminaData/' + key1).once('value'),
-                database.ref('laminaData/' + key2).once('value')
+                database.ref('laminaData' + type + '/' + key1).once('value'),
+                database.ref('laminaData' + type + '/' + key2).once('value')
             ]).then((snapshots) => {
                 const data1 = snapshots[0].val();
                 const data2 = snapshots[1].val();
 
-                const ctx = document.getElementById('lineChart').getContext('2d');
-                if (lineChart) {
-                    lineChart.data.labels = ['LC', 'M', 'LR'];
-                    lineChart.data.datasets[0].label = new Date(data1.timestamp).toLocaleString();
-                    lineChart.data.datasets[0].data = [data1.lc, data1.m, data1.lr];
-                    lineChart.data.datasets[1].label = new Date(data2.timestamp).toLocaleString();
-                    lineChart.data.datasets[1].data = [data2.lc, data2.m, data2.lr];
-                    lineChart.update();
-                } else {
-                    lineChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ['LC', 'M', 'LR'],
-                            datasets: [
-                                {
-                                    label: new Date(data1.timestamp).toLocaleString(),
-                                    data: [data1.lc, data1.m, data1.lr],
-                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                    borderColor: 'rgba(255, 99, 132, 1)',
-                                    borderWidth: 1,
-                                    fill: false
-                                },
-                                {
-                                    label: new Date(data2.timestamp).toLocaleString(),
-                                    data: [data2.lc, data2.m, data2.lr],
-                                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                    borderColor: 'rgba(54, 162, 235, 1)',
-                                    borderWidth: 1,
-                                    fill: false
-                                }
-                            ]
-                        },
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
+                const ctx = document.getElementById('lineChart' + type).getContext('2d');
+                if (type === 'Superior') {
+                    if (lineChartSuperior) {
+                        lineChartSuperior.data.labels = ['LC', 'M', 'LR'];
+                        lineChartSuperior.data.datasets[0].label = new Date(data1.timestamp).toLocaleString();
+                        lineChartSuperior.data.datasets[0].data = [data1.lc, data1.m, data1.lr];
+                        lineChartSuperior.data.datasets[1].label = new Date(data2.timestamp).toLocaleString();
+                        lineChartSuperior.data.datasets[1].data = [data2.lc, data2.m, data2.lr];
+                        lineChartSuperior.update();
+                    } else {
+                        lineChartSuperior = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ['LC', 'M', 'LR'],
+                                datasets: [
+                                    {
+                                        label: new Date(data1.timestamp).toLocaleString(),
+                                        data: [data1.lc, data1.m, data1.lr],
+                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 1,
+                                        fill: false
+                                    },
+                                    {
+                                        label: new Date(data2.timestamp).toLocaleString(),
+                                        data: [data2.lc, data2.m, data2.lr],
+                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1,
+                                        fill: false
+                                    }
+                                ]
                             },
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top'
+                            options: {
+                                plugins: {
+                                    datalabels: {
+                                        anchor: 'end',
+                                        align: 'top',
+                                        formatter: (value) => `${value}%`,
+                                        color: '#000',
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: function (value) {
+                                                return value + '%';
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
+                } else {
+                    if (lineChartInferior) {
+                        lineChartInferior.data.labels = ['LC', 'M', 'LR'];
+                        lineChartInferior.data.datasets[0].label = new Date(data1.timestamp).toLocaleString();
+                        lineChartInferior.data.datasets[0].data = [data1.lc, data1.m, data1.lr];
+                        lineChartInferior.data.datasets[1].label = new Date(data2.timestamp).toLocaleString();
+                        lineChartInferior.data.datasets[1].data = [data2.lc, data2.m, data2.lr];
+                        lineChartInferior.update();
+                    } else {
+                        lineChartInferior = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ['LC', 'M', 'LR'],
+                                datasets: [
+                                    {
+                                        label: new Date(data1.timestamp).toLocaleString(),
+                                        data: [data1.lc, data1.m, data1.lr],
+                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 1,
+                                        fill: false
+                                    },
+                                    {
+                                        label: new Date(data2.timestamp).toLocaleString(),
+                                        data: [data2.lc, data2.m, data2.lr],
+                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1,
+                                        fill: false
+                                    }
+                                ]
+                            },
+                            options: {
+                                plugins: {
+                                    datalabels: {
+                                        anchor: 'end',
+                                        align: 'top',
+                                        formatter: (value) => `${value}%`,
+                                        color: '#000',
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: function (value) {
+                                                return value + '%';
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
                 }
             });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadHistoryDropdown();
-        });
+        // Inicializa os gráficos
+        window.onload = function() {
+            loadHistoryDropdown('Superior');
+            loadHistoryDropdown('Inferior');
+        };
     </script>
 </body>
 </html>
