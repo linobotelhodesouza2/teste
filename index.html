@@ -190,8 +190,11 @@
         </div>
         <div class="column">
             <div class="history-container">
-                <select class="history-dropdown" id="historyDropdown" onchange="loadHistory(this.value)">
-                    <option value="">Selecione uma data</option>
+                <select class="history-dropdown" id="historyDropdown1" onchange="updateLineChart()">
+                    <option value="">Selecione a primeira data</option>
+                </select>
+                <select class="history-dropdown" id="historyDropdown2" onchange="updateLineChart()">
+                    <option value="">Selecione a segunda data</option>
                 </select>
                 <div id="historyDisplay" class="history-display"></div>
             </div>
@@ -308,169 +311,93 @@
         }
 
         function loadHistoryDropdown() {
-            const dropdown = document.getElementById('historyDropdown');
-            dropdown.innerHTML = '<option value="">Selecione uma data</option>';
+            const dropdown1 = document.getElementById('historyDropdown1');
+            const dropdown2 = document.getElementById('historyDropdown2');
+            dropdown1.innerHTML = '<option value="">Selecione a primeira data</option>';
+            dropdown2.innerHTML = '<option value="">Selecione a segunda data</option>';
 
             database.ref('laminaData').orderByChild('timestamp').once('value', (snapshot) => {
                 snapshot.forEach((childSnapshot) => {
                     const data = childSnapshot.val();
                     const date = new Date(data.timestamp);
                     const dateString = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-                    const option = document.createElement('option');
-                    option.value = childSnapshot.key;
-                    option.textContent = dateString;
-                    dropdown.appendChild(option);
-                });
-            });
-        }
-
-        function loadHistory(key) {
-            if (!key) return;
-
-            database.ref('laminaData/' + key).once('value', (snapshot) => {
-                const data = snapshot.val();
-
-                const historyDisplay = document.getElementById('historyDisplay');
-                historyDisplay.innerHTML = '';
-
-                const historyItem = document.createElement('div');
-                historyItem.classList.add('history-item');
-
-                const historyDetails = document.createElement('div');
-                historyDetails.classList.add('history-details');
-                historyDetails.innerHTML = `
-                    <p><strong>LC:</strong> ${data.lc}</p>
-                    <p><strong>M:</strong> ${data.m}</p>
-                    <p><strong>LR:</strong> ${data.lr}</p>
-                    <p><strong>Data:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
-                `;
-
-                const historyChartContainer = document.createElement('div');
-                historyChartContainer.classList.add('history-chart');
-                const historyChart = document.createElement('canvas');
-                historyChartContainer.appendChild(historyChart);
-
-                historyItem.appendChild(historyDetails);
-                historyItem.appendChild(historyChartContainer);
-                historyDisplay.appendChild(historyItem);
-
-                const total = data.lc + data.m + data.lr;
-                const lcPercent = total ? (data.lc / total) * 100 : 0;
-                const mPercent = total ? (data.m / total) * 100 : 0;
-                const lrPercent = total ? (data.lr / total) * 100 : 0;
-
-                new Chart(historyChart, {
-                    type: 'bar',
-                    data: {
-                        labels: ['LC', 'M', 'LR'],
-                        datasets: [{
-                            label: 'Porcentagem',
-                            data: [lcPercent.toFixed(2), mPercent.toFixed(2), lrPercent.toFixed(2)],
-                            backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
-                            borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        plugins: {
-                            datalabels: {
-                                anchor: 'end',
-                                align: 'top',
-                                formatter: (value) => value + '%',
-                                font: {
-                                    weight: 'bold'
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                display: false,
-                                beginAtZero: true,
-                                max: 100
-                            },
-                            x: {
-                                ticks: {
-                                    display: false
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        }
-                    },
-                    plugins: [ChartDataLabels]
+                    const option1 = document.createElement('option');
+                    const option2 = document.createElement('option');
+                    option1.value = childSnapshot.key;
+                    option1.textContent = dateString;
+                    option2.value = childSnapshot.key;
+                    option2.textContent = dateString;
+                    dropdown1.appendChild(option1);
+                    dropdown2.appendChild(option2);
                 });
             });
         }
 
         function updateLineChart() {
-            database.ref('laminaData').orderByChild('timestamp').limitToLast(2).once('value', (snapshot) => {
-                const data = [];
-                snapshot.forEach((childSnapshot) => {
-                    const entry = childSnapshot.val();
-                    data.push({
-                        lc: entry.lc,
-                        m: entry.m,
-                        lr: entry.lr,
-                        timestamp: new Date(entry.timestamp).toLocaleString()
-                    });
-                });
+            const key1 = document.getElementById('historyDropdown1').value;
+            const key2 = document.getElementById('historyDropdown2').value;
 
-                if (data.length === 2) {
-                    const ctx = document.getElementById('lineChart').getContext('2d');
-                    if (lineChart) {
-                        lineChart.data.labels = ['LC', 'M', 'LR'];
-                        lineChart.data.datasets[0].data = [data[0].lc, data[0].m, data[0].lr];
-                        lineChart.data.datasets[1].data = [data[1].lc, data[1].m, data[1].lr];
-                        lineChart.update();
-                    } else {
-                        lineChart = new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: ['LC', 'M', 'LR'],
-                                datasets: [
-                                    {
-                                        label: data[0].timestamp,
-                                        data: [data[0].lc, data[0].m, data[0].lr],
-                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                        borderColor: 'rgba(255, 99, 132, 1)',
-                                        borderWidth: 1,
-                                        fill: false
-                                    },
-                                    {
-                                        label: data[1].timestamp,
-                                        data: [data[1].lc, data[1].m, data[1].lr],
-                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                        borderColor: 'rgba(54, 162, 235, 1)',
-                                        borderWidth: 1,
-                                        fill: false
-                                    }
-                                ]
-                            },
-                            options: {
-                                scales: {
-                                    y: {
-                                        beginAtZero: true
-                                    }
+            if (!key1 || !key2) return;
+
+            Promise.all([
+                database.ref('laminaData/' + key1).once('value'),
+                database.ref('laminaData/' + key2).once('value')
+            ]).then((snapshots) => {
+                const data1 = snapshots[0].val();
+                const data2 = snapshots[1].val();
+
+                const ctx = document.getElementById('lineChart').getContext('2d');
+                if (lineChart) {
+                    lineChart.data.labels = ['LC', 'M', 'LR'];
+                    lineChart.data.datasets[0].label = new Date(data1.timestamp).toLocaleString();
+                    lineChart.data.datasets[0].data = [data1.lc, data1.m, data1.lr];
+                    lineChart.data.datasets[1].label = new Date(data2.timestamp).toLocaleString();
+                    lineChart.data.datasets[1].data = [data2.lc, data2.m, data2.lr];
+                    lineChart.update();
+                } else {
+                    lineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: ['LC', 'M', 'LR'],
+                            datasets: [
+                                {
+                                    label: new Date(data1.timestamp).toLocaleString(),
+                                    data: [data1.lc, data1.m, data1.lr],
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    borderWidth: 1,
+                                    fill: false
                                 },
-                                plugins: {
-                                    legend: {
-                                        display: true,
-                                        position: 'top'
-                                    }
+                                {
+                                    label: new Date(data2.timestamp).toLocaleString(),
+                                    data: [data2.lc, data2.m, data2.lr],
+                                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                    borderColor: 'rgba(54, 162, 235, 1)',
+                                    borderWidth: 1,
+                                    fill: false
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top'
                                 }
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             loadHistoryDropdown();
-            updateLineChart();
         });
     </script>
 </body>
