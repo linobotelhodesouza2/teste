@@ -131,6 +131,7 @@
         @media (max-width: 600px) {
             .container {
                 flex-direction: column;
+                overflow-x: hidden;
             }
 
             .column {
@@ -151,12 +152,6 @@
             .chart-container, .history-chart canvas {
                 width: 100% !important;
                 height: 200px !important;
-            }
-        }
-
-        @media (min-width: 601px) {
-            .chart-container#line-chart-container {
-                height: 400px;
             }
         }
     </style>
@@ -190,7 +185,7 @@
             <div class="chart-container">
                 <canvas id="percentageChart"></canvas>
             </div>
-            <div class="chart-container" id="line-chart-container">
+            <div class="chart-container">
                 <canvas id="lineChart"></canvas>
             </div>
         </div>
