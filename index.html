@@ -4,48 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Régua de Lâmina com Gráficos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            display: flex;
-            width: 100%;
-            height: 100vh;
-            box-sizing: border-box;
-        }
-
-        .column {
-            flex: 1;
-            padding: 20px;
-            box-sizing: border-box;
-            overflow-y: auto;
-        }
-
-        .form-container {
-            width: 100%;
-        }
-
-        form {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        label, input {
-            margin: 5px;
-        }
-
-        input {
-            width: 50px;
-            text-align: center;
         }
 
         .ruler {
@@ -56,8 +18,8 @@
             height: 30px;
             background-color: #f0f0f0;
             border: 2px solid #000;
-            position: relative;
             margin-bottom: 20px;
+            position: relative;
         }
 
         .ruler div {
@@ -84,6 +46,7 @@
 
         .chart-container {
             width: 100%;
+            margin-top: 20px;
         }
 
         .save-button {
@@ -93,19 +56,6 @@
         .history-container {
             width: 100%;
             margin-top: 20px;
-        }
-
-        .history-dropdown {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-
-        .history-display {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
         }
 
         .history-item {
@@ -120,24 +70,11 @@
             background-color: #f9f9f9;
         }
 
-        .history-details {
-            width: 50%;
-        }
-
-        .history-chart {
+        .history-details, .history-chart {
             width: 45%;
         }
 
         @media (max-width: 600px) {
-            .container {
-                flex-direction: column;
-            }
-
-            .column {
-                width: 100%;
-                padding: 10px;
-            }
-
             .history-item {
                 flex-direction: column;
                 align-items: flex-start;
@@ -160,43 +97,59 @@
     <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database-compat.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="column">
-            <div class="form-container">
-                <form id="laminaForm">
-                    <label for="lc">LC:</label>
-                    <input type="number" id="lc" name="lc" maxlength="3">
-                    <label for="m">M:</label>
-                    <input type="number" id="m" name="m" maxlength="3">
-                    <label for="lr">LR:</label>
-                    <input type="number" id="lr" name="lr" maxlength="3">
-                    <button type="button" onclick="updateRuler()">Inserir</button>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 p-3">
+                <h3>Inserir Dados</h3>
+                <form id="laminaForm" class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="lc" class="sr-only">LC:</label>
+                        <input type="number" id="lc" name="lc" class="form-control" placeholder="LC" maxlength="3">
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="m" class="sr-only">M:</label>
+                        <input type="number" id="m" name="m" class="form-control" placeholder="M" maxlength="3">
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="lr" class="sr-only">LR:</label>
+                        <input type="number" id="lr" name="lr" class="form-control" placeholder="LR" maxlength="3">
+                    </div>
+                    <button type="button" class="btn btn-primary mb-2" onclick="updateRuler()">Inserir</button>
                 </form>
+                <div class="ruler">
+                    <div class="lc" id="lcDisplay"></div>
+                    <div class="m" id="mDisplay"></div>
+                    <div class="lr" id="lrDisplay"></div>
+                </div>
+                <button class="btn btn-success save-button" onclick="saveToFirebase()">Salvar no Firebase</button>
             </div>
-            <div class="ruler">
-                <div class="lc" id="lcDisplay"></div>
-                <div class="m" id="mDisplay"></div>
-                <div class="lr" id="lrDisplay"></div>
+            <div class="col-md-4 p-3">
+                <h3>Gráfico de Barras</h3>
+                <div class="chart-container">
+                    <canvas id="percentageChart"></canvas>
+                </div>
             </div>
-            <button class="save-button" onclick="saveToFirebase()">Salvar no Firebase</button>
-            <div class="chart-container">
-                <canvas id="lineChart"></canvas>
+            <div class="col-md-4 p-3">
+                <h3>Histórico</h3>
+                <div class="history-container">
+                    <div class="form-group">
+                        <select class="form-control mb-2" id="historyDropdown1" onchange="updateLineChart()">
+                            <option value="">Selecione a primeira data</option>
+                        </select>
+                        <select class="form-control mb-2" id="historyDropdown2" onchange="updateLineChart()">
+                            <option value="">Selecione a segunda data</option>
+                        </select>
+                    </div>
+                    <div id="historyDisplay" class="history-display"></div>
+                </div>
             </div>
         </div>
-        <div class="column">
-            <div class="chart-container">
-                <canvas id="percentageChart"></canvas>
-            </div>
-        </div>
-        <div class="column">
-            <div class="history-container">
-                <select class="history-dropdown" id="historyDropdown1" onchange="updateLineChart()">
-                    <option value="">Selecione a primeira data</option>
-                </select>
-                <select class="history-dropdown" id="historyDropdown2" onchange="updateLineChart()">
-                    <option value="">Selecione a segunda data</option>
-                </select>
-                <div id="historyDisplay" class="history-display"></div>
+        <div class="row">
+            <div class="col-12">
+                <h3>Gráfico de Linha</h3>
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
