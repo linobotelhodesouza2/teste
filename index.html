@@ -185,6 +185,11 @@
             document.getElementById('lrDisplay').innerText = lrValue;
 
             updateBarChart([lcPercent.toFixed(2), mPercent.toFixed(2), lrPercent.toFixed(2)]);
+
+            // Limpa os campos após a atualização
+            document.getElementById('lc').value = '';
+            document.getElementById('m').value = '';
+            document.getElementById('lr').value = '';
         }
 
         let barChart, lineChart;
@@ -228,14 +233,8 @@
                                     display: false
                                 }
                             }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
                         }
-                    },
-                    plugins: [ChartDataLabels]
+                    }
                 });
             }
         }
