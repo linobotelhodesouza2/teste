@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faca Superior e Inferior</title>
+    <title>Desenho da Lâmina</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -19,90 +19,29 @@
             margin-bottom: 30px;
         }
 
-        .blade {
+        .blade-canvas {
             border: 2px solid #333;
             border-radius: 8px;
-            position: relative;
-            height: 100px;
-            margin-bottom: 10px;
-        }
-
-        .blade-label {
-            position: absolute;
-            top: -20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .blade-drawing {
-            position: relative;
             width: 100%;
-            height: 100%;
+            height: 200px;
         }
 
-        .blade-segment {
-            position: absolute;
-            height: 100%;
-            border-right: 1px solid #555;
+        .form-group {
+            margin-bottom: 1rem;
         }
 
-        .blade-segment-text {
-            position: absolute;
-            bottom: 10px;
-            left: 5px;
-            color: #000;
-            font-size: 12px;
-        }
-
-        .blade-segment1 { background-color: rgba(75, 192, 192, 0.6); width: 33.33%; left: 0; }
-        .blade-segment2 { background-color: rgba(75, 192, 192, 0.6); width: 33.33%; left: 33.33%; }
-        .blade-segment3 { background-color: rgba(75, 192, 192, 0.6); width: 33.33%; left: 66.67%; }
-
-        canvas {
-            margin-top: 20px;
+        .form-group label {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center">Faca Superior e Inferior</h1>
+        <h1 class="text-center">Desenho da Lâmina</h1>
+        <div class="blade-container">
+            <canvas id="facaCanvas" class="blade-canvas"></canvas>
+        </div>
         <form id="facaForm">
-            <div class="blade-container">
-                <div class="blade">
-                    <div class="blade-label">Faca Superior</div>
-                    <div class="blade-drawing">
-                        <div class="blade-segment blade-segment1">
-                            <div id="superiorEsquerdaText" class="blade-segment-text"></div>
-                        </div>
-                        <div class="blade-segment blade-segment2">
-                            <div id="superiorMeioText" class="blade-segment-text"></div>
-                        </div>
-                        <div class="blade-segment blade-segment3">
-                            <div id="superiorDireitaText" class="blade-segment-text"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="blade-container">
-                <div class="blade">
-                    <div class="blade-label">Faca Inferior</div>
-                    <div class="blade-drawing">
-                        <div class="blade-segment blade-segment1">
-                            <div id="inferiorEsquerdaText" class="blade-segment-text"></div>
-                        </div>
-                        <div class="blade-segment blade-segment2">
-                            <div id="inferiorMeioText" class="blade-segment-text"></div>
-                        </div>
-                        <div class="blade-segment blade-segment3">
-                            <div id="inferiorDireitaText" class="blade-segment-text"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="form-group">
                 <label for="superiorEsquerda">Faca Superior - Esquerda:</label>
                 <input type="number" id="superiorEsquerda" name="superiorEsquerda" class="form-control" placeholder="Valor" required>
@@ -127,80 +66,45 @@
                 <label for="inferiorDireita">Faca Inferior - Direita:</label>
                 <input type="number" id="inferiorDireita" name="inferiorDireita" class="form-control" placeholder="Valor" required>
             </div>
-            <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
+            <button type="button" class="btn btn-primary" onclick="desenharFaca()">Desenhar Lâmina</button>
         </form>
-        <canvas id="graficoBarras" class="w-100"></canvas>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        function desenharLamina(id, valores) {
-            const segmentos = document.querySelectorAll(`#${id} .blade-segment`);
-            const textos = document.querySelectorAll(`#${id} .blade-segment-text`);
+        function desenharFaca() {
+            const canvas = document.getElementById('facaCanvas');
+            const ctx = canvas.getContext('2d');
+            const largura = canvas.width = canvas.parentElement.clientWidth;
+            const altura = canvas.height = 200;
 
-            segmentos.forEach((segmento, index) => {
-                const valor = valores[index];
-                const porcentagem = (valor / valores.reduce((a, b) => a + b, 0)) * 100;
-                segmento.style.width = `${porcentagem}%`;
-                textos[index].textContent = `${valor}`;
-            });
-        }
+            ctx.clearRect(0, 0, largura, altura);
 
-        function salvarDados() {
-            const superiorEsquerda = parseFloat(document.getElementById('superiorEsquerda').value) || 0;
-            const superiorMeio = parseFloat(document.getElementById('superiorMeio').value) || 0;
-            const superiorDireita = parseFloat(document.getElementById('superiorDireita').value) || 0;
-            const inferiorEsquerda = parseFloat(document.getElementById('inferiorEsquerda').value) || 0;
-            const inferiorMeio = parseFloat(document.getElementById('inferiorMeio').value) || 0;
-            const inferiorDireita = parseFloat(document.getElementById('inferiorDireita').value) || 0;
+            // Desenho da lâmina
+            ctx.fillStyle = '#888'; // Cor da lâmina
+            ctx.beginPath();
+            ctx.moveTo(30, 60); // ponto de partida
+            ctx.lineTo(largura - 30, 60); // linha superior
+            ctx.lineTo(largura - 20, altura - 20); // linha inferior direita
+            ctx.lineTo(20, altura - 20); // linha inferior esquerda
+            ctx.closePath();
+            ctx.fill();
 
-            desenharLamina('facaSuperior', [superiorEsquerda, superiorMeio, superiorDireita]);
-            desenharLamina('facaInferior', [inferiorEsquerda, inferiorMeio, inferiorDireita]);
+            // Desenho da borda
+            ctx.strokeStyle = '#333'; // Cor da borda
+            ctx.lineWidth = 2;
+            ctx.stroke();
 
-            const totalSuperior = superiorEsquerda + superiorMeio + superiorDireita;
-            const totalInferior = inferiorEsquerda + inferiorMeio + inferiorDireita;
-            const porcentagemSuperior = [
-                (superiorEsquerda / totalSuperior) * 100 || 0,
-                (superiorMeio / totalSuperior) * 100 || 0,
-                (superiorDireita / totalSuperior) * 100 || 0
-            ];
-            const porcentagemInferior = [
-                (inferiorEsquerda / totalInferior) * 100 || 0,
-                (inferiorMeio / totalInferior) * 100 || 0,
-                (inferiorDireita / totalInferior) * 100 || 0
-            ];
+            // Adicionar texto para os valores
+            const valores = {
+                esquerda: parseFloat(document.getElementById('superiorEsquerda').value) || 0,
+                meio: parseFloat(document.getElementById('superiorMeio').value) || 0,
+                direita: parseFloat(document.getElementById('superiorDireita').value) || 0
+            };
 
-            const ctx = document.getElementById('graficoBarras').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Esquerda', 'Meio', 'Direita'],
-                    datasets: [
-                        {
-                            label: 'Faca Superior (%)',
-                            data: porcentagemSuperior,
-                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Faca Inferior (%)',
-                            data: porcentagemInferior,
-                            backgroundColor: 'rgba(153, 102, 255, 0.6)',
-                            borderColor: 'rgba(153, 102, 255, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100
-                        }
-                    }
-                }
-            });
+            ctx.fillStyle = '#000'; // Cor do texto
+            ctx.font = '16px Arial';
+            ctx.fillText(`Esquerda: ${valores.esquerda}`, 40, 100);
+            ctx.fillText(`Meio: ${valores.meio}`, largura / 2 - 30, 100);
+            ctx.fillText(`Direita: ${valores.direita}`, largura - 150, 100);
         }
     </script>
 </body>
