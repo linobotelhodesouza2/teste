@@ -6,110 +6,103 @@
     <title>Faca Superior e Inferior</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-        }
-
         .container {
-            margin-top: 50px;
-        }
-
-        .blade-container {
-            flex: 1;
-            margin: 0 10px;
-        }
-
-        .blade {
-            margin-bottom: 20px;
-            border: 1px solid #ced4da;
-            padding: 20px;
-            border-radius: 5px;
-            background-color: #ffffff;
-        }
-
-        .blade h2 {
-            margin-bottom: 20px;
-            font-size: 1.2rem; /* Nomes menores */
-            text-align: center; /* Alinhamento centralizado */
-        }
-
-        .form-control-sm {
-            width: 100px; /* Largura ajustada para inputs menores */
-        }
-
-        .form-group {
-            margin-bottom: 15px; /* Espaçamento entre inputs */
-        }
-
-        button {
             margin-top: 20px;
         }
 
-        .d-flex {
-            display: flex;
-            justify-content: space-between;
+        .blade {
+            position: relative;
+            margin: 20px 0;
+            height: 8mm;
+            background-color: #ddd;
+            border: 1px solid #bbb;
+            border-radius: 4px;
         }
 
-        .form-label {
+        .blade-label {
+            position: absolute;
+            top: -20px;
+            width: 100%;
             text-align: center;
-            display: block;
-            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .blade-inputs {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+        }
+
+        .blade-inputs input {
+            width: 30%;
+        }
+
+        canvas {
+            margin-top: 20px;
+        }
+
+        .blade-drawing {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <h1 class="text-center">Faca Superior e Inferior</h1>
         <form id="facaForm">
-            <div class="d-flex">
-                <div class="blade-container">
-                    <div class="blade">
-                        <h2>Faca Superior</h2>
-                        <div class="form-row">
-                            <div class="form-group col-4">
-                                <label class="form-label" for="superiorEsquerda">Esquerda:</label>
-                                <input type="number" class="form-control form-control-sm" id="superiorEsquerda" name="superiorEsquerda" required>
-                            </div>
-                            <div class="form-group col-4">
-                                <label class="form-label" for="superiorMeio">Meio:</label>
-                                <input type="number" class="form-control form-control-sm" id="superiorMeio" name="superiorMeio" required>
-                            </div>
-                            <div class="form-group col-4">
-                                <label class="form-label" for="superiorDireita">Direita:</label>
-                                <input type="number" class="form-control form-control-sm" id="superiorDireita" name="superiorDireita" required>
-                            </div>
-                        </div>
-                    </div>
+            <div class="blade">
+                <div class="blade-label">Faca Superior</div>
+                <div class="blade-inputs">
+                    <input type="number" id="superiorEsquerda" name="superiorEsquerda" placeholder="Esquerda" required>
+                    <input type="number" id="superiorMeio" name="superiorMeio" placeholder="Meio" required>
+                    <input type="number" id="superiorDireita" name="superiorDireita" placeholder="Direita" required>
                 </div>
-                <div class="blade-container">
-                    <div class="blade">
-                        <h2>Faca Inferior</h2>
-                        <div class="form-row">
-                            <div class="form-group col-4">
-                                <label class="form-label" for="inferiorEsquerda">Esquerda:</label>
-                                <input type="number" class="form-control form-control-sm" id="inferiorEsquerda" name="inferiorEsquerda" required>
-                            </div>
-                            <div class="form-group col-4">
-                                <label class="form-label" for="inferiorMeio">Meio:</label>
-                                <input type="number" class="form-control form-control-sm" id="inferiorMeio" name="inferiorMeio" required>
-                            </div>
-                            <div class="form-group col-4">
-                                <label class="form-label" for="inferiorDireita">Direita:</label>
-                                <input type="number" class="form-control form-control-sm" id="inferiorDireita" name="inferiorDireita" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <canvas id="facaSuperior" class="blade-drawing"></canvas>
             </div>
-            <button type="button" class="btn btn-success btn-block" onclick="salvarDados()">Salvar Dados</button>
+            <div class="blade">
+                <div class="blade-label">Faca Inferior</div>
+                <div class="blade-inputs">
+                    <input type="number" id="inferiorEsquerda" name="inferiorEsquerda" placeholder="Esquerda" required>
+                    <input type="number" id="inferiorMeio" name="inferiorMeio" placeholder="Meio" required>
+                    <input type="number" id="inferiorDireita" name="inferiorDireita" placeholder="Direita" required>
+                </div>
+                <canvas id="facaInferior" class="blade-drawing"></canvas>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
         </form>
-        <canvas id="graficoBarras" class="mt-5"></canvas>
+        <canvas id="graficoBarras"></canvas>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        function desenharFaca(id, valores) {
+            const canvas = document.getElementById(id);
+            const ctx = canvas.getContext('2d');
+            const largura = canvas.width = canvas.parentElement.clientWidth;
+            const altura = canvas.height = canvas.parentElement.clientHeight;
+
+            ctx.clearRect(0, 0, largura, altura);
+
+            ctx.fillStyle = '#333';
+            const larguraFaca = largura / 3;
+            const alturaFaca = 8; // mm
+
+            ctx.fillRect(0, 0, larguraFaca, alturaFaca);
+            ctx.fillRect(larguraFaca * 1, 0, larguraFaca, alturaFaca);
+            ctx.fillRect(larguraFaca * 2, 0, larguraFaca, alturaFaca);
+
+            ctx.font = '12px Arial';
+            ctx.fillStyle = '#000';
+
+            ctx.fillText(`Esquerda: ${valores[0]}`, 10, alturaFaca - 5);
+            ctx.fillText(`Meio: ${valores[1]}`, larguraFaca + 10, alturaFaca - 5);
+            ctx.fillText(`Direita: ${valores[2]}`, larguraFaca * 2 + 10, alturaFaca - 5);
+        }
+
         function salvarDados() {
-            // Coletando dados dos inputs
             const superiorEsquerda = parseFloat(document.getElementById('superiorEsquerda').value);
             const superiorMeio = parseFloat(document.getElementById('superiorMeio').value);
             const superiorDireita = parseFloat(document.getElementById('superiorDireita').value);
@@ -117,13 +110,14 @@
             const inferiorMeio = parseFloat(document.getElementById('inferiorMeio').value);
             const inferiorDireita = parseFloat(document.getElementById('inferiorDireita').value);
 
-            // Calculando as porcentagens
             const totalSuperior = superiorEsquerda + superiorMeio + superiorDireita;
             const totalInferior = inferiorEsquerda + inferiorMeio + inferiorDireita;
             const porcentagemSuperior = [superiorEsquerda / totalSuperior * 100, superiorMeio / totalSuperior * 100, superiorDireita / totalSuperior * 100];
             const porcentagemInferior = [inferiorEsquerda / totalInferior * 100, inferiorMeio / totalInferior * 100, inferiorDireita / totalInferior * 100];
 
-            // Criando gráfico de barras
+            desenharFaca('facaSuperior', [superiorEsquerda, superiorMeio, superiorDireita]);
+            desenharFaca('facaInferior', [inferiorEsquerda, inferiorMeio, inferiorDireita]);
+
             const ctx = document.getElementById('graficoBarras').getContext('2d');
             const graficoBarras = new Chart(ctx, {
                 type: 'bar',
@@ -147,6 +141,7 @@
                     ]
                 },
                 options: {
+                    responsive: true,
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -157,8 +152,5 @@
             });
         }
     </script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
