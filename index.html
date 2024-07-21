@@ -1,133 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faca com Valores</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-
-        .container {
-            text-align: center;
-        }
-
-        .knife {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .knife > div {
-            margin: 0 5px;
-        }
-
-        input {
-            width: 100px;
-            padding: 10px;
-            font-size: 16px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        canvas {
-            width: 100%;
-            height: 400px;
-        }
-    </style>
+    <title>Gráfico de Barras</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="knife">
-            <div class="left">
-                <input type="number" id="leftValue" placeholder="Esquerdo">
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Coluna esquerda -->
+            <div class="col-md-6">
+                <h4>Inserir Valores</h4>
+                <div class="form-group">
+                    <label for="valorEsquerdo">Valor Esquerdo:</label>
+                    <input type="number" id="valorEsquerdo" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="valorDireito">Valor Direito:</label>
+                    <input type="number" id="valorDireito" class="form-control">
+                </div>
+                <button id="btnSalvar" class="btn btn-primary">Salvar</button>
             </div>
-            <div class="middle">
-                <input type="number" id="middleValue" placeholder="Meio">
-            </div>
-            <div class="right">
-                <input type="number" id="rightValue" placeholder="Direito">
+            
+            <!-- Coluna direita -->
+            <div class="col-md-6">
+                <h4>Gráfico de Barras</h4>
+                <canvas id="graficoBarras"></canvas>
             </div>
         </div>
-        <button id="saveButton">Salvar</button>
-        <canvas id="lineChart"></canvas>
     </div>
 
     <script>
-        const saveButton = document.getElementById('saveButton');
-        const leftValueInput = document.getElementById('leftValue');
-        const middleValueInput = document.getElementById('middleValue');
-        const rightValueInput = document.getElementById('rightValue');
-        const ctx = document.getElementById('lineChart').getContext('2d');
+        let valores = [];
 
-        const data = {
-            labels: [],
-            datasets: [{
-                label: 'Variação dos Valores',
-                data: [],
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1,
-                fill: false
-            }]
-        };
+        document.getElementById('btnSalvar').addEventListener('click', () => {
+            const valorEsquerdo = parseFloat(document.getElementById('valorEsquerdo').value);
+            const valorDireito = parseFloat(document.getElementById('valorDireito').value);
 
-        const config = {
-            type: 'line',
-            data: data,
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Entrada'
+            if (!isNaN(valorEsquerdo) && !isNaN(valorDireito)) {
+                valores.push({ lado: 'Esquerdo', valor: valorEsquerdo });
+                valores.push({ lado: 'Direito', valor: valorDireito });
+                atualizarGrafico();
+                
+                // Limpar inputs
+                document.getElementById('valorEsquerdo').value = '';
+                document.getElementById('valorDireito').value = '';
+            } else {
+                alert('Por favor, insira valores válidos.');
+            }
+        });
+
+        function atualizarGrafico() {
+            const ctx = document.getElementById('graficoBarras').getContext('2d');
+            const dados = valores.map(item => item.valor);
+            const rotulos = valores.map(item => `${item.lado}: ${item.valor}`);
+            const total = dados.reduce((acc, val) => acc + val, 0);
+            const porcentagens = dados.map(valor => ((valor / total) * 100).toFixed(1) + '%');
+
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: rotulos,
+                    datasets: [{
+                        label: 'Valores',
+                        data: dados,
+                        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)'],
+                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
                         }
                     },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Valor'
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw} (${porcentagens[context.dataIndex]})`;
+                                }
+                            }
                         }
                     }
                 }
-            }
-        };
-
-        const lineChart = new Chart(ctx, config);
-
-        saveButton.addEventListener('click', () => {
-            const leftValue = parseFloat(leftValueInput.value) || 0;
-            const middleValue = parseFloat(middleValueInput.value) || 0;
-            const rightValue = parseFloat(rightValueInput.value) || 0;
-
-            // Adiciona os valores ao gráfico
-            data.labels.push(`Entrada ${data.labels.length + 1}`);
-            data.datasets[0].data.push({
-                x: data.labels.length,
-                y: (leftValue + middleValue + rightValue) / 3 // Exemplo de valor médio para visualização
             });
-            
-            lineChart.update();
-            
-            // Limpa os campos de entrada
-            leftValueInput.value = '';
-            middleValueInput.value = '';
-            rightValueInput.value = '';
-        });
+        }
     </script>
 </body>
 </html>
