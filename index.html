@@ -3,108 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desenho da Lâmina</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Faca Superior e Inferior</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
         .container {
             margin-top: 20px;
         }
-
+        
         .blade-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .blade {
+            width: 45%;
             position: relative;
-            margin-bottom: 30px;
         }
 
-        .blade-canvas {
-            border: 2px solid #333;
-            border-radius: 8px;
+        .blade canvas {
             width: 100%;
-            height: 200px;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
+            height: auto;
         }
 
         .form-group label {
             font-weight: bold;
         }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center">Desenho da Lâmina</h1>
+        <h1 class="text-center">Faca Superior e Inferior</h1>
         <div class="blade-container">
-            <canvas id="facaCanvas" class="blade-canvas"></canvas>
+            <div class="blade">
+                <h2>Faca Superior</h2>
+                <canvas id="canvasSuperior"></canvas>
+            </div>
+            <div class="blade">
+                <h2>Faca Inferior</h2>
+                <canvas id="canvasInferior"></canvas>
+            </div>
         </div>
-        <form id="facaForm">
-            <div class="form-group">
-                <label for="superiorEsquerda">Faca Superior - Esquerda:</label>
-                <input type="number" id="superiorEsquerda" name="superiorEsquerda" class="form-control" placeholder="Valor" required>
+        <form id="facaForm" class="text-center">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="superiorEsquerda">Superior Esquerda:</label>
+                    <input type="number" class="form-control" id="superiorEsquerda" name="superiorEsquerda" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="superiorMeio">Superior Meio:</label>
+                    <input type="number" class="form-control" id="superiorMeio" name="superiorMeio" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="superiorDireita">Superior Direita:</label>
+                    <input type="number" class="form-control" id="superiorDireita" name="superiorDireita" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="superiorMeio">Faca Superior - Meio:</label>
-                <input type="number" id="superiorMeio" name="superiorMeio" class="form-control" placeholder="Valor" required>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inferiorEsquerda">Inferior Esquerda:</label>
+                    <input type="number" class="form-control" id="inferiorEsquerda" name="inferiorEsquerda" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inferiorMeio">Inferior Meio:</label>
+                    <input type="number" class="form-control" id="inferiorMeio" name="inferiorMeio" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inferiorDireita">Inferior Direita:</label>
+                    <input type="number" class="form-control" id="inferiorDireita" name="inferiorDireita" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="superiorDireita">Faca Superior - Direita:</label>
-                <input type="number" id="superiorDireita" name="superiorDireita" class="form-control" placeholder="Valor" required>
-            </div>
-            <div class="form-group">
-                <label for="inferiorEsquerda">Faca Inferior - Esquerda:</label>
-                <input type="number" id="inferiorEsquerda" name="inferiorEsquerda" class="form-control" placeholder="Valor" required>
-            </div>
-            <div class="form-group">
-                <label for="inferiorMeio">Faca Inferior - Meio:</label>
-                <input type="number" id="inferiorMeio" name="inferiorMeio" class="form-control" placeholder="Valor" required>
-            </div>
-            <div class="form-group">
-                <label for="inferiorDireita">Faca Inferior - Direita:</label>
-                <input type="number" id="inferiorDireita" name="inferiorDireita" class="form-control" placeholder="Valor" required>
-            </div>
-            <button type="button" class="btn btn-primary" onclick="desenharFaca()">Desenhar Lâmina</button>
+            <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
         </form>
+        <div class="text-center">
+            <canvas id="graficoBarras" width="800" height="400"></canvas>
+        </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        function desenharFaca() {
-            const canvas = document.getElementById('facaCanvas');
-            const ctx = canvas.getContext('2d');
-            const largura = canvas.width = canvas.parentElement.clientWidth;
-            const altura = canvas.height = 200;
+        function desenharFaca(ctx, largura, altura, dados) {
+            const partes = dados.map(dado => (dado / 100) * altura);
+            const colors = ['#FF6384', '#36A2EB', '#FFCE56'];
 
-            ctx.clearRect(0, 0, largura, altura);
+            partes.forEach((parte, index) => {
+                ctx.fillStyle = colors[index];
+                ctx.fillRect(0, altura - parte, largura, parte);
+                altura -= parte;
+            });
+        }
 
-            // Desenho da lâmina
-            ctx.fillStyle = '#888'; // Cor da lâmina
-            ctx.beginPath();
-            ctx.moveTo(30, 60); // ponto de partida
-            ctx.lineTo(largura - 30, 60); // linha superior
-            ctx.lineTo(largura - 20, altura - 20); // linha inferior direita
-            ctx.lineTo(20, altura - 20); // linha inferior esquerda
-            ctx.closePath();
-            ctx.fill();
+        function salvarDados() {
+            const superiorEsquerda = parseFloat(document.getElementById('superiorEsquerda').value);
+            const superiorMeio = parseFloat(document.getElementById('superiorMeio').value);
+            const superiorDireita = parseFloat(document.getElementById('superiorDireita').value);
+            const inferiorEsquerda = parseFloat(document.getElementById('inferiorEsquerda').value);
+            const inferiorMeio = parseFloat(document.getElementById('inferiorMeio').value);
+            const inferiorDireita = parseFloat(document.getElementById('inferiorDireita').value);
 
-            // Desenho da borda
-            ctx.strokeStyle = '#333'; // Cor da borda
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            const totalSuperior = superiorEsquerda + superiorMeio + superiorDireita;
+            const totalInferior = inferiorEsquerda + inferiorMeio + inferiorDireita;
 
-            // Adicionar texto para os valores
-            const valores = {
-                esquerda: parseFloat(document.getElementById('superiorEsquerda').value) || 0,
-                meio: parseFloat(document.getElementById('superiorMeio').value) || 0,
-                direita: parseFloat(document.getElementById('superiorDireita').value) || 0
-            };
+            const porcentagemSuperior = [superiorEsquerda / totalSuperior * 100, superiorMeio / totalSuperior * 100, superiorDireita / totalSuperior * 100];
+            const porcentagemInferior = [inferiorEsquerda / totalInferior * 100, inferiorMeio / totalInferior * 100, inferiorDireita / totalInferior * 100];
 
-            ctx.fillStyle = '#000'; // Cor do texto
-            ctx.font = '16px Arial';
-            ctx.fillText(`Esquerda: ${valores.esquerda}`, 40, 100);
-            ctx.fillText(`Meio: ${valores.meio}`, largura / 2 - 30, 100);
-            ctx.fillText(`Direita: ${valores.direita}`, largura - 150, 100);
+            const ctxSuperior = document.getElementById('canvasSuperior').getContext('2d');
+            const ctxInferior = document.getElementById('canvasInferior').getContext('2d');
+            const ctxGrafico = document.getElementById('graficoBarras').getContext('2d');
+
+            ctxSuperior.clearRect(0, 0, canvasSuperior.width, canvasSuperior.height);
+            ctxInferior.clearRect(0, 0, canvasInferior.width, canvasInferior.height);
+
+            desenharFaca(ctxSuperior, canvasSuperior.width, 150, porcentagemSuperior);
+            desenharFaca(ctxInferior, canvasInferior.width, 150, porcentagemInferior);
+
+            const graficoBarras = new Chart(ctxGrafico, {
+                type: 'bar',
+                data: {
+                    labels: ['Esquerda', 'Meio', 'Direita'],
+                    datasets: [
+                        {
+                            label: 'Faca Superior (%)',
+                            data: porcentagemSuperior,
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Faca Inferior (%)',
+                            data: porcentagemInferior,
+                            backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
         }
     </script>
 </body>
