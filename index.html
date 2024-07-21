@@ -22,17 +22,24 @@
 
         .blade {
             margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #ffffff;
         }
 
         .blade h2 {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             font-size: 1.2rem; /* Nomes menores */
             text-align: center; /* Alinhamento centralizado */
         }
 
         .form-control-sm {
-            width: 80px; /* Reduzido para inputs menores */
-            margin-right: 5px; /* Pequeno espaço entre inputs */
+            width: 100px; /* Largura ajustada para inputs menores */
+        }
+
+        .form-group {
+            margin-bottom: 15px; /* Espaçamento entre inputs */
         }
 
         button {
@@ -44,11 +51,10 @@
             justify-content: space-between;
         }
 
-        .bordered-box {
-            border: 1px solid #ced4da;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+        .form-label {
+            text-align: center;
+            display: block;
+            margin-bottom: 5px;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -58,39 +64,39 @@
         <h1 class="text-center">Faca Superior e Inferior</h1>
         <form id="facaForm">
             <div class="d-flex">
-                <div class="blade-container bordered-box">
+                <div class="blade-container">
                     <div class="blade">
                         <h2>Faca Superior</h2>
                         <div class="form-row">
                             <div class="form-group col-4">
-                                <label for="superiorEsquerda">Esquerda:</label>
+                                <label class="form-label" for="superiorEsquerda">Esquerda:</label>
                                 <input type="number" class="form-control form-control-sm" id="superiorEsquerda" name="superiorEsquerda" required>
                             </div>
                             <div class="form-group col-4">
-                                <label for="superiorMeio">Meio:</label>
+                                <label class="form-label" for="superiorMeio">Meio:</label>
                                 <input type="number" class="form-control form-control-sm" id="superiorMeio" name="superiorMeio" required>
                             </div>
                             <div class="form-group col-4">
-                                <label for="superiorDireita">Direita:</label>
+                                <label class="form-label" for="superiorDireita">Direita:</label>
                                 <input type="number" class="form-control form-control-sm" id="superiorDireita" name="superiorDireita" required>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="blade-container bordered-box">
+                <div class="blade-container">
                     <div class="blade">
                         <h2>Faca Inferior</h2>
                         <div class="form-row">
                             <div class="form-group col-4">
-                                <label for="inferiorEsquerda">Esquerda:</label>
+                                <label class="form-label" for="inferiorEsquerda">Esquerda:</label>
                                 <input type="number" class="form-control form-control-sm" id="inferiorEsquerda" name="inferiorEsquerda" required>
                             </div>
                             <div class="form-group col-4">
-                                <label for="inferiorMeio">Meio:</label>
+                                <label class="form-label" for="inferiorMeio">Meio:</label>
                                 <input type="number" class="form-control form-control-sm" id="inferiorMeio" name="inferiorMeio" required>
                             </div>
                             <div class="form-group col-4">
-                                <label for="inferiorDireita">Direita:</label>
+                                <label class="form-label" for="inferiorDireita">Direita:</label>
                                 <input type="number" class="form-control form-control-sm" id="inferiorDireita" name="inferiorDireita" required>
                             </div>
                         </div>
