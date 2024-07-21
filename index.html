@@ -24,7 +24,9 @@
         }
 
         input {
-            width: 60px;
+            width: 80px;
+            padding: 5px;
+            font-size: 14px;
         }
 
         button {
@@ -34,6 +36,12 @@
         .row-equal {
             display: flex;
             justify-content: space-between;
+        }
+
+        .porcentagens {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -80,6 +88,10 @@
             </div>
             <button type="button" class="btn btn-success btn-block" onclick="salvarDados()">Salvar Dados</button>
         </form>
+        <div class="porcentagens">
+            <div id="porcentagemSuperior"></div>
+            <div id="porcentagemInferior"></div>
+        </div>
         <canvas id="graficoBarras" class="mt-5"></canvas>
     </div>
     <script>
@@ -97,6 +109,10 @@
             const totalInferior = inferiorEsquerda + inferiorMeio + inferiorDireita;
             const porcentagemSuperior = [superiorEsquerda / totalSuperior * 100, superiorMeio / totalSuperior * 100, superiorDireita / totalSuperior * 100];
             const porcentagemInferior = [inferiorEsquerda / totalInferior * 100, inferiorMeio / totalInferior * 100, inferiorDireita / totalInferior * 100];
+
+            // Atualizando as porcentagens na tela
+            document.getElementById('porcentagemSuperior').innerHTML = `Faca Superior: Esquerda: ${porcentagemSuperior[0].toFixed(1)}%, Meio: ${porcentagemSuperior[1].toFixed(1)}%, Direita: ${porcentagemSuperior[2].toFixed(1)}%`;
+            document.getElementById('porcentagemInferior').innerHTML = `Faca Inferior: Esquerda: ${porcentagemInferior[0].toFixed(1)}%, Meio: ${porcentagemInferior[1].toFixed(1)}%, Direita: ${porcentagemInferior[2].toFixed(1)}%`;
 
             // Criando gráfico de barras
             const ctx = document.getElementById('graficoBarras').getContext('2d');
