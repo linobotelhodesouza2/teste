@@ -3,159 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faca Superior e Inferior</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Faca com Valores</title>
     <style>
-        .container {
-            margin-top: 20px;
-        }
-        
-        .blade-container {
+        body {
+            font-family: Arial, sans-serif;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .knife {
+            display: flex;
+            justify-content: center;
             margin-bottom: 20px;
         }
-        
-        .blade {
-            width: 45%;
-            position: relative;
+
+        .knife > div {
+            margin: 0 5px;
         }
 
-        .blade canvas {
-            width: 100%;
-            height: auto;
-        }
-
-        .form-group label {
-            font-weight: bold;
+        input {
+            width: 100px;
+            padding: 10px;
+            font-size: 16px;
         }
 
         button {
-            margin-top: 20px;
             padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        canvas {
+            width: 100%;
+            height: 400px;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center">Faca Superior e Inferior</h1>
-        <div class="blade-container">
-            <div class="blade">
-                <h2>Faca Superior</h2>
-                <canvas id="canvasSuperior"></canvas>
+        <div class="knife">
+            <div class="left">
+                <input type="number" id="leftValue" placeholder="Esquerdo">
             </div>
-            <div class="blade">
-                <h2>Faca Inferior</h2>
-                <canvas id="canvasInferior"></canvas>
+            <div class="middle">
+                <input type="number" id="middleValue" placeholder="Meio">
+            </div>
+            <div class="right">
+                <input type="number" id="rightValue" placeholder="Direito">
             </div>
         </div>
-        <form id="facaForm" class="text-center">
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="superiorEsquerda">Superior Esquerda:</label>
-                    <input type="number" class="form-control" id="superiorEsquerda" name="superiorEsquerda" required>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="superiorMeio">Superior Meio:</label>
-                    <input type="number" class="form-control" id="superiorMeio" name="superiorMeio" required>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="superiorDireita">Superior Direita:</label>
-                    <input type="number" class="form-control" id="superiorDireita" name="superiorDireita" required>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="inferiorEsquerda">Inferior Esquerda:</label>
-                    <input type="number" class="form-control" id="inferiorEsquerda" name="inferiorEsquerda" required>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inferiorMeio">Inferior Meio:</label>
-                    <input type="number" class="form-control" id="inferiorMeio" name="inferiorMeio" required>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inferiorDireita">Inferior Direita:</label>
-                    <input type="number" class="form-control" id="inferiorDireita" name="inferiorDireita" required>
-                </div>
-            </div>
-            <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
-        </form>
-        <div class="text-center">
-            <canvas id="graficoBarras" width="800" height="400"></canvas>
-        </div>
+        <button id="saveButton">Salvar</button>
+        <canvas id="lineChart"></canvas>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        function desenharFaca(ctx, largura, altura, dados) {
-            const partes = dados.map(dado => (dado / 100) * altura);
-            const colors = ['#FF6384', '#36A2EB', '#FFCE56'];
+        const saveButton = document.getElementById('saveButton');
+        const leftValueInput = document.getElementById('leftValue');
+        const middleValueInput = document.getElementById('middleValue');
+        const rightValueInput = document.getElementById('rightValue');
+        const ctx = document.getElementById('lineChart').getContext('2d');
 
-            partes.forEach((parte, index) => {
-                ctx.fillStyle = colors[index];
-                ctx.fillRect(0, altura - parte, largura, parte);
-                altura -= parte;
-            });
-        }
+        const data = {
+            labels: [],
+            datasets: [{
+                label: 'Variação dos Valores',
+                data: [],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        };
 
-        function salvarDados() {
-            const superiorEsquerda = parseFloat(document.getElementById('superiorEsquerda').value);
-            const superiorMeio = parseFloat(document.getElementById('superiorMeio').value);
-            const superiorDireita = parseFloat(document.getElementById('superiorDireita').value);
-            const inferiorEsquerda = parseFloat(document.getElementById('inferiorEsquerda').value);
-            const inferiorMeio = parseFloat(document.getElementById('inferiorMeio').value);
-            const inferiorDireita = parseFloat(document.getElementById('inferiorDireita').value);
-
-            const totalSuperior = superiorEsquerda + superiorMeio + superiorDireita;
-            const totalInferior = inferiorEsquerda + inferiorMeio + inferiorDireita;
-
-            const porcentagemSuperior = [superiorEsquerda / totalSuperior * 100, superiorMeio / totalSuperior * 100, superiorDireita / totalSuperior * 100];
-            const porcentagemInferior = [inferiorEsquerda / totalInferior * 100, inferiorMeio / totalInferior * 100, inferiorDireita / totalInferior * 100];
-
-            const ctxSuperior = document.getElementById('canvasSuperior').getContext('2d');
-            const ctxInferior = document.getElementById('canvasInferior').getContext('2d');
-            const ctxGrafico = document.getElementById('graficoBarras').getContext('2d');
-
-            ctxSuperior.clearRect(0, 0, canvasSuperior.width, canvasSuperior.height);
-            ctxInferior.clearRect(0, 0, canvasInferior.width, canvasInferior.height);
-
-            desenharFaca(ctxSuperior, canvasSuperior.width, 150, porcentagemSuperior);
-            desenharFaca(ctxInferior, canvasInferior.width, 150, porcentagemInferior);
-
-            const graficoBarras = new Chart(ctxGrafico, {
-                type: 'bar',
-                data: {
-                    labels: ['Esquerda', 'Meio', 'Direita'],
-                    datasets: [
-                        {
-                            label: 'Faca Superior (%)',
-                            data: porcentagemSuperior,
-                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Faca Inferior (%)',
-                            data: porcentagemInferior,
-                            backgroundColor: 'rgba(153, 102, 255, 0.6)',
-                            borderColor: 'rgba(153, 102, 255, 1)',
-                            borderWidth: 1
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Entrada'
                         }
-                    ]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Valor'
                         }
                     }
                 }
+            }
+        };
+
+        const lineChart = new Chart(ctx, config);
+
+        saveButton.addEventListener('click', () => {
+            const leftValue = parseFloat(leftValueInput.value) || 0;
+            const middleValue = parseFloat(middleValueInput.value) || 0;
+            const rightValue = parseFloat(rightValueInput.value) || 0;
+
+            // Adiciona os valores ao gráfico
+            data.labels.push(`Entrada ${data.labels.length + 1}`);
+            data.datasets[0].data.push({
+                x: data.labels.length,
+                y: (leftValue + middleValue + rightValue) / 3 // Exemplo de valor médio para visualização
             });
-        }
+            
+            lineChart.update();
+            
+            // Limpa os campos de entrada
+            leftValueInput.value = '';
+            middleValueInput.value = '';
+            rightValueInput.value = '';
+        });
     </script>
 </body>
 </html>
