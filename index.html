@@ -23,23 +23,22 @@
             margin-bottom: 10px;
         }
 
-        input {
-            width: 60px;
+        .form-control-sm {
+            width: 80px; /* Reduzido para inputs menores */
         }
 
         button {
             margin-top: 20px;
         }
 
-        .row-equal {
+        .d-flex {
             display: flex;
             justify-content: space-between;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .blade-container {
+            flex: 1;
+            margin: 0 10px;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -48,38 +47,42 @@
     <div class="container">
         <h1 class="text-center">Faca Superior e Inferior</h1>
         <form id="facaForm">
-            <div class="row row-equal">
-                <div class="blade col-md-6">
-                    <h2>Faca Superior</h2>
-                    <div class="form-row">
-                        <div class="form-group col-4">
-                            <label for="superiorEsquerda">Esquerda:</label>
-                            <input type="number" class="form-control" id="superiorEsquerda" name="superiorEsquerda" required>
-                        </div>
-                        <div class="form-group col-4">
-                            <label for="superiorMeio">Meio:</label>
-                            <input type="number" class="form-control" id="superiorMeio" name="superiorMeio" required>
-                        </div>
-                        <div class="form-group col-4">
-                            <label for="superiorDireita">Direita:</label>
-                            <input type="number" class="form-control" id="superiorDireita" name="superiorDireita" required>
+            <div class="d-flex">
+                <div class="blade-container">
+                    <div class="blade">
+                        <h2>Faca Superior</h2>
+                        <div class="form-row">
+                            <div class="form-group col-4">
+                                <label for="superiorEsquerda">Esquerda:</label>
+                                <input type="number" class="form-control form-control-sm" id="superiorEsquerda" name="superiorEsquerda" required>
+                            </div>
+                            <div class="form-group col-4">
+                                <label for="superiorMeio">Meio:</label>
+                                <input type="number" class="form-control form-control-sm" id="superiorMeio" name="superiorMeio" required>
+                            </div>
+                            <div class="form-group col-4">
+                                <label for="superiorDireita">Direita:</label>
+                                <input type="number" class="form-control form-control-sm" id="superiorDireita" name="superiorDireita" required>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="blade col-md-6">
-                    <h2>Faca Inferior</h2>
-                    <div class="form-row">
-                        <div class="form-group col-4">
-                            <label for="inferiorEsquerda">Esquerda:</label>
-                            <input type="number" class="form-control" id="inferiorEsquerda" name="inferiorEsquerda" required>
-                        </div>
-                        <div class="form-group col-4">
-                            <label for="inferiorMeio">Meio:</label>
-                            <input type="number" class="form-control" id="inferiorMeio" name="inferiorMeio" required>
-                        </div>
-                        <div class="form-group col-4">
-                            <label for="inferiorDireita">Direita:</label>
-                            <input type="number" class="form-control" id="inferiorDireita" name="inferiorDireita" required>
+                <div class="blade-container">
+                    <div class="blade">
+                        <h2>Faca Inferior</h2>
+                        <div class="form-row">
+                            <div class="form-group col-4">
+                                <label for="inferiorEsquerda">Esquerda:</label>
+                                <input type="number" class="form-control form-control-sm" id="inferiorEsquerda" name="inferiorEsquerda" required>
+                            </div>
+                            <div class="form-group col-4">
+                                <label for="inferiorMeio">Meio:</label>
+                                <input type="number" class="form-control form-control-sm" id="inferiorMeio" name="inferiorMeio" required>
+                            </div>
+                            <div class="form-group col-4">
+                                <label for="inferiorDireita">Direita:</label>
+                                <input type="number" class="form-control form-control-sm" id="inferiorDireita" name="inferiorDireita" required>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -89,14 +92,6 @@
         <canvas id="graficoBarras" class="mt-5"></canvas>
     </div>
     <script>
-        document.querySelectorAll('input[type="number"]').forEach((input, index, inputs) => {
-            input.addEventListener('input', () => {
-                if (input.value.length > 0 && index < inputs.length - 1) {
-                    inputs[index + 1].focus();
-                }
-            });
-        });
-
         function salvarDados() {
             // Coletando dados dos inputs
             const superiorEsquerda = parseFloat(document.getElementById('superiorEsquerda').value);
@@ -144,10 +139,6 @@
                     }
                 }
             });
-
-            // Limpando os inputs
-            document.getElementById('facaForm').reset();
-            document.getElementById('superiorEsquerda').focus();
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
