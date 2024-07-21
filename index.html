@@ -3,353 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Régua de Lâmina com Gráficos</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <title>Faca Superior e Inferior</title>
     <style>
         body {
             font-family: Arial, sans-serif;
         }
 
-        .ruler {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            height: 30px;
-            background-color: #f0f0f0;
-            border: 2px solid #000;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .ruler div {
-            width: 30%;
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
             text-align: center;
-            padding: 5px;
-            border: 1px solid #000;
-            background-color: #d9d9d9;
-            position: absolute;
         }
 
-        .lc {
-            left: 0;
-        }
-
-        .m {
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .lr {
-            right: 0;
-        }
-
-        .chart-container {
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .save-button {
-            margin-top: 10px;
-        }
-
-        .history-container {
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
+        form {
             margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
         }
 
-        .history-details, .history-chart {
-            width: 45%;
+        .blade {
+            margin-bottom: 20px;
         }
 
-        @media (max-width: 600px) {
-            .history-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+        .blade h2 {
+            margin-bottom: 10px;
+        }
 
-            .history-details, .history-chart {
-                width: 100%;
-                margin-bottom: 10px;
-            }
+        label {
+            display: inline-block;
+            width: 80px;
+            text-align: right;
+            margin-right: 10px;
+        }
 
-            .chart-container, .history-chart canvas {
-                width: 100% !important;
-                height: 200px !important;
-            }
+        input {
+            width: 100px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database-compat.js"></script>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-4 p-3">
-                <h3>Inserir Dados</h3>
-                <form id="laminaForm" class="d-flex flex-column">
-                    <div class="mb-2">
-                        <label for="lc" class="form-label">LC:</label>
-                        <input type="number" id="lc" name="lc" class="form-control" placeholder="LC" maxlength="3">
-                    </div>
-                    <div class="mb-2">
-                        <label for="m" class="form-label">M:</label>
-                        <input type="number" id="m" name="m" class="form-control" placeholder="M" maxlength="3">
-                    </div>
-                    <div class="mb-2">
-                        <label for="lr" class="form-label">LR:</label>
-                        <input type="number" id="lr" name="lr" class="form-control" placeholder="LR" maxlength="3">
-                    </div>
-                    <button type="button" class="btn btn-primary mb-2" onclick="updateRuler()">Inserir</button>
-                </form>
-                <div class="ruler">
-                    <div class="lc" id="lcDisplay"></div>
-                    <div class="m" id="mDisplay"></div>
-                    <div class="lr" id="lrDisplay"></div>
-                </div>
-                <button class="btn btn-success save-button" onclick="saveToFirebase()">Salvar no Firebase</button>
+    <div class="container">
+        <h1>Faca Superior e Inferior</h1>
+        <form id="facaForm">
+            <div class="blade">
+                <h2>Faca Superior</h2>
+                <label for="superiorEsquerda">Esquerda:</label>
+                <input type="number" id="superiorEsquerda" name="superiorEsquerda" required>
+                <label for="superiorMeio">Meio:</label>
+                <input type="number" id="superiorMeio" name="superiorMeio" required>
+                <label for="superiorDireita">Direita:</label>
+                <input type="number" id="superiorDireita" name="superiorDireita" required>
             </div>
-            <div class="col-md-4 p-3">
-                <h3>Gráfico de Barras</h3>
-                <div class="chart-container">
-                    <canvas id="percentageChart"></canvas>
-                </div>
+            <div class="blade">
+                <h2>Faca Inferior</h2>
+                <label for="inferiorEsquerda">Esquerda:</label>
+                <input type="number" id="inferiorEsquerda" name="inferiorEsquerda" required>
+                <label for="inferiorMeio">Meio:</label>
+                <input type="number" id="inferiorMeio" name="inferiorMeio" required>
+                <label for="inferiorDireita">Direita:</label>
+                <input type="number" id="inferiorDireita" name="inferiorDireita" required>
             </div>
-            <div class="col-md-4 p-3">
-                <h3>Histórico</h3>
-                <div class="history-container">
-                    <div class="form-group">
-                        <label for="historyDropdown1" class="form-label">Selecione a primeira data</label>
-                        <select class="form-select mb-2" id="historyDropdown1" onchange="updateLineChart()">
-                        </select>
-                        <label for="historyDropdown2" class="form-label">Selecione a segunda data</label>
-                        <select class="form-select mb-2" id="historyDropdown2" onchange="updateLineChart()">
-                        </select>
-                    </div>
-                    <div id="historyDisplay" class="history-display"></div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <h3>Gráfico de Linha</h3>
-                <div class="chart-container">
-                    <canvas id="lineChart" style="width: 100%; height: 300px;"></canvas>
-                </div>
-            </div>
-        </div>
+            <button type="button" onclick="salvarDados()">Salvar Dados</button>
+        </form>
+        <canvas id="graficoBarras"></canvas>
     </div>
-
     <script>
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDEsJtoWAUNgStvKg-0mE5CS8qlSLQt7bA",
-            authDomain: "myapp2-a3c3f.firebaseapp.com",
-            databaseURL: "https://myapp2-a3c3f-default-rtdb.firebaseio.com",
-            projectId: "myapp2-a3c3f",
-            storageBucket: "myapp2-a3c3f.appspot.com",
-            messagingSenderId: "746305842581",
-            appId: "1:746305842581:web:0059c0e45f82fd07a01a9c"
-        };
+        function salvarDados() {
+            // Coletando dados dos inputs
+            const superiorEsquerda = parseFloat(document.getElementById('superiorEsquerda').value);
+            const superiorMeio = parseFloat(document.getElementById('superiorMeio').value);
+            const superiorDireita = parseFloat(document.getElementById('superiorDireita').value);
+            const inferiorEsquerda = parseFloat(document.getElementById('inferiorEsquerda').value);
+            const inferiorMeio = parseFloat(document.getElementById('inferiorMeio').value);
+            const inferiorDireita = parseFloat(document.getElementById('inferiorDireita').value);
 
-        // Inicializando Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+            // Calculando as porcentagens
+            const totalSuperior = superiorEsquerda + superiorMeio + superiorDireita;
+            const totalInferior = inferiorEsquerda + inferiorMeio + inferiorDireita;
+            const porcentagemSuperior = [superiorEsquerda / totalSuperior * 100, superiorMeio / totalSuperior * 100, superiorDireita / totalSuperior * 100];
+            const porcentagemInferior = [inferiorEsquerda / totalInferior * 100, inferiorMeio / totalInferior * 100, inferiorDireita / totalInferior * 100];
 
-        function updateRuler() {
-            const lcValue = parseFloat(document.getElementById('lc').value) || 0;
-            const mValue = parseFloat(document.getElementById('m').value) || 0;
-            const lrValue = parseFloat(document.getElementById('lr').value) || 0;
-
-            const total = lcValue + mValue + lrValue;
-            const lcPercent = total ? (lcValue / total) * 100 : 0;
-            const mPercent = total ? (mValue / total) * 100 : 0;
-            const lrPercent = total ? (lrValue / total) * 100 : 0;
-
-            document.getElementById('lcDisplay').innerText = lcValue;
-            document.getElementById('mDisplay').innerText = mValue;
-            document.getElementById('lrDisplay').innerText = lrValue;
-
-            updateBarChart([lcPercent.toFixed(2), mPercent.toFixed(2), lrPercent.toFixed(2)]);
-
-            // Limpa os campos após a atualização
-            document.getElementById('lc').value = '';
-            document.getElementById('m').value = '';
-            document.getElementById('lr').value = '';
-        }
-
-        let barChart, lineChart;
-
-        function updateBarChart(data) {
-            const ctx = document.getElementById('percentageChart').getContext('2d');
-            if (barChart) {
-                barChart.data.datasets[0].data = data;
-                barChart.update();
-            } else {
-                barChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['LC', 'M', 'LR'],
-                        datasets: [{
-                            data: data,
-                            backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
-                            borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
+            // Criando gráfico de barras
+            const ctx = document.getElementById('graficoBarras').getContext('2d');
+            const graficoBarras = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Esquerda', 'Meio', 'Direita'],
+                    datasets: [
+                        {
+                            label: 'Faca Superior (%)',
+                            data: porcentagemSuperior,
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
                             borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        plugins: {
-                            datalabels: {
-                                anchor: 'end',
-                                align: 'top',
-                                formatter: (value) => `${value}%`,
-                                color: '#000',
-                                font: {
-                                    weight: 'bold'
-                                }
-                            }
                         },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: function (value) {
-                                        return value + '%';
-                                    }
-                                }
-                            }
+                        {
+                            label: 'Faca Inferior (%)',
+                            data: porcentagemInferior,
+                            backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
                         }
                     }
-                });
-            }
-        }
-
-        function saveToFirebase() {
-            const lcValue = parseFloat(document.getElementById('lc').value) || 0;
-            const mValue = parseFloat(document.getElementById('m').value) || 0;
-            const lrValue = parseFloat(document.getElementById('lr').value) || 0;
-
-            const data = {
-                lc: lcValue,
-                m: mValue,
-                lr: lrValue,
-                timestamp: Date.now()
-            };
-
-            database.ref('laminaData').push(data, (error) => {
-                if (error) {
-                    alert('Erro ao salvar dados no Firebase.');
-                } else {
-                    alert('Dados salvos com sucesso!');
-                    loadHistoryDropdown();
-                    updateLineChart();
                 }
             });
         }
-
-        function loadHistoryDropdown() {
-            const dropdown1 = document.getElementById('historyDropdown1');
-            const dropdown2 = document.getElementById('historyDropdown2');
-            dropdown1.innerHTML = '<option value="">Selecione a primeira data</option>';
-            dropdown2.innerHTML = '<option value="">Selecione a segunda data</option>';
-
-            database.ref('laminaData').orderByChild('timestamp').once('value', (snapshot) => {
-                snapshot.forEach((childSnapshot) => {
-                    const data = childSnapshot.val();
-                    const date = new Date(data.timestamp);
-                    const dateString = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-                    const option1 = document.createElement('option');
-                    const option2 = document.createElement('option');
-                    option1.value = childSnapshot.key;
-                    option1.textContent = dateString;
-                    option2.value = childSnapshot.key;
-                    option2.textContent = dateString;
-                    dropdown1.appendChild(option1);
-                    dropdown2.appendChild(option2);
-                });
-            });
-        }
-
-        function updateLineChart() {
-            const key1 = document.getElementById('historyDropdown1').value;
-            const key2 = document.getElementById('historyDropdown2').value;
-
-            if (!key1 || !key2) return;
-
-            Promise.all([
-                database.ref('laminaData/' + key1).once('value'),
-                database.ref('laminaData/' + key2).once('value')
-            ]).then((snapshots) => {
-                const data1 = snapshots[0].val();
-                const data2 = snapshots[1].val();
-
-                const ctx = document.getElementById('lineChart').getContext('2d');
-                if (lineChart) {
-                    lineChart.data.labels = ['LC', 'M', 'LR'];
-                    lineChart.data.datasets[0].label = new Date(data1.timestamp).toLocaleString();
-                    lineChart.data.datasets[0].data = [data1.lc, data1.m, data1.lr];
-                    lineChart.data.datasets[1].label = new Date(data2.timestamp).toLocaleString();
-                    lineChart.data.datasets[1].data = [data2.lc, data2.m, data2.lr];
-                    lineChart.update();
-                } else {
-                    lineChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ['LC', 'M', 'LR'],
-                            datasets: [
-                                {
-                                    label: new Date(data1.timestamp).toLocaleString(),
-                                    data: [data1.lc, data1.m, data1.lr],
-                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                    borderColor: 'rgba(255, 99, 132, 1)',
-                                    borderWidth: 1,
-                                    fill: false
-                                },
-                                {
-                                    label: new Date(data2.timestamp).toLocaleString(),
-                                    data: [data2.lc, data2.m, data2.lr],
-                                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                    borderColor: 'rgba(54, 162, 235, 1)',
-                                    borderWidth: 1,
-                                    fill: false
-                                }
-                            ]
-                        },
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            },
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top'
-                                }
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadHistoryDropdown();
-        });
     </script>
 </body>
 </html>
