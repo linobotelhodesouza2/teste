@@ -36,7 +36,8 @@
         }
         .chart {
             width: 100%;
-            max-width: 600px;
+            max-width: 400px;
+            margin: 0 10px;
         }
         .btn-primary {
             background-color: #007bff;
@@ -48,13 +49,6 @@
         }
         .alert {
             display: none;
-        }
-
-        /* Consultas de mídia para ajustar gráficos em telas maiores */
-        @media (min-width: 992px) {
-            .chart {
-                max-width: 500px; /* Diminuir o tamanho dos gráficos em telas maiores */
-            }
         }
     </style>
 </head>
@@ -114,18 +108,42 @@
         </div>
 
         <!-- Contêiner do Gráfico -->
-        <div class="chart-container">
-            <canvas id="chartFacaSuperior" class="chart"></canvas>
-        </div>
-        <div class="chart-container">
-            <canvas id="chartFacaInferior" class="chart"></canvas>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartFacaSuperior" class="chart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartFacaInferior" class="chart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Adicionar Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
     <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEsJtoWAUNgStvKg-0mE5CS8qlSLQt7bA",
+            authDomain: "myapp2-a3c3f.firebaseapp.com",
+            databaseURL: "https://myapp2-a3c3f-default-rtdb.firebaseio.com",
+            projectId: "myapp2-a3c3f",
+            storageBucket: "myapp2-a3c3f.appspot.com",
+            messagingSenderId: "746305842581",
+            appId: "1:746305842581:web:0059c0e45f82fd07a01a9c"
+        };
+
+        // Inicializar o Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         function salvarDados() {
-            // Função para salvar os dados
             const facaSuperiorForm = document.getElementById('facaSuperiorForm');
             const facaInferiorForm = document.getElementById('facaInferiorForm');
 
@@ -141,13 +159,32 @@
                 lc: facaInferiorForm.lcInferior.value || 0
             };
 
-            // Atualizar os gráficos com os novos dados
-            updateChart(chartFacaSuperior, dadosFacaSuperior);
-            updateChart(chartFacaInferior, dadosFacaInferior);
+            // Salvar dados no Firebase
+            database.ref('facaSuperior').set(dadosFacaSuperior)
+                .then(() => {
+                    return database.ref('facaInferior').set(dadosFacaInferior);
+                })
+                .then(() => {
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                })
+                .catch(() => {
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('successMessage').style.display = 'none';
+                });
+        }
 
-            // Exibir mensagem de sucesso
-            document.getElementById('successMessage').style.display = 'block';
-            document.getElementById('errorMessage').style.display = 'none';
+        // Função para carregar dados do Firebase e atualizar os gráficos
+        function carregarDados() {
+            database.ref('facaSuperior').once('value').then((snapshot) => {
+                const dados = snapshot.val();
+                updateChart(chartFacaSuperior, dados);
+            });
+
+            database.ref('facaInferior').once('value').then((snapshot) => {
+                const dados = snapshot.val();
+                updateChart(chartFacaInferior, dados);
+            });
         }
 
         // Configuração do Chart.js para o gráfico de Faca Superior
@@ -209,6 +246,9 @@
             chart.data.datasets[0].data = [data.lr, data.m, data.lc];
             chart.update();
         }
+
+        // Carregar dados ao iniciar a página
+        window.onload = carregarDados;
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
