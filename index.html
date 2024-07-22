@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Lâminas</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .form-control {
-            width: 80px; /* Ajuste a largura do campo */
-        }
-    </style>
     <script>
         function moveToNextField(currentField, nextFieldId) {
-            if (currentField.value.length >= currentField.maxLength) {
+            if (currentField.value) {
                 document.getElementById(nextFieldId).focus();
             }
         }
@@ -23,6 +18,11 @@
             document.getElementById('lr').value = '';
         }
     </script>
+    <style>
+        .form-control-small {
+            width: 100px; /* Ajuste o valor conforme necessário */
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-4">
@@ -31,15 +31,15 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="lc">Lâmina LC</label>
-                    <input type="text" class="form-control" id="lc" maxlength="3" oninput="moveToNextField(this, 'm')" placeholder="LC">
+                    <input type="text" class="form-control form-control-small" id="lc" oninput="moveToNextField(this, 'm')" placeholder="LC">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="m">Lâmina M</label>
-                    <input type="text" class="form-control" id="m" maxlength="3" oninput="moveToNextField(this, 'lr')" placeholder="M">
+                    <input type="text" class="form-control form-control-small" id="m" oninput="moveToNextField(this, 'lr')" placeholder="M">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="lr">Lâmina LR</label>
-                    <input type="text" class="form-control" id="lr" maxlength="3" oninput="clearFields()" placeholder="LR">
+                    <input type="text" class="form-control form-control-small" id="lr" oninput="clearFields()" placeholder="LR">
                 </div>
             </div>
         </form>
