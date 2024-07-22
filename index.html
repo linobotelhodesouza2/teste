@@ -15,50 +15,56 @@
         .form-group {
             margin-bottom: 10px;
         }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Formulário de Faca Superior -->
-        <div class="form-container">
-            <h5>Faca Superior</h5>
-            <form id="facaSuperiorForm">
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="valor1Superior">Valor 1</label>
-                        <input type="number" class="form-control" id="valor1Superior">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="valor2Superior">Valor 2</label>
-                        <input type="number" class="form-control" id="valor2Superior">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="valor3Superior">Valor 3</label>
-                        <input type="number" class="form-control" id="valor3Superior">
-                    </div>
+        <div class="form-row">
+            <!-- Formulário de Faca Superior -->
+            <div class="col-md-6">
+                <div class="form-container">
+                    <h5>Faca Superior</h5>
+                    <form id="facaSuperiorForm">
+                        <div class="form-group">
+                            <label for="valor1Superior">Valor 1</label>
+                            <input type="number" class="form-control" id="valor1Superior">
+                        </div>
+                        <div class="form-group">
+                            <label for="valor2Superior">Valor 2</label>
+                            <input type="number" class="form-control" id="valor2Superior">
+                        </div>
+                        <div class="form-group">
+                            <label for="valor3Superior">Valor 3</label>
+                            <input type="number" class="form-control" id="valor3Superior">
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
+            </div>
 
-        <!-- Formulário de Faca Inferior -->
-        <div class="form-container">
-            <h5>Faca Inferior</h5>
-            <form id="facaInferiorForm">
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="valor1Inferior">Valor 1</label>
-                        <input type="number" class="form-control" id="valor1Inferior">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="valor2Inferior">Valor 2</label>
-                        <input type="number" class="form-control" id="valor2Inferior">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="valor3Inferior">Valor 3</label>
-                        <input type="number" class="form-control" id="valor3Inferior">
-                    </div>
+            <!-- Formulário de Faca Inferior -->
+            <div class="col-md-6">
+                <div class="form-container">
+                    <h5>Faca Inferior</h5>
+                    <form id="facaInferiorForm">
+                        <div class="form-group">
+                            <label for="valor1Inferior">Valor 1</label>
+                            <input type="number" class="form-control" id="valor1Inferior">
+                        </div>
+                        <div class="form-group">
+                            <label for="valor2Inferior">Valor 2</label>
+                            <input type="number" class="form-control" id="valor2Inferior">
+                        </div>
+                        <div class="form-group">
+                            <label for="valor3Inferior">Valor 3</label>
+                            <input type="number" class="form-control" id="valor3Inferior">
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
 
         <!-- Botão de Salvar -->
