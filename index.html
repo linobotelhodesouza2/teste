@@ -1,351 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Régua de Lâmina com Gráficos</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <title>Formulário com Réguas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        .ruler {
+        .form-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            height: 30px;
-            background-color: #f0f0f0;
-            border: 2px solid #000;
-            margin-bottom: 20px;
-            position: relative;
         }
-
-        .ruler div {
-            width: 30%;
-            text-align: center;
-            padding: 5px;
+        .form-group {
+            flex: 1;
+            margin: 0 5px;
+        }
+        .regua {
+            display: flex;
+            justify-content: space-between;
             border: 1px solid #000;
-            background-color: #d9d9d9;
-            position: absolute;
-        }
-
-        .lc {
-            left: 0;
-        }
-
-        .m {
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .lr {
-            right: 0;
-        }
-
-        .chart-container {
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .save-button {
-            margin-top: 10px;
-        }
-
-        .history-container {
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 20px;
             padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        .history-details, .history-chart {
-            width: 45%;
-        }
-
-        @media (max-width: 600px) {
-            .history-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .history-details, .history-chart {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-
-            .chart-container, .history-chart canvas {
-                width: 100% !important;
-                height: 200px !important;
-            }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database-compat.js"></script>
 </head>
 <body>
-    <div class="container-fluid">
+    <div class="container mt-4">
         <div class="row">
-            <!-- Inputs para Lançamento -->
-            <div class="col-md-4 p-3">
-                <h3>Inserir Dados</h3>
-                <form id="laminaForm" class="d-flex flex-column">
-                    <div class="mb-2">
-                        <label for="lc" class="form-label">LC:</label>
-                        <input type="number" id="lc" name="lc" class="form-control" placeholder="LC" maxlength="3">
+            <div class="col-md-6">
+                <div class="regua">
+                    <div class="form-group">
+                        <label for="lc1">LC</label>
+                        <input type="text" class="form-control" id="lc1">
                     </div>
-                    <div class="mb-2">
-                        <label for="m" class="form-label">M:</label>
-                        <input type="number" id="m" name="m" class="form-control" placeholder="M" maxlength="3">
+                    <div class="form-group">
+                        <label for="m1">M</label>
+                        <input type="text" class="form-control" id="m1">
                     </div>
-                    <div class="mb-2">
-                        <label for="lr" class="form-label">LR:</label>
-                        <input type="number" id="lr" name="lr" class="form-control" placeholder="LR" maxlength="3">
+                    <div class="form-group">
+                        <label for="lr1">LR</label>
+                        <input type="text" class="form-control" id="lr1">
                     </div>
-                    <button type="button" class="btn btn-primary mb-2" onclick="updateRuler()">Inserir</button>
-                    <button class="btn btn-success save-button" onclick="saveToFirebase()">Salvar no Firebase</button>
-                </form>
-                <div class="ruler">
-                    <div class="lc" id="lcDisplay"></div>
-                    <div class="m" id="mDisplay"></div>
-                    <div class="lr" id="lrDisplay"></div>
                 </div>
             </div>
-            <!-- Gráficos -->
-            <div class="col-md-8 p-3">
-                <div class="chart-container">
-                    <h4>Gráfico de Barras</h4>
-                    <canvas id="percentageChart"></canvas>
-                    <h4 class="mt-4">Gráfico de Linha</h4>
-                    <canvas id="lineChart" style="width: 100%; height: 300px;"></canvas>
-                </div>
-                <div class="history-container">
-                    <h3>Histórico</h3>
+            <div class="col-md-6">
+                <div class="regua">
                     <div class="form-group">
-                        <label for="historyDropdown1" class="form-label">Selecione a primeira data</label>
-                        <select class="form-select mb-2" id="historyDropdown1" onchange="updateLineChart()">
-                        </select>
-                        <label for="historyDropdown2" class="form-label">Selecione a segunda data</label>
-                        <select class="form-select mb-2" id="historyDropdown2" onchange="updateLineChart()">
-                        </select>
+                        <label for="lc2">LC</label>
+                        <input type="text" class="form-control" id="lc2">
                     </div>
-                    <div id="historyDisplay" class="history-display"></div>
+                    <div class="form-group">
+                        <label for="m2">M</label>
+                        <input type="text" class="form-control" id="m2">
+                    </div>
+                    <div class="form-group">
+                        <label for="lr2">LR</label>
+                        <input type="text" class="form-control" id="lr2">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDEsJtoWAUNgStvKg-0mE5CS8qlSLQt7bA",
-            authDomain: "myapp2-a3c3f.firebaseapp.com",
-            databaseURL: "https://myapp2-a3c3f-default-rtdb.firebaseio.com",
-            projectId: "myapp2-a3c3f",
-            storageBucket: "myapp2-a3c3f.appspot.com",
-            messagingSenderId: "746305842581",
-            appId: "1:746305842581:web:0059c0e45f82fd07a01a9c"
-        };
-
-        // Inicializando Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        function updateRuler() {
-            const lcValue = parseFloat(document.getElementById('lc').value) || 0;
-            const mValue = parseFloat(document.getElementById('m').value) || 0;
-            const lrValue = parseFloat(document.getElementById('lr').value) || 0;
-
-            const total = lcValue + mValue + lrValue;
-            const lcPercent = total ? (lcValue / total) * 100 : 0;
-            const mPercent = total ? (mValue / total) * 100 : 0;
-            const lrPercent = total ? (lrValue / total) * 100 : 0;
-
-            document.getElementById('lcDisplay').innerText = lcValue;
-            document.getElementById('mDisplay').innerText = mValue;
-            document.getElementById('lrDisplay').innerText = lrValue;
-
-            updateBarChart([lcPercent.toFixed(2), mPercent.toFixed(2), lrPercent.toFixed(2)]);
-
-            // Limpa os campos após a atualização
-            document.getElementById('lc').value = '';
-            document.getElementById('m').value = '';
-            document.getElementById('lr').value = '';
-        }
-
-        let barChart, lineChart;
-
-        function updateBarChart(data) {
-            const ctx = document.getElementById('percentageChart').getContext('2d');
-            if (barChart) {
-                barChart.data.datasets[0].data = data;
-                barChart.update();
-            } else {
-                barChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['LC', 'M', 'LR'],
-                        datasets: [{
-                            data: data,
-                            backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(75, 192, 192, 0.2)'],
-                            borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(75, 192, 192, 1)'],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        plugins: {
-                            datalabels: {
-                                anchor: 'end',
-                                align: 'top',
-                                formatter: (value) => `${value}%`,
-                                color: '#000',
-                                font: {
-                                    weight: 'bold'
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: function (value) {
-                                        return value + '%';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        }
-
-        function saveToFirebase() {
-            const lcValue = parseFloat(document.getElementById('lc').value) || 0;
-            const mValue = parseFloat(document.getElementById('m').value) || 0;
-            const lrValue = parseFloat(document.getElementById('lr').value) || 0;
-
-            const data = {
-                lc: lcValue,
-                m: mValue,
-                lr: lrValue,
-                timestamp: Date.now()
-            };
-
-            database.ref('laminaData').push(data, (error) => {
-                if (error) {
-                    alert('Erro ao salvar dados no Firebase.');
-                } else {
-                    alert('Dados salvos com sucesso!');
-                    loadHistoryDropdown();
-                    updateLineChart();
-                }
-            });
-        }
-
-        function loadHistoryDropdown() {
-            const dropdown1 = document.getElementById('historyDropdown1');
-            const dropdown2 = document.getElementById('historyDropdown2');
-            dropdown1.innerHTML = '<option value="">Selecione a primeira data</option>';
-            dropdown2.innerHTML = '<option value="">Selecione a segunda data</option>';
-
-            database.ref('laminaData').orderByChild('timestamp').once('value', (snapshot) => {
-                snapshot.forEach((childSnapshot) => {
-                    const data = childSnapshot.val();
-                    const date = new Date(data.timestamp);
-                    const dateString = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-                    const option1 = document.createElement('option');
-                    const option2 = document.createElement('option');
-                    option1.value = childSnapshot.key;
-                    option1.textContent = dateString;
-                    option2.value = childSnapshot.key;
-                    option2.textContent = dateString;
-                    dropdown1.appendChild(option1);
-                    dropdown2.appendChild(option2);
-                });
-            });
-        }
-
-        function updateLineChart() {
-            const key1 = document.getElementById('historyDropdown1').value;
-            const key2 = document.getElementById('historyDropdown2').value;
-
-            if (!key1 || !key2) return;
-
-            Promise.all([
-                database.ref('laminaData/' + key1).once('value'),
-                database.ref('laminaData/' + key2).once('value')
-            ]).then((snapshots) => {
-                const data1 = snapshots[0].val();
-                const data2 = snapshots[1].val();
-
-                const ctx = document.getElementById('lineChart').getContext('2d');
-                if (lineChart) {
-                    lineChart.data.labels = ['LC', 'M', 'LR'];
-                    lineChart.data.datasets[0].label = `Antes (${new Date(data1.timestamp).toLocaleString()})`;
-                    lineChart.data.datasets[0].data = [data1.lc, data1.m, data1.lr];
-                    lineChart.data.datasets[1].label = `Depois (${new Date(data2.timestamp).toLocaleString()})`;
-                    lineChart.data.datasets[1].data = [data2.lc, data2.m, data2.lr];
-                    lineChart.update();
-                } else {
-                    lineChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ['LC', 'M', 'LR'],
-                            datasets: [
-                                {
-                                    label: `Antes (${new Date(data1.timestamp).toLocaleString()})`,
-                                    data: [data1.lc, data1.m, data1.lr],
-                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                    borderColor: 'rgba(255, 99, 132, 1)',
-                                    borderWidth: 2,
-                                    fill: false
-                                },
-                                {
-                                    label: `Depois (${new Date(data2.timestamp).toLocaleString()})`,
-                                    data: [data2.lc, data2.m, data2.lr],
-                                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                    borderColor: 'rgba(54, 162, 235, 1)',
-                                    borderWidth: 2,
-                                    fill: false
-                                }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            },
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top'
-                                }
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadHistoryDropdown();
-        });
-    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
