@@ -130,12 +130,21 @@
             };
 
             // Salvar dados no Firebase
-            database.ref('facaSuperior').set(dadosFacaSuperior);
-            database.ref('facaInferior').set(dadosFacaInferior);
+            const superiorRef = database.ref('facaSuperior');
+            const inferiorRef = database.ref('facaInferior');
 
-            // Atualizar gráficos com os novos dados
-            updateChart(chartFacaSuperior, dadosFacaSuperior);
-            updateChart(chartFacaInferior, dadosFacaInferior);
+            Promise.all([
+                superiorRef.set(dadosFacaSuperior),
+                inferiorRef.set(dadosFacaInferior)
+            ]).then(() => {
+                alert('Dados salvos com sucesso!');
+                // Atualizar gráficos com os novos dados
+                updateChart(chartFacaSuperior, dadosFacaSuperior);
+                updateChart(chartFacaInferior, dadosFacaInferior);
+            }).catch((error) => {
+                console.error('Erro ao salvar dados:', error);
+                alert('Erro ao salvar dados.');
+            });
         }
 
         // Configuração do Chart.js para o gráfico de Faca Superior
