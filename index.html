@@ -65,7 +65,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Facarior</h5>
+                <h5 class="mb-3">Facaor</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -113,6 +113,13 @@
             <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
         </div>
 
+        <!-- Barra Suspensa para Selecionar Data -->
+        <div class="text-center mt-4">
+            <select id="dateSelector" class="form-control" style="max-width: 200px; margin: 0 auto;" onchange="loadDataByDate(this.value)">
+                <option value="">Selecione uma data</option>
+            </select>
+        </div>
+
         <!-- Contêiner do Gráfico -->
         <div class="row mt-4">
             <div class="col-md-6">
@@ -143,7 +150,6 @@
         var database = firebase.database();
 
         function salvarDados() {
-            // Função para salvar os dados
             const facaSuperiorForm = document.getElementById('facaSuperiorForm');
             const facaInferiorForm = document.getElementById('facaInferiorForm');
 
@@ -159,10 +165,12 @@
                 lc: facaInferiorForm.lcInferior.value || 0
             };
 
-            // Salvando os dados no Firebase
-            database.ref('facas/superior').set(dadosFacaSuperior)
+            const currentDate = new Date().toISOString().split('T')[0]; // Pega a data atual no formato YYYY-MM-DD
+
+            // Salvando os dados no Firebase com a data atual
+            database.ref(`facas/${currentDate}/superior`).set(dadosFacaSuperior)
                 .then(() => {
-                    return database.ref('facas/inferior').set(dadosFacaInferior);
+                    return database.ref(`facas/${currentDate}/inferior`).set(dadosFacaInferior);
                 })
                 .then(() => {
                     // Atualizar os gráficos com os novos dados
@@ -176,12 +184,49 @@
                     // Exibir mensagem de sucesso
                     document.getElementById('successMessage').style.display = 'block';
                     document.getElementById('errorMessage').style.display = 'none';
+
+                    // Atualizar a lista de datas na barra suspensa
+                    loadDates();
                 })
                 .catch((error) => {
                     console.error('Erro ao salvar dados:', error);
                     document.getElementById('successMessage').style.display = 'none';
                     document.getElementById('errorMessage').style.display = 'block';
                 });
+        }
+
+        function loadDates() {
+            // Carregar todas as datas disponíveis no Firebase
+            database.ref('facas').once('value', (snapshot) => {
+                const dates = snapshot.val() ? Object.keys(snapshot.val()) : [];
+                const dateSelector = document.getElementById('dateSelector');
+                dateSelector.innerHTML = '<option value="">Selecione uma data</option>'; // Limpar opções anteriores
+
+                dates.forEach(date => {
+                    const option = document.createElement('option');
+                    option.value = date;
+                    option.textContent = date;
+                    dateSelector.appendChild(option);
+                });
+            });
+        }
+
+        function loadDataByDate(date) {
+            if (!date) return;
+
+            database.ref(`facas/${date}`).once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    // Atualizar os gráficos com os dados da data selecionada
+                    updateChart(chartFacaSuperior, data.superior);
+                    updateChart(chartFacaInferior, data.inferior);
+                }
+            });
+        }
+
+        function updateChart(chart, data) {
+            chart.data.datasets[0].data = [data.lr, data.m, data.lc];
+            chart.update();
         }
 
         // Configuração do Chart.js para o gráfico de Faca Superior
@@ -260,11 +305,10 @@
             }
         });
 
-        // Função para atualizar os gráficos
-        function updateChart(chart, data) {
-            chart.data.datasets[0].data = [data.lr, data.m, data.lc];
-            chart.update();
-        }
+        // Carregar datas ao iniciar a página
+        window.onload = function() {
+            loadDates();
+        };
     </script>
 </body>
 </html>
