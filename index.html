@@ -3,190 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UI Layout with Chart</title>
+    <title>Formulário de Faca</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f0f0;
+        .form-container {
+            border: 1px solid #ddd;
             padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
         }
-
-        .container {
-            width: 90%;
-            max-width: 600px;
-            background: white;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        header {
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        main {
-            padding: 20px;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .control-btn {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .control-btn:hover {
-            background-color: #45a049;
-        }
-
-        .save-section {
-            text-align: right;
-        }
-
-        .save-btn {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .save-btn:hover {
-            background-color: #45a049;
-        }
-
-        .chart-container {
-            width: 100%;
-            max-width: 600px;
-        }
-
-        /* Responsividade */
-        @media (max-width: 600px) {
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .control-group {
-                flex-direction: row;
-                gap: 10px;
-            }
+        .form-group {
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Header</h1>
-        </header>
-        <main>
-            <section class="controls">
-                <div class="control-group">
-                    <button class="control-btn" data-type="LC">LC</button>
-                    <button class="control-btn" data-type="M">M</button>
-                    <button class="control-btn" data-type="LR">LR</button>
+        <!-- Formulário de Faca Superior -->
+        <div class="form-container">
+            <h5>Faca Superior</h5>
+            <form id="facaSuperiorForm">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="valor1Superior">Valor 1</label>
+                        <input type="number" class="form-control" id="valor1Superior">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="valor2Superior">Valor 2</label>
+                        <input type="number" class="form-control" id="valor2Superior">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="valor3Superior">Valor 3</label>
+                        <input type="number" class="form-control" id="valor3Superior">
+                    </div>
                 </div>
-                <div class="control-group">
-                    <button class="control-btn" data-type="LC">LC</button>
-                    <button class="control-btn" data-type="M">M</button>
-                    <button class="control-btn" data-type="LR">LR</button>
+            </form>
+        </div>
+
+        <!-- Formulário de Faca Inferior -->
+        <div class="form-container">
+            <h5>Faca Inferior</h5>
+            <form id="facaInferiorForm">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="valor1Inferior">Valor 1</label>
+                        <input type="number" class="form-control" id="valor1Inferior">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="valor2Inferior">Valor 2</label>
+                        <input type="number" class="form-control" id="valor2Inferior">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="valor3Inferior">Valor 3</label>
+                        <input type="number" class="form-control" id="valor3Inferior">
+                    </div>
                 </div>
-            </section>
-            <section class="save-section">
-                <button class="save-btn">SALVA</button>
-            </section>
-        </main>
-    </div>
-    <div class="chart-container">
-        <canvas id="myChart"></canvas>
+            </form>
+        </div>
+
+        <!-- Botão de Salvar -->
+        <div class="text-center">
+            <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const buttons = document.querySelectorAll('.control-btn');
-            const saveButton = document.querySelector('.save-btn');
-            const data = { LC: 0, M: 0, LR: 0 };
+        function salvarDados() {
+            // Função para salvar os dados
+            const facaSuperiorForm = document.getElementById('facaSuperiorForm');
+            const facaInferiorForm = document.getElementById('facaInferiorForm');
 
-            buttons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const type = button.getAttribute('data-type');
-                    data[type]++;
-                    alert(`Button ${button.innerText} clicked`);
-                });
-            });
+            const dadosFacaSuperior = {
+                valor1: facaSuperiorForm.valor1Superior.value,
+                valor2: facaSuperiorForm.valor2Superior.value,
+                valor3: facaSuperiorForm.valor3Superior.value
+            };
 
-            saveButton.addEventListener('click', () => {
-                alert('Data saved');
-                updateChart();
-            });
+            const dadosFacaInferior = {
+                valor1: facaInferiorForm.valor1Inferior.value,
+                valor2: facaInferiorForm.valor2Inferior.value,
+                valor3: facaInferiorForm.valor3Inferior.value
+            };
 
-            const ctx = document.getElementById('myChart').getContext('2d');
-            const myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['LC', 'M', 'LR'],
-                    datasets: [{
-                        label: '# of Clicks',
-                        data: [data.LC, data.M, data.LR],
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            function updateChart() {
-                myChart.data.datasets[0].data = [data.LC, data.M, data.LR];
-                myChart.update();
-            }
-        });
+            console.log('Dados Faca Superior:', dadosFacaSuperior);
+            console.log('Dados Faca Inferior:', dadosFacaInferior);
+            // Aqui você pode adicionar a lógica para salvar os dados no Firebase ou outro banco de dados
+        }
     </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
