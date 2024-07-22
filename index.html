@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UI Layout</title>
+    <title>UI Layout with Chart</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,10 +14,11 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
             background-color: #f0f0f0;
+            padding: 20px;
         }
 
         .container {
@@ -27,6 +28,7 @@
             border: 1px solid #ccc;
             border-radius: 8px;
             overflow: hidden;
+            margin-bottom: 20px;
         }
 
         header {
@@ -84,6 +86,11 @@
             background-color: #45a049;
         }
 
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+        }
+
         /* Responsividade */
         @media (max-width: 600px) {
             .controls {
@@ -106,14 +113,14 @@
         <main>
             <section class="controls">
                 <div class="control-group">
-                    <button class="control-btn">LC</button>
-                    <button class="control-btn">M</button>
-                    <button class="control-btn">LR</button>
+                    <button class="control-btn" data-type="LC">LC</button>
+                    <button class="control-btn" data-type="M">M</button>
+                    <button class="control-btn" data-type="LR">LR</button>
                 </div>
                 <div class="control-group">
-                    <button class="control-btn">LC</button>
-                    <button class="control-btn">M</button>
-                    <button class="control-btn">LR</button>
+                    <button class="control-btn" data-type="LC">LC</button>
+                    <button class="control-btn" data-type="M">M</button>
+                    <button class="control-btn" data-type="LR">LR</button>
                 </div>
             </section>
             <section class="save-section">
@@ -121,21 +128,64 @@
             </section>
         </main>
     </div>
+    <div class="chart-container">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const buttons = document.querySelectorAll('.control-btn');
+            const saveButton = document.querySelector('.save-btn');
+            const data = { LC: 0, M: 0, LR: 0 };
 
             buttons.forEach(button => {
                 button.addEventListener('click', () => {
+                    const type = button.getAttribute('data-type');
+                    data[type]++;
                     alert(`Button ${button.innerText} clicked`);
                 });
             });
 
-            const saveButton = document.querySelector('.save-btn');
-
             saveButton.addEventListener('click', () => {
                 alert('Data saved');
+                updateChart();
             });
+
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['LC', 'M', 'LR'],
+                    datasets: [{
+                        label: '# of Clicks',
+                        data: [data.LC, data.M, data.LR],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            function updateChart() {
+                myChart.data.datasets[0].data = [data.LC, data.M, data.LR];
+                myChart.update();
+            }
         });
     </script>
 </body>
