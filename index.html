@@ -52,6 +52,7 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -65,7 +66,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Faca Sior</h5>
+                <h5 class="mb-3">Faca Superior</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -188,6 +189,7 @@
         const ctxSuperior = document.getElementById('chartFacaSuperior').getContext('2d');
         const chartFacaSuperior = new Chart(ctxSuperior, {
             type: 'bar',
+            plugins: [ChartDataLabels],
             data: {
                 labels: ['L.R', 'M', 'L.C'],
                 datasets: [{
@@ -199,6 +201,18 @@
                 }]
             },
             options: {
+                plugins: {
+                    datalabels: {
+                        formatter: (value) => `${value}%`,
+                        color: '#000',
+                        anchor: 'end',
+                        align: 'start',
+                        offset: -10,
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                },
                 scales: {
                     y: {
                         beginAtZero: true,
@@ -215,6 +229,7 @@
         const ctxInferior = document.getElementById('chartFacaInferior').getContext('2d');
         const chartFacaInferior = new Chart(ctxInferior, {
             type: 'bar',
+            plugins: [ChartDataLabels],
             data: {
                 labels: ['L.R', 'M', 'L.C'],
                 datasets: [{
@@ -226,6 +241,18 @@
                 }]
             },
             options: {
+                plugins: {
+                    datalabels: {
+                        formatter: (value) => `${value}%`,
+                        color: '#000',
+                        anchor: 'end',
+                        align: 'start',
+                        offset: -10,
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                },
                 scales: {
                     y: {
                         beginAtZero: true,
