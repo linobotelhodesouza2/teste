@@ -11,24 +11,24 @@
             padding: 20px;
             margin: 10px 0;
             border-radius: 5px;
+            flex: 1;
         }
         .form-group {
             margin-bottom: 10px;
         }
-        .form-row {
-            display: flex;
-            justify-content: space-between;
+        .form-control {
+            width: 80px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="form-row">
+        <div class="d-flex justify-content-between">
             <!-- Formulário de Faca Superior -->
-            <div class="col-md-6">
-                <div class="form-container">
-                    <h5>Faca Superior</h5>
-                    <form id="facaSuperiorForm">
+            <div class="form-container">
+                <h5>Faca Superior</h5>
+                <form id="facaSuperiorForm">
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="valor1Superior">Valor 1</label>
                             <input type="number" class="form-control" id="valor1Superior">
@@ -41,15 +41,15 @@
                             <label for="valor3Superior">Valor 3</label>
                             <input type="number" class="form-control" id="valor3Superior">
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
 
             <!-- Formulário de Faca Inferior -->
-            <div class="col-md-6">
-                <div class="form-container">
-                    <h5>Faca Inferior</h5>
-                    <form id="facaInferiorForm">
+            <div class="form-container">
+                <h5>Faca Inferior</h5>
+                <form id="facaInferiorForm">
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="valor1Inferior">Valor 1</label>
                             <input type="number" class="form-control" id="valor1Inferior">
@@ -62,13 +62,13 @@
                             <label for="valor3Inferior">Valor 3</label>
                             <input type="number" class="form-control" id="valor3Inferior">
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
 
         <!-- Botão de Salvar -->
-        <div class="text-center">
+        <div class="text-center mt-3">
             <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
         </div>
     </div>
