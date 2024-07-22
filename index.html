@@ -59,7 +59,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Faca Superior</h5>
+                <h5 class="mb-3">Faca Supr</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -122,8 +122,25 @@
         </div>
     </div>
 
+    <!-- Firebase Configuration -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0ZDfqaIRiWfnVCJH4bqMkm3aDqEKSsu0",
+            authDomain: "myapp3-38a15.firebaseapp.com",
+            projectId: "myapp3-38a15",
+            storageBucket: "myapp3-38a15.appspot.com",
+            messagingSenderId: "969730744125",
+            appId: "1:969730744125:web:6f58c11a8c3e882383af54"
+        };
+
+        // Inicializar o Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         function salvarDados() {
             // Função para salvar os dados
             const facaSuperiorForm = document.getElementById('facaSuperiorForm');
@@ -141,13 +158,23 @@
                 lc: facaInferiorForm.lcInferior.value || 0
             };
 
-            // Atualizar os gráficos com os novos dados
-            updateChart(chartFacaSuperior, dadosFacaSuperior);
-            updateChart(chartFacaInferior, dadosFacaInferior);
+            // Salvar dados no Firebase
+            database.ref('facaSuperior').set(dadosFacaSuperior);
+            database.ref('facaInferior').set(dadosFacaInferior)
+                .then(() => {
+                    // Atualizar os gráficos com os novos dados
+                    updateChart(chartFacaSuperior, dadosFacaSuperior);
+                    updateChart(chartFacaInferior, dadosFacaInferior);
 
-            // Exibir mensagem de sucesso
-            document.getElementById('successMessage').style.display = 'block';
-            document.getElementById('errorMessage').style.display = 'none';
+                    // Exibir mensagem de sucesso
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                })
+                .catch((error) => {
+                    console.error("Erro ao salvar dados: ", error);
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('successMessage').style.display = 'none';
+                });
         }
 
         // Configuração do Chart.js para o gráfico de Faca Superior
@@ -210,7 +237,7 @@
             chart.update();
         }
     </script>
-
+    
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
