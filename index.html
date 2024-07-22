@@ -52,6 +52,7 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -65,7 +66,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Faca Sior</h5>
+                <h5 class="mb-3">Faca Superior</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -154,15 +155,15 @@
             const facaInferiorForm = document.getElementById('facaInferiorForm');
 
             const dadosFacaSuperior = {
-                lr: facaSuperiorForm.lrSuperior.value || 0,
-                m: facaSuperiorForm.mSuperior.value || 0,
-                lc: facaSuperiorForm.lcSuperior.value || 0
+                lr: parseFloat(facaSuperiorForm.lrSuperior.value) || 0,
+                m: parseFloat(facaSuperiorForm.mSuperior.value) || 0,
+                lc: parseFloat(facaSuperiorForm.lcSuperior.value) || 0
             };
 
             const dadosFacaInferior = {
-                lr: facaInferiorForm.lrInferior.value || 0,
-                m: facaInferiorForm.mInferior.value || 0,
-                lc: facaInferiorForm.lcInferior.value || 0
+                lr: parseFloat(facaInferiorForm.lrInferior.value) || 0,
+                m: parseFloat(facaInferiorForm.mInferior.value) || 0,
+                lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
             const currentDate = new Date().toISOString().split('T')[0]; // Pega a data atual no formato YYYY-MM-DD
@@ -225,7 +226,9 @@
         }
 
         function updateChart(chart, data) {
-            chart.data.datasets[0].data = [data.lr, data.m, data.lc];
+            const total = data.lr + data.m + data.lc;
+            const percentageData = [data.lr, data.m, data.lc].map(value => total > 0 ? (value / total * 100).toFixed(1) : 0);
+            chart.data.datasets[0].data = percentageData;
             chart.update();
         }
 
@@ -246,11 +249,7 @@
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Valor'
-                        }
+                        display: false // Ocultar a escala y
                     }
                 },
                 plugins: {
@@ -258,13 +257,11 @@
                         color: '#000',
                         anchor: 'end',
                         align: 'top',
-                        formatter: (value) => {
-                            const total = chartFacaSuperior.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
-                            return total > 0 ? `${((value / total) * 100).toFixed(1)}%` : '';
-                        }
+                        formatter: (value) => `${value}%`
                     }
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
         });
 
         // Configuração do Chart.js para o gráfico de Faca Inferior
@@ -284,11 +281,7 @@
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Valor'
-                        }
+                        display: false // Ocultar a escala y
                     }
                 },
                 plugins: {
@@ -296,13 +289,11 @@
                         color: '#000',
                         anchor: 'end',
                         align: 'top',
-                        formatter: (value) => {
-                            const total = chartFacaInferior.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
-                            return total > 0 ? `${((value / total) * 100).toFixed(1)}%` : '';
-                        }
+                        formatter: (value) => `${value}%`
                     }
                 }
-            }
+            },
+            plugins: [ChartDataLabels]
         });
 
         // Carregar datas ao iniciar a página
