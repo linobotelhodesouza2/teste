@@ -33,9 +33,6 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js"></script>
 </head>
 <body>
     <div class="container">
@@ -98,23 +95,8 @@
     </div>
 
     <script>
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDEsJtoWAUNgStvKg-0mE5CS8qlSLQt7bA",
-            authDomain: "myapp2-a3c3f.firebaseapp.com",
-            databaseURL: "https://myapp2-a3c3f-default-rtdb.firebaseio.com",
-            projectId: "myapp2-a3c3f",
-            storageBucket: "myapp2-a3c3f.appspot.com",
-            messagingSenderId: "746305842581",
-            appId: "1:746305842581:web:0059c0e45f82fd07a01a9c"
-        };
-
-        // Inicialize o Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
         function salvarDados() {
-            // Coleta os dados dos formulários
+            // Função para salvar os dados
             const facaSuperiorForm = document.getElementById('facaSuperiorForm');
             const facaInferiorForm = document.getElementById('facaInferiorForm');
 
@@ -132,15 +114,6 @@
 
             console.log('Dados Faca Superior:', dadosFacaSuperior);
             console.log('Dados Faca Inferior:', dadosFacaInferior);
-
-            // Salvar dados no Firebase
-            database.ref('facaSuperior').set(dadosFacaSuperior)
-                .then(() => console.log('Dados da Faca Superior salvos com sucesso'))
-                .catch(error => console.error('Erro ao salvar dados da Faca Superior:', error));
-
-            database.ref('facaInferior').set(dadosFacaInferior)
-                .then(() => console.log('Dados da Faca Inferior salvos com sucesso'))
-                .catch(error => console.error('Erro ao salvar dados da Faca Inferior:', error));
 
             // Atualizar os gráficos com os novos dados
             updateChart(chartFacaSuperior, dadosFacaSuperior);
