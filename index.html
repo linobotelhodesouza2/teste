@@ -65,7 +65,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Faca Superior</h5>
+                <h5 class="mb-3">Faca Sior</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -168,6 +168,10 @@
                     // Atualizar os gráficos com os novos dados
                     updateChart(chartFacaSuperior, dadosFacaSuperior);
                     updateChart(chartFacaInferior, dadosFacaInferior);
+
+                    // Limpar os campos do formulário
+                    facaSuperiorForm.reset();
+                    facaInferiorForm.reset();
 
                     // Exibir mensagem de sucesso
                     document.getElementById('successMessage').style.display = 'block';
