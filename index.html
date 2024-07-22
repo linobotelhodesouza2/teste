@@ -33,6 +33,8 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.18.0/firebase-database.js"></script>
 </head>
 <body>
     <div class="container">
@@ -95,8 +97,23 @@
     </div>
 
     <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEsJtoWAUNgStvKg-0mE5CS8qlSLQt7bA",
+            authDomain: "myapp2-a3c3f.firebaseapp.com",
+            databaseURL: "https://myapp2-a3c3f-default-rtdb.firebaseio.com",
+            projectId: "myapp2-a3c3f",
+            storageBucket: "myapp2-a3c3f.appspot.com",
+            messagingSenderId: "746305842581",
+            appId: "1:746305842581:web:0059c0e45f82fd07a01a9c"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         function salvarDados() {
-            // Função para salvar os dados
+            // Obter dados dos formulários
             const facaSuperiorForm = document.getElementById('facaSuperiorForm');
             const facaInferiorForm = document.getElementById('facaInferiorForm');
 
@@ -112,10 +129,11 @@
                 lc: facaInferiorForm.lcInferior.value
             };
 
-            console.log('Dados Faca Superior:', dadosFacaSuperior);
-            console.log('Dados Faca Inferior:', dadosFacaInferior);
+            // Salvar dados no Firebase
+            database.ref('facaSuperior').set(dadosFacaSuperior);
+            database.ref('facaInferior').set(dadosFacaInferior);
 
-            // Atualizar os gráficos com os novos dados
+            // Atualizar gráficos com os novos dados
             updateChart(chartFacaSuperior, dadosFacaSuperior);
             updateChart(chartFacaInferior, dadosFacaInferior);
         }
