@@ -129,21 +129,20 @@
                 lc: facaInferiorForm.lcInferior.value
             };
 
-            // Salvar dados no Firebase
-            const superiorRef = database.ref('facaSuperior');
-            const inferiorRef = database.ref('facaInferior');
-
+            // Salvar dados no Firebase e mostrar mensagem de sucesso
             Promise.all([
-                superiorRef.set(dadosFacaSuperior),
-                inferiorRef.set(dadosFacaInferior)
-            ]).then(() => {
+                database.ref('facaSuperior').set(dadosFacaSuperior),
+                database.ref('facaInferior').set(dadosFacaInferior)
+            ])
+            .then(() => {
                 alert('Dados salvos com sucesso!');
                 // Atualizar gráficos com os novos dados
                 updateChart(chartFacaSuperior, dadosFacaSuperior);
                 updateChart(chartFacaInferior, dadosFacaInferior);
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 console.error('Erro ao salvar dados:', error);
-                alert('Erro ao salvar dados.');
+                alert('Falha ao salvar os dados.');
             });
         }
 
