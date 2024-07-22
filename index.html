@@ -32,17 +32,17 @@
             width: 90%;
         }
     </style>
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="d-flex justify-content-around">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5>Faca Suor</h5>
+                <h5>Faca Superior</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -108,12 +108,13 @@
             messagingSenderId: "746305842581",
             appId: "1:746305842581:web:0059c0e45f82fd07a01a9c"
         };
-        // Inicializa o Firebase
+
+        // Inicialize o Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
         function salvarDados() {
-            // Obtendo os valores dos formulários
+            // Coleta os dados dos formulários
             const facaSuperiorForm = document.getElementById('facaSuperiorForm');
             const facaInferiorForm = document.getElementById('facaInferiorForm');
 
@@ -132,12 +133,14 @@
             console.log('Dados Faca Superior:', dadosFacaSuperior);
             console.log('Dados Faca Inferior:', dadosFacaInferior);
 
-            // Salvando os dados no Firebase
-            const refSuperior = database.ref('facaSuperior');
-            const refInferior = database.ref('facaInferior');
+            // Salvar dados no Firebase
+            database.ref('facaSuperior').set(dadosFacaSuperior)
+                .then(() => console.log('Dados da Faca Superior salvos com sucesso'))
+                .catch(error => console.error('Erro ao salvar dados da Faca Superior:', error));
 
-            refSuperior.set(dadosFacaSuperior);
-            refInferior.set(dadosFacaInferior);
+            database.ref('facaInferior').set(dadosFacaInferior)
+                .then(() => console.log('Dados da Faca Inferior salvos com sucesso'))
+                .catch(error => console.error('Erro ao salvar dados da Faca Inferior:', error));
 
             // Atualizar os gráficos com os novos dados
             updateChart(chartFacaSuperior, dadosFacaSuperior);
