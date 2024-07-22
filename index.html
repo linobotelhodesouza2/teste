@@ -6,53 +6,79 @@
     <title>Formulário de Faca</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f8f9fa;
+        }
         .form-container {
             border: 1px solid #ddd;
             padding: 20px;
             margin: 10px;
-            border-radius: 5px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             flex: 1;
+            background-color: #fff;
         }
         .form-group {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         .form-control {
-            width: 80px;
+            width: 100%;
+            max-width: 80px;
         }
         .form-row {
-            justify-content: space-around;
+            justify-content: space-between;
         }
         .chart-container {
-            margin-top: 20px;
+            margin-top: 30px;
             width: 100%;
             display: flex;
             justify-content: center;
         }
         .chart {
-            width: 90%;
+            width: 100%;
+            max-width: 600px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .alert {
+            display: none;
+        }
+
+        /* Consultas de mídia para ajustar gráficos em telas maiores */
+        @media (min-width: 992px) {
+            .chart {
+                max-width: 500px; /* Diminuir o tamanho dos gráficos em telas maiores */
+            }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
-        <div class="d-flex justify-content-around">
+        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
+        
+        <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5>Faca Superior</h5>
+                <h5 class="mb-3">Faca Superior</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="lrSuperior">L.R</label>
-                            <input type="number" class="form-control" id="lrSuperior">
+                            <input type="number" class="form-control" id="lrSuperior" placeholder="L.R">
                         </div>
                         <div class="form-group">
                             <label for="mSuperior">M</label>
-                            <input type="number" class="form-control" id="mSuperior">
+                            <input type="number" class="form-control" id="mSuperior" placeholder="M">
                         </div>
                         <div class="form-group">
                             <label for="lcSuperior">L.C</label>
-                            <input type="number" class="form-control" id="lcSuperior">
+                            <input type="number" class="form-control" id="lcSuperior" placeholder="L.C">
                         </div>
                     </div>
                 </form>
@@ -60,20 +86,20 @@
 
             <!-- Formulário de Faca Inferior -->
             <div class="form-container">
-                <h5>Faca Inferior</h5>
+                <h5 class="mb-3">Faca Inferior</h5>
                 <form id="facaInferiorForm">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="lrInferior">L.R</label>
-                            <input type="number" class="form-control" id="lrInferior">
+                            <input type="number" class="form-control" id="lrInferior" placeholder="L.R">
                         </div>
                         <div class="form-group">
                             <label for="mInferior">M</label>
-                            <input type="number" class="form-control" id="mInferior">
+                            <input type="number" class="form-control" id="mInferior" placeholder="M">
                         </div>
                         <div class="form-group">
                             <label for="lcInferior">L.C</label>
-                            <input type="number" class="form-control" id="lcInferior">
+                            <input type="number" class="form-control" id="lcInferior" placeholder="L.C">
                         </div>
                     </div>
                 </form>
@@ -81,8 +107,10 @@
         </div>
 
         <!-- Botão de Salvar -->
-        <div class="text-center mt-3">
+        <div class="text-center mt-4">
             <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
+            <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
+            <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
         </div>
 
         <!-- Contêiner do Gráfico -->
@@ -94,6 +122,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         function salvarDados() {
             // Função para salvar os dados
@@ -101,23 +130,24 @@
             const facaInferiorForm = document.getElementById('facaInferiorForm');
 
             const dadosFacaSuperior = {
-                lr: facaSuperiorForm.lrSuperior.value,
-                m: facaSuperiorForm.mSuperior.value,
-                lc: facaSuperiorForm.lcSuperior.value
+                lr: facaSuperiorForm.lrSuperior.value || 0,
+                m: facaSuperiorForm.mSuperior.value || 0,
+                lc: facaSuperiorForm.lcSuperior.value || 0
             };
 
             const dadosFacaInferior = {
-                lr: facaInferiorForm.lrInferior.value,
-                m: facaInferiorForm.mInferior.value,
-                lc: facaInferiorForm.lcInferior.value
+                lr: facaInferiorForm.lrInferior.value || 0,
+                m: facaInferiorForm.mInferior.value || 0,
+                lc: facaInferiorForm.lcInferior.value || 0
             };
-
-            console.log('Dados Faca Superior:', dadosFacaSuperior);
-            console.log('Dados Faca Inferior:', dadosFacaInferior);
 
             // Atualizar os gráficos com os novos dados
             updateChart(chartFacaSuperior, dadosFacaSuperior);
             updateChart(chartFacaInferior, dadosFacaInferior);
+
+            // Exibir mensagem de sucesso
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
         }
 
         // Configuração do Chart.js para o gráfico de Faca Superior
@@ -137,7 +167,11 @@
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Valor'
+                        }
                     }
                 }
             }
@@ -160,7 +194,11 @@
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Valor'
+                        }
                     }
                 }
             }
