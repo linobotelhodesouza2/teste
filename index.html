@@ -1,77 +1,142 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Lâmina</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>UI Layout</title>
     <style>
-        .form-group {
-            margin-bottom: 1rem;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        .field-group {
-            margin-right: 1rem;
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
         }
-        .form-container {
-            margin-bottom: 2rem;
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background-color: #45a049;
+        }
+
+        .save-section {
+            text-align: right;
+        }
+
+        .save-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .save-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .control-group {
+                flex-direction: row;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <form>
-            <div class="row form-container">
-                <!-- Primeiro conjunto de campos -->
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="lc1">Lâmina LC</label>
-                        <input type="text" class="form-control" id="lc1" placeholder="Digite o valor">
-                    </div>
+        <header>
+            <h1>Header</h1>
+        </header>
+        <main>
+            <section class="controls">
+                <div class="control-group">
+                    <button class="control-btn">LC</button>
+                    <button class="control-btn">M</button>
+                    <button class="control-btn">LR</button>
                 </div>
-                <div class="col-md-4 field-group">
-                    <div class="form-group">
-                        <label for="m1">M</label>
-                        <input type="text" class="form-control" id="m1" placeholder="Digite o valor">
-                    </div>
+                <div class="control-group">
+                    <button class="control-btn">LC</button>
+                    <button class="control-btn">M</button>
+                    <button class="control-btn">LR</button>
                 </div>
-                <div class="col-md-4 field-group">
-                    <div class="form-group">
-                        <label for="lr1">LR</label>
-                        <input type="text" class="form-control" id="lr1" placeholder="Digite o valor">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row form-container">
-                <!-- Segundo conjunto de campos -->
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="lc2">Lâmina LC</label>
-                        <input type="text" class="form-control" id="lc2" placeholder="Digite o valor">
-                    </div>
-                </div>
-                <div class="col-md-4 field-group">
-                    <div class="form-group">
-                        <label for="m2">M</label>
-                        <input type="text" class="form-control" id="m2" placeholder="Digite o valor">
-                    </div>
-                </div>
-                <div class="col-md-4 field-group">
-                    <div class="form-group">
-                        <label for="lr2">LR</label>
-                        <input type="text" class="form-control" id="lr2" placeholder="Digite o valor">
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Enviar</button>
-        </form>
+            </section>
+            <section class="save-section">
+                <button class="save-btn">SALVA</button>
+            </section>
+        </main>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('.control-btn');
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    alert(`Button ${button.innerText} clicked`);
+                });
+            });
+
+            const saveButton = document.querySelector('.save-btn');
+
+            saveButton.addEventListener('click', () => {
+                alert('Data saved');
+            });
+        });
+    </script>
 </body>
 </html>
