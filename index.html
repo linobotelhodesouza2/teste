@@ -59,7 +59,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Faca erior</h5>
+                <h5 class="mb-3">Faca Superior</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -122,25 +122,10 @@
         </div>
     </div>
 
-    <!-- Firebase Configuration and Initialization -->
-    <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyA0ZDfqaIRiWfnVCJH4bqMkm3aDqEKSsu0",
-            authDomain: "myapp3-38a15.firebaseapp.com",
-            projectId: "myapp3-38a15",
-            storageBucket: "myapp3-38a15.appspot.com",
-            messagingSenderId: "969730744125",
-            appId: "1:969730744125:web:6f58c11a8c3e882383af54"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-
-        // Function to save data to Firebase
         function salvarDados() {
+            // Função para salvar os dados
             const facaSuperiorForm = document.getElementById('facaSuperiorForm');
             const facaInferiorForm = document.getElementById('facaInferiorForm');
 
@@ -156,20 +141,16 @@
                 lc: facaInferiorForm.lcInferior.value || 0
             };
 
-            // Save data to Firebase
-            firebase.database().ref('facaSuperior').set(dadosFacaSuperior);
-            firebase.database().ref('facaInferior').set(dadosFacaInferior);
-
-            // Update charts with new data
+            // Atualizar os gráficos com os novos dados
             updateChart(chartFacaSuperior, dadosFacaSuperior);
             updateChart(chartFacaInferior, dadosFacaInferior);
 
-            // Display success message
+            // Exibir mensagem de sucesso
             document.getElementById('successMessage').style.display = 'block';
             document.getElementById('errorMessage').style.display = 'none';
         }
 
-        // Chart.js configuration for Faca Superior
+        // Configuração do Chart.js para o gráfico de Faca Superior
         const ctxSuperior = document.getElementById('chartFacaSuperior').getContext('2d');
         const chartFacaSuperior = new Chart(ctxSuperior, {
             type: 'bar',
@@ -196,7 +177,7 @@
             }
         });
 
-        // Chart.js configuration for Faca Inferior
+        // Configuração do Chart.js para o gráfico de Faca Inferior
         const ctxInferior = document.getElementById('chartFacaInferior').getContext('2d');
         const chartFacaInferior = new Chart(ctxInferior, {
             type: 'bar',
@@ -223,7 +204,7 @@
             }
         });
 
-        // Function to update charts
+        // Função para atualizar os gráficos
         function updateChart(chart, data) {
             chart.data.datasets[0].data = [data.lr, data.m, data.lc];
             chart.update();
