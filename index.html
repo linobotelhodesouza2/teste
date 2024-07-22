@@ -3,45 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Lâminas</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script>
-        function moveToNextField(currentField, nextFieldId) {
-            if (currentField.value) {
-                document.getElementById(nextFieldId).focus();
-            }
+    <title>Formulário de Lâmina</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-group {
+            margin-bottom: 1rem;
         }
-
-        function clearFields() {
-            document.getElementById('lc').value = '';
-            document.getElementById('m').value = '';
-            document.getElementById('lr').value = '';
+        .field-group {
+            margin-right: 1rem;
         }
-    </script>
+        .form-container {
+            margin-bottom: 2rem;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h2>Formulário de Lâminas</h2>
+    <div class="container">
         <form>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="lc">Lâmina LC</label>
-                    <input type="text" class="form-control" id="lc" oninput="moveToNextField(this, 'm')" placeholder="Digite lâmina LC">
+            <div class="row form-container">
+                <!-- Primeiro conjunto de campos -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="lc1">Lâmina LC</label>
+                        <input type="text" class="form-control" id="lc1" placeholder="Digite o valor">
+                    </div>
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="m">Lâmina M</label>
-                    <input type="text" class="form-control" id="m" oninput="moveToNextField(this, 'lr')" placeholder="Digite lâmina M">
+                <div class="col-md-4 field-group">
+                    <div class="form-group">
+                        <label for="m1">M</label>
+                        <input type="text" class="form-control" id="m1" placeholder="Digite o valor">
+                    </div>
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="lr">Lâmina LR</label>
-                    <input type="text" class="form-control" id="lr" oninput="clearFields()" placeholder="Digite lâmina LR">
+                <div class="col-md-4 field-group">
+                    <div class="form-group">
+                        <label for="lr1">LR</label>
+                        <input type="text" class="form-control" id="lr1" placeholder="Digite o valor">
+                    </div>
                 </div>
             </div>
+
+            <div class="row form-container">
+                <!-- Segundo conjunto de campos -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="lc2">Lâmina LC</label>
+                        <input type="text" class="form-control" id="lc2" placeholder="Digite o valor">
+                    </div>
+                </div>
+                <div class="col-md-4 field-group">
+                    <div class="form-group">
+                        <label for="m2">M</label>
+                        <input type="text" class="form-control" id="m2" placeholder="Digite o valor">
+                    </div>
+                </div>
+                <div class="col-md-4 field-group">
+                    <div class="form-group">
+                        <label for="lr2">LR</label>
+                        <input type="text" class="form-control" id="lr2" placeholder="Digite o valor">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Enviar</button>
         </form>
     </div>
 
+    <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
