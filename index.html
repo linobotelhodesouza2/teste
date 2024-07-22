@@ -2,244 +2,320 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Faca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LINO</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
-        }
-        .form-container {
-            border: 1px solid #ddd;
+            margin: 20px;
             padding: 20px;
-            margin: 10px;
+            background-image: url('https://i.pinimg.com/736x/01/22/d9/0122d95177d733f1dabd36acca11fef5.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.8);
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex: 1;
-            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
-        .form-group {
-            margin-bottom: 15px;
+        #dadosProduto {
+            margin-top: 20px;
         }
-        .form-control {
-            width: 100%;
-            max-width: 80px;
+        .comentario-item {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+        }
+        .comentario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .comentario-header .date {
+            font-size: 0.9em;
+            color: #888;
+        }
+        .comentario-body {
+            margin-top: 5px;
+        }
+        .comentario-delete, .comentario-edit, .comentario-visibility {
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .comentario-delete {
+            color: red;
         }
         .form-row {
+            display: flex;
             justify-content: space-between;
         }
-        .chart-container {
-            margin-top: 30px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
+        .form-row .form-group {
+            flex: 1;
+            margin-right: 10px;
         }
-        .chart {
-            width: 100%;
-            max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
-            margin: 0 10px; /* Espaço entre os gráficos */
+        .form-row .form-group:last-child {
+            margin-right: 0;
         }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+        .form-control {
+            max-width: none;
         }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-        }
-        .alert {
-            display: none;
+        .title-centered {
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
-        
-        <div class="d-flex justify-content-between flex-wrap">
-            <!-- Formulário de Faca Superior -->
-            <div class="form-container">
-                <h5 class="mb-3">Faca Superior</h5>
-                <form id="facaSuperiorForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="lrSuperior">L.R</label>
-                            <input type="number" class="form-control" id="lrSuperior" placeholder="L.R">
-                        </div>
-                        <div class="form-group">
-                            <label for="mSuperior">M</label>
-                            <input type="number" class="form-control" id="mSuperior" placeholder="M">
-                        </div>
-                        <div class="form-group">
-                            <label for="lcSuperior">L.C</label>
-                            <input type="number" class="form-control" id="lcSuperior" placeholder="L.C">
-                        </div>
-                    </div>
-                </form>
+        <h2 class="mb-4 title-centered">PRODUTOS E CORTES</h2>
+        <form id="productForm">
+            <div class="form-group">
+                <label for="produto">Produto</label>
+                <input type="text" class="form-control" id="produto" required>
             </div>
-
-            <!-- Formulário de Faca Inferior -->
-            <div class="form-container">
-                <h5 class="mb-3">Faca Inferior</h5>
-                <form id="facaInferiorForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="lrInferior">L.R</label>
-                            <input type="number" class="form-control" id="lrInferior" placeholder="L.R">
-                        </div>
-                        <div class="form-group">
-                            <label for="mInferior">M</label>
-                            <input type="number" class="form-control" id="mInferior" placeholder="M">
-                        </div>
-                        <div class="form-group">
-                            <label for="lcInferior">L.C</label>
-                            <input type="number" class="form-control" id="lcInferior" placeholder="L.C">
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Botão de Salvar -->
-        <div class="text-center mt-4">
-            <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
-            <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
-            <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
-        </div>
-
-        <!-- Contêiner do Gráfico -->
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <canvas id="chartFacaSuperior" class="chart"></canvas>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="perimetro">Perímetro</label>
+                    <input type="number" class="form-control" id="perimetro" maxlength="5">
+                </div>
+                <div class="form-group">
+                    <label for="corte">Corte</label>
+                    <input type="text" class="form-control" id="corte" required maxlength="5">
+                </div>
+                <div class="form-group">
+                    <label for="chagrim">Chagrim</label>
+                    <select class="form-control" id="chagrim">
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <canvas id="chartFacaInferior" class="chart"></canvas>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="repeticao">Repetição</label>
+                    <input type="number" class="form-control" id="repeticao" maxlength="5">
+                </div>
+                <div class="form-group">
+                    <label for="velocidade">Velocidade</label>
+                    <input type="number" class="form-control" id="velocidade" required maxlength="5">
                 </div>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="comentario">Comentário</label>
+                <input type="text" class="form-control" id="comentario">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Salvar</button>
+        </form>
+        <select id="produtosSalvos" class="form-control mt-3">
+            <option value="">Selecione um produto salvo</option>
+        </select>
+        <div id="dadosProduto" class="mt-3"></div>
     </div>
 
-    <!-- Firebase Configuration -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div class="container" id="adminArea" style="display:none;">
+        <h2 class="mb-4 title-centered">Administração</h2>
+        <div id="comentariosAdmin" class="mt-3"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twilio/3.53.0/twilio.min.js" integrity="sha512-mr1GmBImMj3a1mZ+5JZ5Ue0qYsDt5a8bRgzOx6NZYlLwCeC9RKu+Jr5ObFD8eayu2osFFb9A4MQUVzxfG7q2Wg==" crossorigin="anonymous"></script>
+
     <script>
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyA0ZDfqaIRiWfnVCJH4bqMkm3aDqEKSsu0",
-            authDomain: "myapp3-38a15.firebaseapp.com",
-            projectId: "myapp3-38a15",
-            storageBucket: "myapp3-38a15.appspot.com",
-            messagingSenderId: "969730744125",
-            appId: "1:969730744125:web:6f58c11a8c3e882383af54"
+        var firebaseConfig = {
+            apiKey: "AIzaSyDEsJtoWAUNgStvKg-0mE5CS8qlSLQt7bA",
+            authDomain: "myapp2-a3c3f.firebaseapp.com",
+            databaseURL: "https://myapp2-a3c3f-default-rtdb.firebaseio.com",
+            projectId: "myapp2-a3c3f",
+            storageBucket: "myapp2-a3c3f.appspot.com",
+            messagingSenderId: "746305842581",
+            appId: "1:746305842581:web:0059c0e45f82fd07a01a9c"
         };
-
-        // Inicializar o Firebase
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        var database = firebase.database();
 
-        function salvarDados() {
-            // Função para salvar os dados
-            const facaSuperiorForm = document.getElementById('facaSuperiorForm');
-            const facaInferiorForm = document.getElementById('facaInferiorForm');
+        var isAdmin = false;
 
-            const dadosFacaSuperior = {
-                lr: facaSuperiorForm.lrSuperior.value || 0,
-                m: facaSuperiorForm.mSuperior.value || 0,
-                lc: facaSuperiorForm.lcSuperior.value || 0
-            };
+        var senha = prompt("Digite a senha de administrador para acessar:");
+        if (senha === "1") {
+            isAdmin = true;
+        } else {
+            alert("Acesso como usuário normal.");
+        }
 
-            const dadosFacaInferior = {
-                lr: facaInferiorForm.lrInferior.value || 0,
-                m: facaInferiorForm.mInferior.value || 0,
-                lc: facaInferiorForm.lcInferior.value || 0
-            };
+        document.addEventListener("DOMContentLoaded", function() {
+            if (isAdmin) {
+                document.getElementById('adminArea').style.display = 'block';
+            }
+        });
 
-            // Salvar dados no Firebase
-            database.ref('facaSuperior').set(dadosFacaSuperior);
-            database.ref('facaInferior').set(dadosFacaInferior)
-                .then(() => {
-                    // Atualizar os gráficos com os novos dados
-                    updateChart(chartFacaSuperior, dadosFacaSuperior);
-                    updateChart(chartFacaInferior, dadosFacaInferior);
+        function salvarDados(e) {
+            e.preventDefault();
+            var produto = document.getElementById('produto').value.toUpperCase();
+            var perimetro = document.getElementById('perimetro').value;
+            var corte = document.getElementById('corte').value.toUpperCase();
+            var velocidade = document.getElementById('velocidade').value;
+            var repeticao = document.getElementById('repeticao').value;
+            var chagrim = document.getElementById('chagrim').value;
+            var comentario = document.getElementById('comentario').value;
 
-                    // Exibir mensagem de sucesso
-                    document.getElementById('successMessage').style.display = 'block';
-                    document.getElementById('errorMessage').style.display = 'none';
-                })
-                .catch((error) => {
-                    console.error("Erro ao salvar dados: ", error);
-                    document.getElementById('errorMessage').style.display = 'block';
-                    document.getElementById('successMessage').style.display = 'none';
+            if (!produto || !corte || !velocidade) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            var produtoRef = database.ref('produtos/' + produto);
+            produtoRef.once('value', function(snapshot) {
+                var produtoData = snapshot.val() || {};
+                if (!produtoData.comentarios) {
+                    produtoData.comentarios = [];
+                }
+                produtoData.perimetro = perimetro;
+                produtoData.corte = corte;
+                produtoData.velocidade = velocidade;
+                produtoData.repeticao = repeticao;
+                produtoData.chagrim = chagrim;
+
+                if (comentario) {
+                    produtoData.comentarios.push({
+                        data: new Date().toLocaleString(),
+                        texto: comentario,
+                        visivel: true
+                    });
+                }
+
+                produtoRef.set(produtoData, function(error) {
+                    if (error) {
+                        alert('Erro ao salvar os dados.');
+                    } else {
+                        alert('Dados salvos com sucesso!');
+                        enviarSMS(); // Chama a função para enviar SMS
+                        atualizarListaProdutos();
+                        document.getElementById('productForm').reset();
+                    }
                 });
+            });
         }
 
-        // Configuração do Chart.js para o gráfico de Faca Superior
-        const ctxSuperior = document.getElementById('chartFacaSuperior').getContext('2d');
-        const chartFacaSuperior = new Chart(ctxSuperior, {
-            type: 'bar',
-            data: {
-                labels: ['L.R', 'M', 'L.C'],
-                datasets: [{
-                    label: 'Faca Superior',
-                    data: [0, 0, 0],
-                    backgroundColor: ['rgba(75, 192, 192, 0.2)'],
-                    borderColor: ['rgba(75, 192, 192, 1)'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Valor'
-                        }
-                    }
-                }
-            }
-        });
 
-        // Configuração do Chart.js para o gráfico de Faca Inferior
-        const ctxInferior = document.getElementById('chartFacaInferior').getContext('2d');
-        const chartFacaInferior = new Chart(ctxInferior, {
-            type: 'bar',
-            data: {
-                labels: ['L.R', 'M', 'L.C'],
-                datasets: [{
-                    label: 'Faca Inferior',
-                    data: [0, 0, 0],
-                    backgroundColor: ['rgba(153, 102, 255, 0.2)'],
-                    borderColor: ['rgba(153, 102, 255, 1)'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Valor'
-                        }
-                    }
-                }
-            }
-        });
-
-        // Função para atualizar os gráficos
-        function updateChart(chart, data) {
-            chart.data.datasets[0].data = [data.lr, data.m, data.lc];
-            chart.update();
+        function atualizarListaProdutos() {
+            var produtosSalvos = document.getElementById('produtosSalvos');
+            produtosSalvos.innerHTML = '<option value="">Selecione um produto salvo</option>';
+            database.ref('produtos').once('value', function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    var option = document.createElement('option');
+                    option.value = childSnapshot.key;
+                    option.textContent = childSnapshot.key;
+                    produtosSalvos.appendChild(option);
+                });
+            });
         }
+
+        function mostrarDadosSalvos() {
+            var produto = document.getElementById('produtosSalvos').value;
+            if (!produto) {
+                document.getElementById('dadosProduto').innerHTML = '';
+                return;
+            }
+            var produtoRef = database.ref('produtos/' + produto);
+            produtoRef.once('value', function(snapshot) {
+                var data = snapshot.val();
+                if (data) {
+                    document.getElementById('dadosProduto').innerHTML =
+                        '<h3>' + produto + '</h3>' +
+                        '<p><strong>Perímetro:</strong> ' + (data.perimetro || '-') + '</p>' +
+                        '<p><strong>Corte:</strong> ' + (data.corte || '-') + '</p>' +
+                        '<p><strong>Velocidade:</strong> ' + (data.velocidade || '-') + '</p>' +
+                        '<p><strong>Repetição:</strong> ' + (data.repeticao || '-') + '</p>' +
+                        '<p><strong>Chagrim:</strong> ' + (data.chagrim || '-') + '</p>' +
+                        '<h4>Comentários:</h4>' +
+                        (data.comentarios ? data.comentarios.map(function(comentario, index) {
+                            return '<div class="comentario-item">' +
+                                '<div class="comentario-header">' +
+                                '<span class="date">' + comentario.data + '</span>' +
+                                (isAdmin ? '<span>' +
+                                    '<i class="comentario-delete" onclick="deletarComentario(\'' + produto + '\', ' + index + ')">Excluir</i>' +
+                                    '<i class="comentario-edit" onclick="editarComentario(\'' + produto + '\', ' + index + ')">Editar</i>' +
+                                    '<i class="comentario-visibility" onclick="alternarVisibilidade(\'' + produto + '\', ' + index + ')">' + (comentario.visivel ? 'Ocultar' : 'Mostrar') + '</i>' +
+                                    '</span>' : '') +
+                                '</div>' +
+                                '<div class="comentario-body" style="display:' + (comentario.visivel ? 'block' : 'none') + '">' + comentario.texto + '</div>' +
+                                '</div>';
+                        }).join('') : '<p>Sem comentários.</p>');
+                } else {
+                    document.getElementById('dadosProduto').innerHTML = '<p>Produto não encontrado.</p>';
+                }
+            });
+        }
+
+        function deletarComentario(produto, index) {
+            var produtoRef = database.ref('produtos/' + produto);
+            produtoRef.once('value', function(snapshot) {
+                var data = snapshot.val();
+                if (data && data.comentarios) {
+                    data.comentarios.splice(index, 1);
+                    produtoRef.set(data, function(error) {
+                        if (error) {
+                            alert('Erro ao deletar comentário.');
+                        } else {
+                            alert('Comentário deletado com sucesso!');
+                            mostrarDadosSalvos();
+                        }
+                    });
+                }
+            });
+        }
+
+        function editarComentario(produto, index) {
+            var novoComentario = prompt('Edite o comentário:');
+            if (novoComentario !== null) {
+                var produtoRef = database.ref('produtos/' + produto);
+                produtoRef.once('value', function(snapshot) {
+                    var data = snapshot.val();
+                    if (data && data.comentarios) {
+                        data.comentarios[index].texto = novoComentario;
+                        produtoRef.set(data, function(error) {
+                            if (error) {
+                                alert('Erro ao editar comentário.');
+                            } else {
+                                alert('Comentário editado com sucesso!');
+                                mostrarDadosSalvos();
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+        function alternarVisibilidade(produto, index) {
+            var produtoRef = database.ref('produtos/' + produto);
+            produtoRef.once('value', function(snapshot) {
+                var data = snapshot.val();
+                if (data && data.comentarios) {
+                    data.comentarios[index].visivel = !data.comentarios[index].visivel;
+                    produtoRef.set(data, function(error) {
+                        if (error) {
+                            alert('Erro ao alternar visibilidade do comentário.');
+                        } else {
+                            alert('Visibilidade do comentário alterada com sucesso!');
+                            mostrarDadosSalvos();
+                        }
+                    });
+                }
+            });
+        }
+
+        
+
+        document.getElementById('productForm').addEventListener('submit', salvarDados);
+        document.getElementById('produtosSalvos').addEventListener('change', mostrarDadosSalvos);
+        atualizarListaProdutos();
     </script>
-    
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
