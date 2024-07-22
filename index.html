@@ -33,16 +33,16 @@
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="valor1Superior">Valor 1</label>
-                            <input type="number" class="form-control" id="valor1Superior">
+                            <label for="lrSuperior">L.R</label>
+                            <input type="number" class="form-control" id="lrSuperior">
                         </div>
                         <div class="form-group">
-                            <label for="valor2Superior">Valor 2</label>
-                            <input type="number" class="form-control" id="valor2Superior">
+                            <label for="mSuperior">M</label>
+                            <input type="number" class="form-control" id="mSuperior">
                         </div>
                         <div class="form-group">
-                            <label for="valor3Superior">Valor 3</label>
-                            <input type="number" class="form-control" id="valor3Superior">
+                            <label for="lcSuperior">L.C</label>
+                            <input type="number" class="form-control" id="lcSuperior">
                         </div>
                     </div>
                 </form>
@@ -54,16 +54,16 @@
                 <form id="facaInferiorForm">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="valor1Inferior">Valor 1</label>
-                            <input type="number" class="form-control" id="valor1Inferior">
+                            <label for="lrInferior">L.R</label>
+                            <input type="number" class="form-control" id="lrInferior">
                         </div>
                         <div class="form-group">
-                            <label for="valor2Inferior">Valor 2</label>
-                            <input type="number" class="form-control" id="valor2Inferior">
+                            <label for="mInferior">M</label>
+                            <input type="number" class="form-control" id="mInferior">
                         </div>
                         <div class="form-group">
-                            <label for="valor3Inferior">Valor 3</label>
-                            <input type="number" class="form-control" id="valor3Inferior">
+                            <label for="lcInferior">L.C</label>
+                            <input type="number" class="form-control" id="lcInferior">
                         </div>
                     </div>
                 </form>
@@ -83,15 +83,15 @@
             const facaInferiorForm = document.getElementById('facaInferiorForm');
 
             const dadosFacaSuperior = {
-                valor1: facaSuperiorForm.valor1Superior.value,
-                valor2: facaSuperiorForm.valor2Superior.value,
-                valor3: facaSuperiorForm.valor3Superior.value
+                lr: facaSuperiorForm.lrSuperior.value,
+                m: facaSuperiorForm.mSuperior.value,
+                lc: facaSuperiorForm.lcSuperior.value
             };
 
             const dadosFacaInferior = {
-                valor1: facaInferiorForm.valor1Inferior.value,
-                valor2: facaInferiorForm.valor2Inferior.value,
-                valor3: facaInferiorForm.valor3Inferior.value
+                lr: facaInferiorForm.lrInferior.value,
+                m: facaInferiorForm.mInferior.value,
+                lc: facaInferiorForm.lcInferior.value
             };
 
             console.log('Dados Faca Superior:', dadosFacaSuperior);
