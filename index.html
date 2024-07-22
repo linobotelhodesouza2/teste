@@ -41,7 +41,7 @@
         <div class="d-flex justify-content-around">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5>Facaerior</h5>
+                <h5>Faca Superior</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -130,12 +130,23 @@
             };
 
             // Salvar dados no Firebase
-            database.ref('facaSuperior').set(dadosFacaSuperior);
-            database.ref('facaInferior').set(dadosFacaInferior);
+            database.ref('facaSuperior').set(dadosFacaSuperior)
+                .then(() => {
+                    console.log("Dados da Faca Superior salvos com sucesso.");
+                    updateChart(chartFacaSuperior, dadosFacaSuperior);
+                })
+                .catch(error => {
+                    console.error("Erro ao salvar dados da Faca Superior:", error);
+                });
 
-            // Atualizar gráficos com os novos dados
-            updateChart(chartFacaSuperior, dadosFacaSuperior);
-            updateChart(chartFacaInferior, dadosFacaInferior);
+            database.ref('facaInferior').set(dadosFacaInferior)
+                .then(() => {
+                    console.log("Dados da Faca Inferior salvos com sucesso.");
+                    updateChart(chartFacaInferior, dadosFacaInferior);
+                })
+                .catch(error => {
+                    console.error("Erro ao salvar dados da Faca Inferior:", error);
+                });
         }
 
         // Configuração do Chart.js para o gráfico de Faca Superior
