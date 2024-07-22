@@ -66,7 +66,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Faca Superior</h5>
+                <h5 class="mb-3">Faca r</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -107,7 +107,7 @@
             </div>
         </div>
 
-        <!-- Botões -->
+        <!-- Botão de Salvar -->
         <div class="text-center mt-4">
             <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
             <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
@@ -119,12 +119,6 @@
             <select id="dateSelector" class="form-control" style="max-width: 200px; margin: 0 auto;" onchange="loadDataByDate(this.value)">
                 <option value="">Selecione uma data</option>
             </select>
-        </div>
-
-        <!-- Botão para Editar Data -->
-        <div class="text-center mt-4">
-            <input type="date" id="dateInput" class="form-control" style="max-width: 200px; margin: 0 auto;">
-            <button type="button" class="btn btn-secondary mt-2" onclick="editarData()">Editar Data</button>
         </div>
 
         <!-- Contêiner do Gráfico -->
@@ -155,7 +149,6 @@
         };
         firebase.initializeApp(firebaseConfig);
         var database = firebase.database();
-        var currentDate = null; // Variável para armazenar a data atual ou editada
 
         function salvarDados() {
             const facaSuperiorForm = document.getElementById('facaSuperiorForm');
@@ -173,12 +166,12 @@
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            const dateToSave = currentDate || new Date().toISOString().split('T')[0]; // Usar a data atual ou editada
+            const currentDateTime = new Date().toISOString(); // Pega a data e hora atual no formato ISO
 
-            // Salvando os dados no Firebase com a data atual ou editada
-            database.ref(`facas/${dateToSave}/superior`).set(dadosFacaSuperior)
+            // Salvando os dados no Firebase com a data e hora atual
+            database.ref(`facas/${currentDateTime}/superior`).set(dadosFacaSuperior)
                 .then(() => {
-                    return database.ref(`facas/${dateToSave}/inferior`).set(dadosFacaInferior);
+                    return database.ref(`facas/${currentDateTime}/inferior`).set(dadosFacaInferior);
                 })
                 .then(() => {
                     // Atualizar os gráficos com os novos dados
@@ -192,20 +185,21 @@
                     // Exibir mensagem de sucesso
                     document.getElementById('successMessage').style.display = 'block';
                     document.getElementById('errorMessage').style.display = 'none';
+
+                    // Atualizar a lista de datas na barra suspensa
+                    loadDates();
                 })
                 .catch((error) => {
                     console.error('Erro ao salvar dados:', error);
-                    document.getElementById('errorMessage').style.display = 'block';
                     document.getElementById('successMessage').style.display = 'none';
+                    document.getElementById('errorMessage').style.display = 'block';
                 });
-
-            // Limpar a variável de data após salvar
-            currentDate = null;
         }
 
         function loadDates() {
+            // Carregar todas as datas disponíveis no Firebase
             database.ref('facas').once('value', (snapshot) => {
-                const dates = Object.keys(snapshot.val() || {});
+                const dates = snapshot.val() ? Object.keys(snapshot.val()) : [];
                 const dateSelector = document.getElementById('dateSelector');
                 dateSelector.innerHTML = '<option value="">Selecione uma data</option>'; // Limpar opções anteriores
 
@@ -227,28 +221,8 @@
                     // Atualizar os gráficos com os dados da data selecionada
                     updateChart(chartFacaSuperior, data.superior);
                     updateChart(chartFacaInferior, data.inferior);
-
-                    // Preencher os formulários com os dados carregados
-                    document.getElementById('lrSuperior').value = data.superior.lr;
-                    document.getElementById('mSuperior').value = data.superior.m;
-                    document.getElementById('lcSuperior').value = data.superior.lc;
-
-                    document.getElementById('lrInferior').value = data.inferior.lr;
-                    document.getElementById('mInferior').value = data.inferior.m;
-                    document.getElementById('lcInferior').value = data.inferior.lc;
-
-                    // Armazenar a data atual para edição
-                    currentDate = date;
                 }
             });
-        }
-
-        function editarData() {
-            const dateInput = document.getElementById('dateInput').value;
-            if (!dateInput) return;
-
-            // Carregar dados para edição
-            loadDataByDate(dateInput);
         }
 
         function updateChart(chart, data) {
