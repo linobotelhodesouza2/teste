@@ -66,7 +66,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Faca Superior</h5>
+                <h5 class="mb-3">Faca</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -107,9 +107,10 @@
             </div>
         </div>
 
-        <!-- Botão de Salvar -->
+        <!-- Botão de Salvar e Deletar -->
         <div class="text-center mt-4">
             <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
+            <button type="button" class="btn btn-danger" onclick="deletarDados()">Deletar Dados</button>
             <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
             <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
         </div>
@@ -196,10 +197,30 @@
                 });
         }
 
+        function deletarDados() {
+            const selectedDate = document.getElementById('dateSelector').value;
+            if (!selectedDate) {
+                alert('Selecione uma data para deletar os dados.');
+                return;
+            }
+
+            database.ref(`facas/${selectedDate}`).remove()
+                .then(() => {
+                    // Limpar os gráficos após deletar os dados
+                    updateChart(chartFacaSuperior, { lr: 0, m: 0, lc: 0 });
+                    updateChart(chartFacaInferior, { lr: 0, m: 0, lc: 0 });
+
+                    // Atualizar a lista de datas na barra suspensa
+                    loadDates();
+                })
+                .catch((error) => {
+                    console.error('Erro ao deletar dados:', error);
+                });
+        }
+
         function loadDates() {
-            // Carregar todas as datas disponíveis no Firebase
             database.ref('facas').once('value', (snapshot) => {
-                const dates = snapshot.val() ? Object.keys(snapshot.val()) : [];
+                const dates = Object.keys(snapshot.val() || {});
                 const dateSelector = document.getElementById('dateSelector');
                 dateSelector.innerHTML = '<option value="">Selecione uma data</option>'; // Limpar opções anteriores
 
