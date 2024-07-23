@@ -66,7 +66,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Faca Superior</h5>
+                <h5 class="mb-3">Faca Supr</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -188,7 +188,7 @@
                     document.getElementById('errorMessage').style.display = 'none';
 
                     // Atualizar a lista de datas na barra suspensa
-                    loadDates();
+                    addDateToSelector(currentDate);
                 })
                 .catch((error) => {
                     console.error('Erro ao salvar dados:', error);
@@ -200,7 +200,7 @@
         function deletarDados() {
             const selectedDate = document.getElementById('dateSelector').value;
             if (!selectedDate) {
-                alert('Selecione uma data para deletar os dados.');
+                alert('Selecione uma data para deletar.');
                 return;
             }
 
@@ -244,6 +244,14 @@
                     updateChart(chartFacaInferior, data.inferior);
                 }
             });
+        }
+
+        function addDateToSelector(date) {
+            const dateSelector = document.getElementById('dateSelector');
+            const option = document.createElement('option');
+            option.value = date;
+            option.textContent = date;
+            dateSelector.appendChild(option);
         }
 
         function updateChart(chart, data) {
