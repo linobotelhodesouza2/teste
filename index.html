@@ -74,12 +74,12 @@
 
         <!-- Dropdown para Selecionar Lançamento -->
         <div class="text-center mt-4">
-            <select id="launchSelector" class="form-control" style="max-width: 200px; margin: 0 auto;" onchange="loadDataByLaunch(this.value)">
+            <select id="launchSelector" class="form-control" style="max-width: 300px; margin: 0 auto;" onchange="loadDataByLaunch(this.value)">
                 <option value="">Selecione um lançamento</option>
             </select>
         </div>
 
-        <!-- Formulário de Faca Superior -->
+        <!-- Formulário de Facar -->
         <div class="form-container mt-4">
             <h5 class="mb-3">Faca Superior</h5>
             <form id="facaSuperiorForm">
@@ -172,17 +172,16 @@
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            const launchDate = dateInput;
             const launchKey = `Lançamento ${new Date().getTime()}`; // Usar timestamp para garantir unicidade
 
             const updates = {};
-            updates[`facas/${launchDate}/${launchKey}/superior`] = dadosFacaSuperior;
-            updates[`facas/${launchDate}/${launchKey}/inferior`] = dadosFacaInferior;
+            updates[`facas/${dateInput}/${launchKey}/superior`] = dadosFacaSuperior;
+            updates[`facas/${dateInput}/${launchKey}/inferior`] = dadosFacaInferior;
 
             database.ref().update(updates)
                 .then(() => {
-                    loadLaunches(launchDate);
-
+                    loadAllLaunches();
+                    
                     facaSuperiorForm.reset();
                     facaInferiorForm.reset();
 
@@ -197,52 +196,52 @@
         }
 
         function deletarDados() {
-            const dateInput = document.getElementById('dateInput').value;
-            if (!dateInput) {
-                alert('Por favor, selecione uma data.');
-                return;
-            }
-
             const selectedLaunch = document.getElementById('launchSelector').value;
             if (!selectedLaunch) {
                 alert('Por favor, selecione um lançamento para deletar.');
                 return;
             }
 
+            const dateInput = document.getElementById('dateInput').value;
+            if (!dateInput) {
+                alert('Por favor, selecione uma data.');
+                return;
+            }
+
             database.ref(`facas/${dateInput}/${selectedLaunch}`).remove()
                 .then(() => {
-                    loadLaunches(dateInput);
+                    loadAllLaunches();
                 })
                 .catch((error) => {
                     console.error('Erro ao deletar dados:', error);
                 });
         }
 
-        function loadLaunches(date) {
-            if (!date) return;
+        function loadAllLaunches() {
+            const launchSelector = document.getElementById('launchSelector');
+            launchSelector.innerHTML = '<option value="">Selecione um lançamento</option>'; // Limpar opções anteriores
 
-            database.ref(`facas/${date}`).once('value', (snapshot) => {
-                const launches = snapshot.val() || {};
-                const launchSelector = document.getElementById('launchSelector');
-                launchSelector.innerHTML = '<option value="">Selecione um lançamento</option>'; // Limpar opções anteriores
-
-                Object.keys(launches).forEach(launchKey => {
-                    const option = document.createElement('option');
-                    option.value = launchKey;
-                    option.textContent = `${launchKey} (${date})`;
-                    launchSelector.appendChild(option);
+            database.ref('facas').once('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                Object.keys(data).forEach(date => {
+                    const launches = data[date];
+                    Object.keys(launches).forEach(launchKey => {
+                        const option = document.createElement('option');
+                        option.value = `${date}/${launchKey}`;
+                        option.textContent = `${launchKey} (${date})`;
+                        launchSelector.appendChild(option);
+                    });
                 });
             });
         }
 
         function loadDataByLaunch(launchKey) {
-            const dateInput = document.getElementById('dateInput').value;
-            if (!dateInput || !launchKey) return;
+            if (!launchKey) return;
 
-            database.ref(`facas/${dateInput}/${launchKey}`).once('value', (snapshot) => {
+            const [date, launch] = launchKey.split('/');
+            database.ref(`facas/${date}/${launch}`).once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    // Atualizar os gráficos com os dados do lançamento selecionado
                     updateChart(chartFacaSuperior, data.superior);
                     updateChart(chartFacaInferior, data.inferior);
                 }
@@ -337,9 +336,11 @@
 
         // Carregar lançamentos ao iniciar a página
         window.onload = function() {
-            document.getElementById('dateInput').addEventListener('change', (event) => {
-                loadLaunches(event.target.value);
+            document.getElementById('dateInput').addEventListener('change', () => {
+                loadAllLaunches();
             });
+
+            loadAllLaunches();
         };
     </script>
 </body>
