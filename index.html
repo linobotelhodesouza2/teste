@@ -38,18 +38,15 @@
             margin-right: 0; /* Remove margem no último campo */
         }
         .chart-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
             margin-top: 30px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
         }
         .chart {
-            width: 400px; /* Ajustar o tamanho dos gráficos */
-            margin-right: 20px; /* Espaço entre gráfico e título */
-        }
-        .chart-title {
-            max-width: 200px;
-            text-align: center;
+            width: 100%;
+            max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
+            margin: 0 10px; /* Espaço entre os gráficos */
         }
         .btn-primary, .btn-danger {
             margin: 5px;
@@ -130,18 +127,16 @@
         </div>
 
         <!-- Contêiner do Gráfico -->
-        <div class="chart-container row mt-4">
-            <div class="col-md-6 d-flex align-items-center">
-                <div class="chart-title">
-                    <h4 class="text-center">Gráfico de Faca Superior</h4>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartFacaSuperior" class="chart"></canvas>
                 </div>
-                <canvas id="chartFacaSuperior" class="chart"></canvas>
             </div>
-            <div class="col-md-6 d-flex align-items-center">
-                <div class="chart-title">
-                    <h4 class="text-center">Gráfico de Faca Inferior</h4>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartFacaInferior" class="chart"></canvas>
                 </div>
-                <canvas id="chartFacaInferior" class="chart"></canvas>
             </div>
         </div>
     </div>
@@ -303,6 +298,19 @@
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
                             return `${realValue} (${value}%)`;
                         }
+                    },
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Faca Superior',
+                        position: 'left',
+                        rotation: -90,
+                        padding: {
+                            top: 0,
+                            bottom: 10
+                        }
                     }
                 }
             },
@@ -338,6 +346,19 @@
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
                             return `${realValue} (${value}%)`;
+                        }
+                    },
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Faca Inferior',
+                        position: 'left',
+                        rotation: -90,
+                        padding: {
+                            top: 0,
+                            bottom: 10
                         }
                     }
                 }
