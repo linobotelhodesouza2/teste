@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Faca</title>
+    <title>FormuláFaca</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -20,13 +20,15 @@
         }
         .form-group {
             margin-bottom: 15px;
+            text-align: center;
         }
         .form-control {
             width: 100%;
             max-width: 80px;
+            margin: 0 auto;
         }
         .form-row {
-            justify-content: space-between;
+            justify-content: center;
         }
         .chart-container {
             margin-top: 30px;
@@ -39,13 +41,13 @@
             max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
             margin: 0 10px; /* Espaço entre os gráficos */
         }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+        .btn-primary, .btn-danger {
+            margin: 5px;
         }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
         .alert {
             display: none;
@@ -63,11 +65,13 @@
     <div class="container">
         <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
         
-        <!-- Caixa de Seleção de Data e Botões de Ação -->
+        <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
             <input type="date" id="dateInput" class="form-control" style="max-width: 200px; margin: 0 auto;">
-            <button type="button" class="btn btn-primary mt-2" onclick="salvarDados()">Salvar Dados</button>
-            <button type="button" class="btn btn-danger mt-2" onclick="deletarDados()">Deletar Dados</button>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
+                <button type="button" class="btn btn-danger" onclick="deletarDados()">Deletar Dados</button>
+            </div>
             <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
             <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
         </div>
@@ -79,22 +83,22 @@
             </select>
         </div>
 
-        <!-- Formulário de Facar -->
+        <!-- Formulário de Faca Superior -->
         <div class="form-container mt-4">
-            <h5 class="mb-3">Faca Superior</h5>
+            <h5 class="mb-3 text-center">Faca Superior</h5>
             <form id="facaSuperiorForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="lrSuperior">L.R</label>
                         <input type="number" class="form-control" id="lrSuperior" placeholder="L.R">
+                        <label for="lrSuperior">L.R</label>
                     </div>
                     <div class="form-group">
-                        <label for="mSuperior">M</label>
                         <input type="number" class="form-control" id="mSuperior" placeholder="M">
+                        <label for="mSuperior">M</label>
                     </div>
                     <div class="form-group">
-                        <label for="lcSuperior">L.C</label>
                         <input type="number" class="form-control" id="lcSuperior" placeholder="L.C">
+                        <label for="lcSuperior">L.C</label>
                     </div>
                 </div>
             </form>
@@ -102,20 +106,20 @@
 
         <!-- Formulário de Faca Inferior -->
         <div class="form-container mt-4">
-            <h5 class="mb-3">Faca Inferior</h5>
+            <h5 class="mb-3 text-center">Faca Inferior</h5>
             <form id="facaInferiorForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="lrInferior">L.R</label>
                         <input type="number" class="form-control" id="lrInferior" placeholder="L.R">
+                        <label for="lrInferior">L.R</label>
                     </div>
                     <div class="form-group">
-                        <label for="mInferior">M</label>
                         <input type="number" class="form-control" id="mInferior" placeholder="M">
+                        <label for="mInferior">M</label>
                     </div>
                     <div class="form-group">
-                        <label for="lcInferior">L.C</label>
                         <input type="number" class="form-control" id="lcInferior" placeholder="L.C">
+                        <label for="lcInferior">L.C</label>
                     </div>
                 </div>
             </form>
@@ -196,7 +200,8 @@
         }
 
         function deletarDados() {
-            const selectedLaunch = document.getElementById('launchSelector').value;
+            const launchSelector = document.getElementById('launchSelector');
+            const selectedLaunch = launchSelector.value;
             if (!selectedLaunch) {
                 alert('Por favor, selecione um lançamento para deletar.');
                 return;
