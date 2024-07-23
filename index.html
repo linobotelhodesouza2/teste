@@ -66,7 +66,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Faca r</h5>
+                <h5 class="mb-3">Faca Superior</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -166,12 +166,12 @@
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            const currentDateTime = new Date().toISOString(); // Pega a data e hora atual no formato ISO
+            const currentDate = new Date().toISOString().split('T')[0]; // Pega a data atual no formato YYYY-MM-DD
 
-            // Salvando os dados no Firebase com a data e hora atual
-            database.ref(`facas/${currentDateTime}/superior`).set(dadosFacaSuperior)
+            // Salvando os dados no Firebase com a data atual
+            database.ref(`facas/${currentDate}/superior`).set(dadosFacaSuperior)
                 .then(() => {
-                    return database.ref(`facas/${currentDateTime}/inferior`).set(dadosFacaInferior);
+                    return database.ref(`facas/${currentDate}/inferior`).set(dadosFacaInferior);
                 })
                 .then(() => {
                     // Atualizar os gráficos com os novos dados
