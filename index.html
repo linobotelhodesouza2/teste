@@ -43,9 +43,6 @@
             display: flex;
             justify-content: center;
         }
-        .chart-container.superior {
-            margin-top: 60px; /* Aumentar espaço superior para 30px adicionais */
-        }
         .chart {
             width: 100%;
             max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
@@ -73,7 +70,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Foe Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
         
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
@@ -132,7 +129,7 @@
         <!-- Contêiner do Gráfico -->
         <div class="row mt-4">
             <div class="col-md-6">
-                <div class="chart-container superior">
+                <div class="chart-container">
                     <canvas id="chartFacaSuperior" class="chart"></canvas>
                 </div>
             </div>
@@ -266,6 +263,9 @@
                     const index = context.dataIndex;
                     const realValue = [data.lr, data.m, data.lc][index];
                     return `${realValue} (${value}%)`;
+                },
+                padding: {
+                    top: 10 // Adiciona padding acima dos números de porcentagem
                 }
             };
             chart.update();
@@ -300,6 +300,9 @@
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
                             return `${realValue} (${value}%)`;
+                        },
+                        padding: {
+                            top: 10 // Adiciona padding acima dos números de porcentagem
                         }
                     },
                     legend: {
@@ -349,6 +352,9 @@
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
                             return `${realValue} (${value}%)`;
+                        },
+                        padding: {
+                            top: 10 // Adiciona padding acima dos números de porcentagem
                         }
                     },
                     legend: {
