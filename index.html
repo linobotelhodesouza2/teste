@@ -45,7 +45,7 @@
         }
         .chart {
             width: 100%;
-            max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
+            max-width: 600px; /* Ajustar o tamanho dos gráficos para desktop */
             margin: 0 10px; /* Espaço entre os gráficos */
         }
         .btn-primary, .btn-danger {
@@ -70,7 +70,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">For Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
         
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
@@ -259,9 +259,6 @@
             const percentageData = [data.lr, data.m, data.lc].map(value => total > 0 ? (value / total * 100).toFixed(1) : 0);
             chart.data.datasets[0].data = percentageData;
             chart.data.datasets[0].datalabels = {
-                color: '#000',
-                anchor: 'end',
-                align: 'top',
                 formatter: (value, context) => {
                     const index = context.dataIndex;
                     const realValue = [data.lr, data.m, data.lc][index];
@@ -296,6 +293,9 @@
                         color: '#000',
                         anchor: 'end',
                         align: 'top',
+                        font: {
+                            size: 14 // Tamanho da fonte ajustado
+                        },
                         formatter: (value, context) => {
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
@@ -345,6 +345,9 @@
                         color: '#000',
                         anchor: 'end',
                         align: 'top',
+                        font: {
+                            size: 14 // Tamanho da fonte ajustado
+                        },
                         formatter: (value, context) => {
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
