@@ -66,7 +66,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Faca Superior</h5>
+                <h5 class="mb-3">Faca Sr</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -118,7 +118,7 @@
         <!-- Barra Suspensa para Selecionar Data -->
         <div class="text-center mt-4">
             <select id="dateSelector" class="form-control" style="max-width: 200px; margin: 0 auto;" onchange="loadDataByDate(this.value)">
-                <option value="">Selecione um lançamento</option>
+                <option value="">Selecione uma data</option>
             </select>
         </div>
 
@@ -168,12 +168,11 @@
             };
 
             const currentDate = new Date().toISOString().split('T')[0]; // Pega a data atual no formato YYYY-MM-DD
-            const timestamp = Date.now(); // Timestamp único para cada lançamento
 
-            // Salvando os dados no Firebase com a data atual e timestamp
-            database.ref(`facas/${currentDate}/${timestamp}/superior`).set(dadosFacaSuperior)
+            // Salvando os dados no Firebase com a data atual
+            database.ref(`facas/${currentDate}/superior`).set(dadosFacaSuperior)
                 .then(() => {
-                    return database.ref(`facas/${currentDate}/${timestamp}/inferior`).set(dadosFacaInferior);
+                    return database.ref(`facas/${currentDate}/inferior`).set(dadosFacaInferior);
                 })
                 .then(() => {
                     // Atualizar os gráficos com os novos dados
@@ -193,23 +192,19 @@
                 })
                 .catch((error) => {
                     console.error('Erro ao salvar dados:', error);
-                    document.getElementById('errorMessage').style.display = 'block';
                     document.getElementById('successMessage').style.display = 'none';
+                    document.getElementById('errorMessage').style.display = 'block';
                 });
         }
 
         function deletarDados() {
-            const dateSelector = document.getElementById('dateSelector');
-            const selectedDate = dateSelector.value;
-
+            const selectedDate = document.getElementById('dateSelector').value;
             if (!selectedDate) {
-                alert('Selecione uma data para deletar.');
+                alert('Selecione uma data para deletar os dados.');
                 return;
             }
 
-            const [date, timestamp] = selectedDate.split('-');
-
-            database.ref(`facas/${date}/${timestamp}`).remove()
+            database.ref(`facas/${selectedDate}`).remove()
                 .then(() => {
                     // Limpar os gráficos após deletar os dados
                     updateChart(chartFacaSuperior, { lr: 0, m: 0, lc: 0 });
@@ -225,27 +220,23 @@
 
         function loadDates() {
             database.ref('facas').once('value', (snapshot) => {
-                const dates = snapshot.val() || {};
+                const dates = Object.keys(snapshot.val() || {});
                 const dateSelector = document.getElementById('dateSelector');
-                dateSelector.innerHTML = '<option value="">Selecione um lançamento</option>'; // Limpar opções anteriores
+                dateSelector.innerHTML = '<option value="">Selecione uma data</option>'; // Limpar opções anteriores
 
-                for (const date in dates) {
-                    for (const timestamp in dates[date]) {
-                        const option = document.createElement('option');
-                        option.value = `${date}-${timestamp}`;
-                        option.textContent = `${date} - ${new Date(parseInt(timestamp)).toLocaleTimeString()}`;
-                        dateSelector.appendChild(option);
-                    }
-                }
+                dates.forEach(date => {
+                    const option = document.createElement('option');
+                    option.value = date;
+                    option.textContent = date;
+                    dateSelector.appendChild(option);
+                });
             });
         }
 
-        function loadDataByDate(dateTimestamp) {
-            if (!dateTimestamp) return;
+        function loadDataByDate(date) {
+            if (!date) return;
 
-            const [date, timestamp] = dateTimestamp.split('-');
-
-            database.ref(`facas/${date}/${timestamp}`).once('value', (snapshot) => {
+            database.ref(`facas/${date}`).once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     // Atualizar os gráficos com os dados da data selecionada
