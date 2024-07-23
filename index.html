@@ -70,7 +70,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de aca</h1>
+        <h1 class="text-center mt-5 mb-4">Formuo de Faca</h1>
         
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
@@ -285,7 +285,15 @@
             options: {
                 scales: {
                     y: {
-                        display: false // Ocultar a escala y
+                        display: false, // Ocultar a escala y
+                        ticks: {
+                            padding: 10 // Ajustar o padding para evitar sobreposição do título
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            padding: 10 // Adicionar padding para os rótulos
+                        }
                     }
                 },
                 plugins: {
@@ -297,6 +305,16 @@
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
                             return `${realValue} (${value}%)`;
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (tooltipItem) => {
+                                const dataIndex = tooltipItem.dataIndex;
+                                const realValue = [0, 0, 0][dataIndex];
+                                const percentage = tooltipItem.raw;
+                                return `Valor: ${realValue}, ${percentage}%`;
+                            }
                         }
                     }
                 }
@@ -321,7 +339,15 @@
             options: {
                 scales: {
                     y: {
-                        display: false // Ocultar a escala y
+                        display: false, // Ocultar a escala y
+                        ticks: {
+                            padding: 10 // Ajustar o padding para evitar sobreposição do título
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            padding: 10 // Adicionar padding para os rótulos
+                        }
                     }
                 },
                 plugins: {
@@ -333,6 +359,16 @@
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
                             return `${realValue} (${value}%)`;
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (tooltipItem) => {
+                                const dataIndex = tooltipItem.dataIndex;
+                                const realValue = [0, 0, 0][dataIndex];
+                                const percentage = tooltipItem.raw;
+                                return `Valor: ${realValue}, ${percentage}%`;
+                            }
                         }
                     }
                 }
