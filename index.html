@@ -31,6 +31,12 @@
         .form-row {
             justify-content: center;
         }
+        .form-row .form-group {
+            margin-right: 10px; /* Espaçamento entre campos */
+        }
+        .form-row .form-group:last-child {
+            margin-right: 0; /* Remove margem no último campo */
+        }
         .chart-container {
             margin-top: 30px;
             width: 100%;
@@ -53,10 +59,6 @@
         .alert {
             display: none;
         }
-        /* Adiciona um espaço entre as caixas de faca superior e inferior */
-        .form-container.mt-4 {
-            margin-bottom: 20px; /* Ajuste o valor conforme necessário */
-        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -68,7 +70,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de aca</h1>
         
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
@@ -95,15 +97,12 @@
                 <div class="form-row">
                     <div class="form-group">
                         <input type="number" class="form-control" id="lrSuperior" placeholder="L.R">
-                        <!-- Label removido para centralizar o texto -->
                     </div>
                     <div class="form-group">
                         <input type="number" class="form-control" id="mSuperior" placeholder="M">
-                        <!-- Label removido para centralizar o texto -->
                     </div>
                     <div class="form-group">
                         <input type="number" class="form-control" id="lcSuperior" placeholder="L.C">
-                        <!-- Label removido para centralizar o texto -->
                     </div>
                 </div>
             </form>
@@ -116,15 +115,12 @@
                 <div class="form-row">
                     <div class="form-group">
                         <input type="number" class="form-control" id="lrInferior" placeholder="L.R">
-                        <!-- Label removido para centralizar o texto -->
                     </div>
                     <div class="form-group">
                         <input type="number" class="form-control" id="mInferior" placeholder="M">
-                        <!-- Label removido para centralizar o texto -->
                     </div>
                     <div class="form-group">
                         <input type="number" class="form-control" id="lcInferior" placeholder="L.C">
-                        <!-- Label removido para centralizar o texto -->
                     </div>
                 </div>
             </form>
