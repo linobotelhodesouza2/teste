@@ -172,31 +172,28 @@
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            database.ref(`facas/${dateInput}`).once('value', (snapshot) => {
-                const launches = snapshot.val() || {};
-                const launchCount = Object.keys(launches).length + 1;
-                const launchKey = `Lançamento ${launchCount}`;
+            const launchDate = dateInput;
+            const launchKey = `Lançamento ${new Date().getTime()}`; // Usar timestamp para garantir unicidade
 
-                const updates = {};
-                updates[`facas/${dateInput}/${launchKey}/superior`] = dadosFacaSuperior;
-                updates[`facas/${dateInput}/${launchKey}/inferior`] = dadosFacaInferior;
+            const updates = {};
+            updates[`facas/${launchDate}/${launchKey}/superior`] = dadosFacaSuperior;
+            updates[`facas/${launchDate}/${launchKey}/inferior`] = dadosFacaInferior;
 
-                database.ref().update(updates)
-                    .then(() => {
-                        loadLaunches(dateInput);
+            database.ref().update(updates)
+                .then(() => {
+                    loadLaunches(launchDate);
 
-                        facaSuperiorForm.reset();
-                        facaInferiorForm.reset();
+                    facaSuperiorForm.reset();
+                    facaInferiorForm.reset();
 
-                        document.getElementById('successMessage').style.display = 'block';
-                        setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
-                    })
-                    .catch((error) => {
-                        console.error('Erro ao salvar dados:', error);
-                        document.getElementById('errorMessage').style.display = 'block';
-                        setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
-                    });
-            });
+                    document.getElementById('successMessage').style.display = 'block';
+                    setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
+                })
+                .catch((error) => {
+                    console.error('Erro ao salvar dados:', error);
+                    document.getElementById('errorMessage').style.display = 'block';
+                    setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
+                });
         }
 
         function deletarDados() {
