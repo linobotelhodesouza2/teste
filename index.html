@@ -59,6 +59,10 @@
         .alert {
             display: none;
         }
+        .chart-title {
+            margin-bottom: 20px; /* Adicionar espaço entre o título e o gráfico */
+            text-align: center;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -70,7 +74,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formuo de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formde Faca</h1>
         
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
@@ -130,11 +134,13 @@
         <div class="row mt-4">
             <div class="col-md-6">
                 <div class="chart-container">
+                    <h5 class="chart-title">Gráfico de Faca Superior</h5>
                     <canvas id="chartFacaSuperior" class="chart"></canvas>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="chart-container">
+                    <h5 class="chart-title">Gráfico de Faca Inferior</h5>
                     <canvas id="chartFacaInferior" class="chart"></canvas>
                 </div>
             </div>
@@ -285,15 +291,7 @@
             options: {
                 scales: {
                     y: {
-                        display: false, // Ocultar a escala y
-                        ticks: {
-                            padding: 10 // Ajustar o padding para evitar sobreposição do título
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            padding: 10 // Adicionar padding para os rótulos
-                        }
+                        display: false // Ocultar a escala y
                     }
                 },
                 plugins: {
@@ -307,14 +305,11 @@
                             return `${realValue} (${value}%)`;
                         }
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: (tooltipItem) => {
-                                const dataIndex = tooltipItem.dataIndex;
-                                const realValue = [0, 0, 0][dataIndex];
-                                const percentage = tooltipItem.raw;
-                                return `Valor: ${realValue}, ${percentage}%`;
-                            }
+                    title: {
+                        display: true,
+                        text: 'Gráfico de Faca Superior',
+                        padding: {
+                            bottom: 10
                         }
                     }
                 }
@@ -339,15 +334,7 @@
             options: {
                 scales: {
                     y: {
-                        display: false, // Ocultar a escala y
-                        ticks: {
-                            padding: 10 // Ajustar o padding para evitar sobreposição do título
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            padding: 10 // Adicionar padding para os rótulos
-                        }
+                        display: false // Ocultar a escala y
                     }
                 },
                 plugins: {
@@ -361,14 +348,11 @@
                             return `${realValue} (${value}%)`;
                         }
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: (tooltipItem) => {
-                                const dataIndex = tooltipItem.dataIndex;
-                                const realValue = [0, 0, 0][dataIndex];
-                                const percentage = tooltipItem.raw;
-                                return `Valor: ${realValue}, ${percentage}%`;
-                            }
+                    title: {
+                        display: true,
+                        text: 'Gráfico de Faca Inferior',
+                        padding: {
+                            bottom: 10
                         }
                     }
                 }
