@@ -38,15 +38,18 @@
             margin-right: 0; /* Remove margem no último campo */
         }
         .chart-container {
-            margin-top: 30px;
-            width: 100%;
             display: flex;
+            align-items: center;
             justify-content: center;
+            margin-top: 30px;
         }
         .chart {
-            width: 100%;
-            max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
-            margin: 0 10px; /* Espaço entre os gráficos */
+            width: 400px; /* Ajustar o tamanho dos gráficos */
+            margin-right: 20px; /* Espaço entre gráfico e título */
+        }
+        .chart-title {
+            max-width: 200px;
+            text-align: center;
         }
         .btn-primary, .btn-danger {
             margin: 5px;
@@ -59,10 +62,6 @@
         .alert {
             display: none;
         }
-        .chart-title {
-            margin-bottom: 20px; /* Adicionar espaço entre o título e o gráfico */
-            text-align: center;
-        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -74,7 +73,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formde Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
         
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
@@ -131,18 +130,18 @@
         </div>
 
         <!-- Contêiner do Gráfico -->
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <h5 class="chart-title">Gráfico de Faca Superior</h5>
-                    <canvas id="chartFacaSuperior" class="chart"></canvas>
+        <div class="chart-container row mt-4">
+            <div class="col-md-6 d-flex align-items-center">
+                <div class="chart-title">
+                    <h4 class="text-center">Gráfico de Faca Superior</h4>
                 </div>
+                <canvas id="chartFacaSuperior" class="chart"></canvas>
             </div>
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <h5 class="chart-title">Gráfico de Faca Inferior</h5>
-                    <canvas id="chartFacaInferior" class="chart"></canvas>
+            <div class="col-md-6 d-flex align-items-center">
+                <div class="chart-title">
+                    <h4 class="text-center">Gráfico de Faca Inferior</h4>
                 </div>
+                <canvas id="chartFacaInferior" class="chart"></canvas>
             </div>
         </div>
     </div>
@@ -304,13 +303,6 @@
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
                             return `${realValue} (${value}%)`;
                         }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Gráfico de Faca Superior',
-                        padding: {
-                            bottom: 10
-                        }
                     }
                 }
             },
@@ -346,13 +338,6 @@
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
                             return `${realValue} (${value}%)`;
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Gráfico de Faca Inferior',
-                        padding: {
-                            bottom: 10
                         }
                     }
                 }
