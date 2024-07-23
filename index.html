@@ -66,7 +66,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Fac</h5>
+                <h5 class="mb-3">Faca Superior</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -168,61 +168,58 @@
             };
 
             const currentDate = new Date().toISOString().split('T')[0]; // Pega a data atual no formato YYYY-MM-DD
+            const timestamp = new Date().toISOString(); // Adiciona timestamp único para cada lançamento
 
-            // Salvando os dados no Firebase com a data atual
-            database.ref(`facas/${currentDate}/superior`).set(dadosFacaSuperior)
-                .then(() => {
-                    return database.ref(`facas/${currentDate}/inferior`).set(dadosFacaInferior);
-                })
-                .then(() => {
-                    // Atualizar os gráficos com os novos dados
-                    updateChart(chartFacaSuperior, dadosFacaSuperior);
-                    updateChart(chartFacaInferior, dadosFacaInferior);
+            // Salvando os dados no Firebase com a data e timestamp
+            const dataRef = database.ref(`facas/${currentDate}/${timestamp}`);
+            dataRef.set({
+                superior: dadosFacaSuperior,
+                inferior: dadosFacaInferior
+            })
+            .then(() => {
+                // Atualizar os gráficos com os novos dados
+                updateChart(chartFacaSuperior, dadosFacaSuperior);
+                updateChart(chartFacaInferior, dadosFacaInferior);
 
-                    // Limpar os campos do formulário
-                    facaSuperiorForm.reset();
-                    facaInferiorForm.reset();
+                // Limpar os campos do formulário
+                facaSuperiorForm.reset();
+                facaInferiorForm.reset();
 
-                    // Exibir mensagem de sucesso
-                    document.getElementById('successMessage').style.display = 'block';
-                    document.getElementById('errorMessage').style.display = 'none';
+                // Exibir mensagem de sucesso
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('errorMessage').style.display = 'none';
 
-                    // Atualizar a lista de datas na barra suspensa
-                    loadDates(() => {
-                        document.getElementById('dateSelector').value = currentDate;
-                    });
-                })
-                .catch((error) => {
-                    console.error('Erro ao salvar dados:', error);
-                    document.getElementById('successMessage').style.display = 'none';
-                    document.getElementById('errorMessage').style.display = 'block';
-                });
+                // Atualizar a lista de datas na barra suspensa
+                loadDates();
+            })
+            .catch((error) => {
+                console.error('Erro ao salvar dados:', error);
+                document.getElementById('successMessage').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'block';
+            });
         }
 
         function deletarDados() {
-            const dateSelector = document.getElementById('dateSelector');
-            const selectedDate = dateSelector.value;
+            const selectedDate = document.getElementById('dateSelector').value;
+            if (!selectedDate) return alert('Selecione uma data para deletar.');
 
-            if (!selectedDate) {
-                alert('Selecione uma data para deletar.');
-                return;
+            if (confirm(`Tem certeza que deseja deletar os dados da data ${selectedDate}?`)) {
+                database.ref(`facas/${selectedDate}`).remove()
+                    .then(() => {
+                        // Limpar os gráficos após deletar os dados
+                        updateChart(chartFacaSuperior, { lr: 0, m: 0, lc: 0 });
+                        updateChart(chartFacaInferior, { lr: 0, m: 0, lc: 0 });
+
+                        // Atualizar a lista de datas na barra suspensa
+                        loadDates();
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao deletar dados:', error);
+                    });
             }
-
-            database.ref(`facas/${selectedDate}`).remove()
-                .then(() => {
-                    // Limpar os gráficos após deletar os dados
-                    updateChart(chartFacaSuperior, { lr: 0, m: 0, lc: 0 });
-                    updateChart(chartFacaInferior, { lr: 0, m: 0, lc: 0 });
-
-                    // Atualizar a lista de datas na barra suspensa
-                    loadDates();
-                })
-                .catch((error) => {
-                    console.error('Erro ao deletar dados:', error);
-                });
         }
 
-        function loadDates(callback) {
+        function loadDates() {
             database.ref('facas').once('value', (snapshot) => {
                 const dates = Object.keys(snapshot.val() || {});
                 const dateSelector = document.getElementById('dateSelector');
@@ -234,8 +231,6 @@
                     option.textContent = date;
                     dateSelector.appendChild(option);
                 });
-
-                if (callback) callback();
             });
         }
 
@@ -245,9 +240,12 @@
             database.ref(`facas/${date}`).once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
+                    const latestEntry = Object.keys(data).sort().pop(); // Pega a última entrada pela chave (timestamp)
+                    const latestData = data[latestEntry];
+
                     // Atualizar os gráficos com os dados da data selecionada
-                    updateChart(chartFacaSuperior, data.superior);
-                    updateChart(chartFacaInferior, data.inferior);
+                    updateChart(chartFacaSuperior, latestData.superior);
+                    updateChart(chartFacaInferior, latestData.inferior);
                 }
             });
         }
