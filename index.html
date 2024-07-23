@@ -118,7 +118,7 @@
         <!-- Barra Suspensa para Selecionar Data -->
         <div class="text-center mt-4">
             <select id="dateSelector" class="form-control" style="max-width: 200px; margin: 0 auto;" onchange="loadDataByDate(this.value)">
-                <option value="">Selecione uma data</option>
+                <option value="">Selecione um lançamento</option>
             </select>
         </div>
 
@@ -168,84 +168,89 @@
             };
 
             const currentDate = new Date().toISOString().split('T')[0]; // Pega a data atual no formato YYYY-MM-DD
-            const timestamp = new Date().toISOString(); // Adiciona timestamp único para cada lançamento
+            const timestamp = Date.now(); // Timestamp único para cada lançamento
 
-            // Salvando os dados no Firebase com a data e timestamp
-            const dataRef = database.ref(`facas/${currentDate}/${timestamp}`);
-            dataRef.set({
-                superior: dadosFacaSuperior,
-                inferior: dadosFacaInferior
-            })
-            .then(() => {
-                // Atualizar os gráficos com os novos dados
-                updateChart(chartFacaSuperior, dadosFacaSuperior);
-                updateChart(chartFacaInferior, dadosFacaInferior);
+            // Salvando os dados no Firebase com a data atual e timestamp
+            database.ref(`facas/${currentDate}/${timestamp}/superior`).set(dadosFacaSuperior)
+                .then(() => {
+                    return database.ref(`facas/${currentDate}/${timestamp}/inferior`).set(dadosFacaInferior);
+                })
+                .then(() => {
+                    // Atualizar os gráficos com os novos dados
+                    updateChart(chartFacaSuperior, dadosFacaSuperior);
+                    updateChart(chartFacaInferior, dadosFacaInferior);
 
-                // Limpar os campos do formulário
-                facaSuperiorForm.reset();
-                facaInferiorForm.reset();
+                    // Limpar os campos do formulário
+                    facaSuperiorForm.reset();
+                    facaInferiorForm.reset();
 
-                // Exibir mensagem de sucesso
-                document.getElementById('successMessage').style.display = 'block';
-                document.getElementById('errorMessage').style.display = 'none';
+                    // Exibir mensagem de sucesso
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
 
-                // Atualizar a lista de datas na barra suspensa
-                loadDates();
-            })
-            .catch((error) => {
-                console.error('Erro ao salvar dados:', error);
-                document.getElementById('successMessage').style.display = 'none';
-                document.getElementById('errorMessage').style.display = 'block';
-            });
+                    // Atualizar a lista de datas na barra suspensa
+                    loadDates();
+                })
+                .catch((error) => {
+                    console.error('Erro ao salvar dados:', error);
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('successMessage').style.display = 'none';
+                });
         }
 
         function deletarDados() {
-            const selectedDate = document.getElementById('dateSelector').value;
-            if (!selectedDate) return alert('Selecione uma data para deletar.');
+            const dateSelector = document.getElementById('dateSelector');
+            const selectedDate = dateSelector.value;
 
-            if (confirm(`Tem certeza que deseja deletar os dados da data ${selectedDate}?`)) {
-                database.ref(`facas/${selectedDate}`).remove()
-                    .then(() => {
-                        // Limpar os gráficos após deletar os dados
-                        updateChart(chartFacaSuperior, { lr: 0, m: 0, lc: 0 });
-                        updateChart(chartFacaInferior, { lr: 0, m: 0, lc: 0 });
-
-                        // Atualizar a lista de datas na barra suspensa
-                        loadDates();
-                    })
-                    .catch((error) => {
-                        console.error('Erro ao deletar dados:', error);
-                    });
+            if (!selectedDate) {
+                alert('Selecione uma data para deletar.');
+                return;
             }
+
+            const [date, timestamp] = selectedDate.split('-');
+
+            database.ref(`facas/${date}/${timestamp}`).remove()
+                .then(() => {
+                    // Limpar os gráficos após deletar os dados
+                    updateChart(chartFacaSuperior, { lr: 0, m: 0, lc: 0 });
+                    updateChart(chartFacaInferior, { lr: 0, m: 0, lc: 0 });
+
+                    // Atualizar a lista de datas na barra suspensa
+                    loadDates();
+                })
+                .catch((error) => {
+                    console.error('Erro ao deletar dados:', error);
+                });
         }
 
         function loadDates() {
             database.ref('facas').once('value', (snapshot) => {
-                const dates = Object.keys(snapshot.val() || {});
+                const dates = snapshot.val() || {};
                 const dateSelector = document.getElementById('dateSelector');
-                dateSelector.innerHTML = '<option value="">Selecione uma data</option>'; // Limpar opções anteriores
+                dateSelector.innerHTML = '<option value="">Selecione um lançamento</option>'; // Limpar opções anteriores
 
-                dates.forEach(date => {
-                    const option = document.createElement('option');
-                    option.value = date;
-                    option.textContent = date;
-                    dateSelector.appendChild(option);
-                });
+                for (const date in dates) {
+                    for (const timestamp in dates[date]) {
+                        const option = document.createElement('option');
+                        option.value = `${date}-${timestamp}`;
+                        option.textContent = `${date} - ${new Date(parseInt(timestamp)).toLocaleTimeString()}`;
+                        dateSelector.appendChild(option);
+                    }
+                }
             });
         }
 
-        function loadDataByDate(date) {
-            if (!date) return;
+        function loadDataByDate(dateTimestamp) {
+            if (!dateTimestamp) return;
 
-            database.ref(`facas/${date}`).once('value', (snapshot) => {
+            const [date, timestamp] = dateTimestamp.split('-');
+
+            database.ref(`facas/${date}/${timestamp}`).once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    const latestEntry = Object.keys(data).sort().pop(); // Pega a última entrada pela chave (timestamp)
-                    const latestData = data[latestEntry];
-
                     // Atualizar os gráficos com os dados da data selecionada
-                    updateChart(chartFacaSuperior, latestData.superior);
-                    updateChart(chartFacaInferior, latestData.inferior);
+                    updateChart(chartFacaSuperior, data.superior);
+                    updateChart(chartFacaInferior, data.inferior);
                 }
             });
         }
