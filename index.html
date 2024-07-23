@@ -66,7 +66,7 @@
         <div class="d-flex justify-content-between flex-wrap">
             <!-- Formulário de Faca Superior -->
             <div class="form-container">
-                <h5 class="mb-3">Faca Supr</h5>
+                <h5 class="mb-3">Faca Superior</h5>
                 <form id="facaSuperiorForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -188,7 +188,9 @@
                     document.getElementById('errorMessage').style.display = 'none';
 
                     // Atualizar a lista de datas na barra suspensa
-                    addDateToSelector(currentDate);
+                    loadDates(() => {
+                        document.getElementById('dateSelector').value = currentDate;
+                    });
                 })
                 .catch((error) => {
                     console.error('Erro ao salvar dados:', error);
@@ -198,7 +200,9 @@
         }
 
         function deletarDados() {
-            const selectedDate = document.getElementById('dateSelector').value;
+            const dateSelector = document.getElementById('dateSelector');
+            const selectedDate = dateSelector.value;
+
             if (!selectedDate) {
                 alert('Selecione uma data para deletar.');
                 return;
@@ -218,7 +222,7 @@
                 });
         }
 
-        function loadDates() {
+        function loadDates(callback) {
             database.ref('facas').once('value', (snapshot) => {
                 const dates = Object.keys(snapshot.val() || {});
                 const dateSelector = document.getElementById('dateSelector');
@@ -230,6 +234,8 @@
                     option.textContent = date;
                     dateSelector.appendChild(option);
                 });
+
+                if (callback) callback();
             });
         }
 
@@ -244,14 +250,6 @@
                     updateChart(chartFacaInferior, data.inferior);
                 }
             });
-        }
-
-        function addDateToSelector(date) {
-            const dateSelector = document.getElementById('dateSelector');
-            const option = document.createElement('option');
-            option.value = date;
-            option.textContent = date;
-            dateSelector.appendChild(option);
         }
 
         function updateChart(chart, data) {
