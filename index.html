@@ -63,50 +63,6 @@
     <div class="container">
         <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
         
-        <div class="d-flex justify-content-between flex-wrap">
-            <!-- Formulário de Faca Superior -->
-            <div class="form-container">
-                <h5 class="mb-3">Faca Supior</h5>
-                <form id="facaSuperiorForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="lrSuperior">L.R</label>
-                            <input type="number" class="form-control" id="lrSuperior" placeholder="L.R">
-                        </div>
-                        <div class="form-group">
-                            <label for="mSuperior">M</label>
-                            <input type="number" class="form-control" id="mSuperior" placeholder="M">
-                        </div>
-                        <div class="form-group">
-                            <label for="lcSuperior">L.C</label>
-                            <input type="number" class="form-control" id="lcSuperior" placeholder="L.C">
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Formulário de Faca Inferior -->
-            <div class="form-container">
-                <h5 class="mb-3">Faca Inferior</h5>
-                <form id="facaInferiorForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="lrInferior">L.R</label>
-                            <input type="number" class="form-control" id="lrInferior" placeholder="L.R">
-                        </div>
-                        <div class="form-group">
-                            <label for="mInferior">M</label>
-                            <input type="number" class="form-control" id="mInferior" placeholder="M">
-                        </div>
-                        <div class="form-group">
-                            <label for="lcInferior">L.C</label>
-                            <input type="number" class="form-control" id="lcInferior" placeholder="L.C">
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
         <!-- Caixa de Seleção de Data e Botões de Ação -->
         <div class="text-center mt-4">
             <input type="date" id="dateInput" class="form-control" style="max-width: 200px; margin: 0 auto;">
@@ -116,11 +72,53 @@
             <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
         </div>
 
-        <!-- Barra Suspensa para Selecionar Lançamento -->
+        <!-- Dropdown para Selecionar Lançamento -->
         <div class="text-center mt-4">
             <select id="launchSelector" class="form-control" style="max-width: 200px; margin: 0 auto;" onchange="loadDataByLaunch(this.value)">
                 <option value="">Selecione um lançamento</option>
             </select>
+        </div>
+
+        <!-- Formulário de Faca Superior -->
+        <div class="form-container mt-4">
+            <h5 class="mb-3">Faca Superior</h5>
+            <form id="facaSuperiorForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="lrSuperior">L.R</label>
+                        <input type="number" class="form-control" id="lrSuperior" placeholder="L.R">
+                    </div>
+                    <div class="form-group">
+                        <label for="mSuperior">M</label>
+                        <input type="number" class="form-control" id="mSuperior" placeholder="M">
+                    </div>
+                    <div class="form-group">
+                        <label for="lcSuperior">L.C</label>
+                        <input type="number" class="form-control" id="lcSuperior" placeholder="L.C">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Formulário de Faca Inferior -->
+        <div class="form-container mt-4">
+            <h5 class="mb-3">Faca Inferior</h5>
+            <form id="facaInferiorForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="lrInferior">L.R</label>
+                        <input type="number" class="form-control" id="lrInferior" placeholder="L.R">
+                    </div>
+                    <div class="form-group">
+                        <label for="mInferior">M</label>
+                        <input type="number" class="form-control" id="mInferior" placeholder="M">
+                    </div>
+                    <div class="form-group">
+                        <label for="lcInferior">L.C</label>
+                        <input type="number" class="form-control" id="lcInferior" placeholder="L.C">
+                    </div>
+                </div>
+            </form>
         </div>
 
         <!-- Contêiner do Gráfico -->
@@ -139,8 +137,8 @@
     </div>
 
     <script>
-        // Configuração do Firebase para o myapp2
-        var firebaseConfig = {
+        // Configuração do Firebase
+        const firebaseConfig = {
             apiKey: "AIzaSyDEsJtoWAUNgStvKg-0mE5CS8qlSLQt7bA",
             authDomain: "myapp2-a3c3f.firebaseapp.com",
             databaseURL: "https://myapp2-a3c3f-default-rtdb.firebaseio.com",
@@ -150,17 +148,17 @@
             appId: "1:746305842581:web:0059c0e45f82fd07a01a9c"
         };
         firebase.initializeApp(firebaseConfig);
-        var database = firebase.database();
+        const database = firebase.database();
 
         function salvarDados() {
-            const facaSuperiorForm = document.getElementById('facaSuperiorForm');
-            const facaInferiorForm = document.getElementById('facaInferiorForm');
             const dateInput = document.getElementById('dateInput').value;
-
             if (!dateInput) {
                 alert('Por favor, selecione uma data.');
                 return;
             }
+
+            const facaSuperiorForm = document.getElementById('facaSuperiorForm');
+            const facaInferiorForm = document.getElementById('facaInferiorForm');
 
             const dadosFacaSuperior = {
                 lr: parseFloat(facaSuperiorForm.lrSuperior.value) || 0,
@@ -174,26 +172,22 @@
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            // Recupera o número do próximo lançamento
             database.ref(`facas/${dateInput}`).once('value', (snapshot) => {
-                const launchCount = snapshot.numChildren() + 1;
+                const launches = snapshot.val() || {};
+                const launchCount = Object.keys(launches).length + 1;
                 const launchKey = `Lançamento ${launchCount}`;
 
                 const updates = {};
                 updates[`facas/${dateInput}/${launchKey}/superior`] = dadosFacaSuperior;
                 updates[`facas/${dateInput}/${launchKey}/inferior`] = dadosFacaInferior;
 
-                // Salvando os dados no Firebase
                 database.ref().update(updates)
                     .then(() => {
-                        // Atualizar a lista de lançamentos na barra suspensa
                         loadLaunches(dateInput);
 
-                        // Limpar os campos do formulário
                         facaSuperiorForm.reset();
                         facaInferiorForm.reset();
 
-                        // Exibir mensagem de sucesso
                         document.getElementById('successMessage').style.display = 'block';
                         setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
                     })
@@ -220,11 +214,6 @@
 
             database.ref(`facas/${dateInput}/${selectedLaunch}`).remove()
                 .then(() => {
-                    // Limpar os gráficos após deletar os dados
-                    updateChart(chartFacaSuperior, { lr: 0, m: 0, lc: 0 });
-                    updateChart(chartFacaInferior, { lr: 0, m: 0, lc: 0 });
-
-                    // Atualizar a lista de lançamentos na barra suspensa
                     loadLaunches(dateInput);
                 })
                 .catch((error) => {
@@ -243,7 +232,7 @@
                 Object.keys(launches).forEach(launchKey => {
                     const option = document.createElement('option');
                     option.value = launchKey;
-                    option.textContent = launchKey;
+                    option.textContent = `${launchKey} (${date})`;
                     launchSelector.appendChild(option);
                 });
             });
