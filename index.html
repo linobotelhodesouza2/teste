@@ -70,8 +70,13 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formuláe Faca</h1>
-        
+        <h1 class="text-center mt-5 mb-4">Form de Faca</h1>
+
+        <!-- Campo para Inserir a Data -->
+        <div class="text-center">
+            <input type="date" id="dataLancamento" class="form-control" style="max-width: 300px; margin: 0 auto;">
+        </div>
+
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
             <div class="btn-group">
@@ -155,8 +160,14 @@
         const database = firebase.database();
 
         function salvarDados() {
+            const dataLancamento = document.getElementById('dataLancamento').value;
             const facaSuperiorForm = document.getElementById('facaSuperiorForm');
             const facaInferiorForm = document.getElementById('facaInferiorForm');
+
+            if (!dataLancamento) {
+                alert('Por favor, insira uma data.');
+                return;
+            }
 
             const dadosFacaSuperior = {
                 lr: parseFloat(facaSuperiorForm.lrSuperior.value) || 0,
@@ -173,7 +184,7 @@
             database.ref('facas').once('value', (snapshot) => {
                 const data = snapshot.val() || {};
                 const numLaunches = Object.keys(data).length + 1;
-                const launchKey = `Lançamento ${numLaunches}`;
+                const launchKey = `Lançamento ${numLaunches} - ${dataLancamento}`;
 
                 const updates = {};
                 updates[`facas/${launchKey}/superior`] = dadosFacaSuperior;
@@ -185,7 +196,9 @@
 
                         facaSuperiorForm.reset();
                         facaInferiorForm.reset();
+                        document.getElementById('dataLancamento').value = '';
 
+                        document.getElementById('successMessage').innerText = 'Dados salvos com sucesso!';
                         document.getElementById('successMessage').style.display = 'block';
                         setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
                     })
@@ -198,10 +211,10 @@
         }
 
         function deletarDados() {
-            const launchSelector = document.getElementById('launchSelector');
-            const selectedLaunch = launchSelector.value;
+            const selectedLaunch = document.getElementById('launchSelector').value;
+
             if (!selectedLaunch) {
-                alert('Por favor, selecione um lançamento para deletar.');
+                alert('Por favor, selecione um lançamento.');
                 return;
             }
 
