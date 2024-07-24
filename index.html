@@ -85,7 +85,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário</h1>
 
         <!-- Campo para Inserir a Data -->
         <div class="text-center">
@@ -209,7 +209,7 @@
 
             database.ref('facas').once('value', (snapshot) => {
                 const data = snapshot.val() || {};
-                const es = Object.keys(data).length + 1;
+                const totalLaunches = Object.keys(data).length + 1;
                 const launchKey = dataLancamento;
 
                 const updates = {};
