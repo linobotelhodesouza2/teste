@@ -59,6 +59,9 @@
         .alert {
             display: none;
         }
+        #report {
+            margin-top: 40px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -70,7 +73,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Form de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
 
         <!-- Campo para Inserir a Data -->
         <div class="text-center">
@@ -143,6 +146,12 @@
                 </div>
             </div>
         </div>
+
+        <!-- Relatório Comparativo -->
+        <div id="report" class="mt-5">
+            <h3 class="text-center">Relatório Comparativo</h3>
+            <div id="reportContent" class="text-center"></div>
+        </div>
     </div>
 
     <script>
@@ -158,6 +167,11 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+
+        const targetValues = {
+            superior: { lr: 68.5, m: 69, lc: 68.9 },
+            inferior: { lr: 65, m: 65, lc: 65 }
+        };
 
         function salvarDados() {
             const dataLancamento = document.getElementById('dataLancamento').value;
@@ -194,10 +208,7 @@
                     .then(() => {
                         loadAllLaunches();
 
-                        facaSuperiorForm.reset();
-                        facaInferiorForm.reset();
-                        document.getElementById('dataLancamento').value = '';
-
+                        // Mostrar mensagem de sucesso
                         document.getElementById('successMessage').innerText = 'Dados salvos com sucesso!';
                         document.getElementById('successMessage').style.display = 'block';
                         setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
@@ -255,6 +266,7 @@
                 if (data) {
                     updateChart(chartFacaSuperior, data.superior);
                     updateChart(chartFacaInferior, data.inferior);
+                    generateReport(data);
                 }
             });
         }
@@ -270,10 +282,36 @@
                     return `${realValue} (${value}%)`;
                 },
                 color: '#000',
-                anchor: 'center',
-                align: 'center'
+                anchor: 'end',
+                align: 'start'
             };
             chart.update();
+        }
+
+        function generateReport(data) {
+            const reportContent = document.getElementById('reportContent');
+            const superiorVariation = calculateVariation(targetValues.superior, data.superior);
+            const inferiorVariation = calculateVariation(targetValues.inferior, data.inferior);
+
+            const reportHTML = `
+                <h5>Faca Superior</h5>
+                <p>L.R: Esperado - ${targetValues.superior.lr}, Atual - ${data.superior.lr}, Variação - ${superiorVariation.lr}%</p>
+                <p>M: Esperado - ${targetValues.superior.m}, Atual - ${data.superior.m}, Variação - ${superiorVariation.m}%</p>
+                <p>L.C: Esperado - ${targetValues.superior.lc}, Atual - ${data.superior.lc}, Variação - ${superiorVariation.lc}%</p>
+                <h5>Faca Inferior</h5>
+                <p>L.R: Esperado - ${targetValues.inferior.lr}, Atual - ${data.inferior.lr}, Variação - ${inferiorVariation.lr}%</p>
+                <p>M: Esperado - ${targetValues.inferior.m}, Atual - ${data.inferior.m}, Variação - ${inferiorVariation.m}%</p>
+                <p>L.C: Esperado - ${targetValues.inferior.lc}, Atual - ${data.inferior.lc}, Variação - ${inferiorVariation.lc}%</p>
+            `;
+            reportContent.innerHTML = reportHTML;
+        }
+
+        function calculateVariation(expected, actual) {
+            return {
+                lr: ((actual.lr - expected.lr) / expected.lr * 100).toFixed(2),
+                m: ((actual.m - expected.m) / expected.m * 100).toFixed(2),
+                lc: ((actual.lc - expected.lc) / expected.lc * 100).toFixed(2)
+            };
         }
 
         // Configuração do Chart.js para o gráfico de Faca Superior
@@ -299,8 +337,8 @@
                 plugins: {
                     datalabels: {
                         color: '#000',
-                        anchor: 'center',
-                        align: 'center',
+                        anchor: 'end',
+                        align: 'start',
                         formatter: (value, context) => {
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
@@ -348,8 +386,8 @@
                 plugins: {
                     datalabels: {
                         color: '#000',
-                        anchor: 'center',
-                        align: 'center',
+                        anchor: 'end',
+                        align: 'start',
                         formatter: (value, context) => {
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
