@@ -85,7 +85,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Fa</h1>
+        <h1 class="text-center mt-5 mb-4">LINO</h1>
 
         <!-- Campo para Inserir a Data -->
         <div class="text-center">
@@ -207,12 +207,10 @@
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            const totalLaunches = Object.keys(data).length + 1;
-            const launchKey = dataLancamento;
-
+            const newLaunchKey = Date.now().toString(); // Usar timestamp como chave única
             const updates = {};
-            updates[`facas/${launchKey}/superior`] = dadosFacaSuperior;
-            updates[`facas/${launchKey}/inferior`] = dadosFacaInferior;
+            updates[`facas/${newLaunchKey}/superior`] = dadosFacaSuperior;
+            updates[`facas/${newLaunchKey}/inferior`] = dadosFacaInferior;
 
             database.ref().update(updates)
                 .then(() => {
@@ -259,7 +257,7 @@
                 Object.keys(data).forEach(launchKey => {
                     const option = document.createElement('option');
                     option.value = launchKey;
-                    option.textContent = launchKey;
+                    option.textContent = `Lançamento ${Object.keys(data).indexOf(launchKey) + 1}`;
                     launchSelector.appendChild(option);
                 });
             });
@@ -278,19 +276,21 @@
             });
         }
 
-        function updateChart(chart, data, target) {
-            const percentageData = calculateAccuracyPercentage(data, target);
-            chart.data.datasets[0].data = percentageData;
-            chart.update();
-        }
-
-        function calculateAccuracyPercentage(data, target) {
-            return ['lr', 'm', 'lc'].map(key => {
-                const targetValue = target[key];
-                const actualValue = data[key];
-                const accuracy = 100 - Math.abs((actualValue - targetValue) / targetValue * 100);
-                return accuracy.toFixed(1);
+        function updateChart(chart, data, targetValues) {
+            const total = Object.values(targetValues).reduce((acc, val) => acc + val, 0);
+            const percentageData = Object.keys(data).map(key => {
+                const percentage = total > 0 ? (data[key] / targetValues[key] * 100).toFixed(1) : 0;
+                return Math.min(percentage, 100); // Garantir que a porcentagem não exceda 100%
             });
+
+            chart.data.datasets[0].data = percentageData;
+            chart.data.datasets[0].datalabels = {
+                formatter: (value) => `${value}%`,
+                color: '#000',
+                anchor: 'end',
+                align: 'start'
+            };
+            chart.update();
         }
 
         function generateReport(data) {
@@ -317,9 +317,9 @@
 
         function calculateVariation(expected, actual) {
             return {
-                lr: ((actual.lr - expected.lr) / expected.lr * 100).toFixed(2),
-                m: ((actual.m - expected.m) / expected.m * 100).toFixed(2),
-                lc: ((actual.lc - expected.lc) / expected.lc * 100).toFixed(2)
+                lr: Math.min(((actual.lr / expected.lr) * 100).toFixed(2), 100),
+                m: Math.min(((actual.m / expected.m) * 100).toFixed(2), 100),
+                lc: Math.min(((actual.lc / expected.lc) * 100).toFixed(2), 100)
             };
         }
 
