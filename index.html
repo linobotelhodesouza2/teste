@@ -70,7 +70,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formul Faca</h1>
         
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
@@ -95,13 +95,16 @@
             <form id="facaSuperiorForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <input type="number" class="form-control" id="lrSuperior" placeholder="L.R">
+                        <label for="lrSuperior">L.R</label>
+                        <input type="number" class="form-control" id="lrSuperior" placeholder="65">
                     </div>
                     <div class="form-group">
-                        <input type="number" class="form-control" id="mSuperior" placeholder="M">
+                        <label for="mSuperior">M</label>
+                        <input type="number" class="form-control" id="mSuperior" placeholder="65">
                     </div>
                     <div class="form-group">
-                        <input type="number" class="form-control" id="lcSuperior" placeholder="L.C">
+                        <label for="lcSuperior">L.C</label>
+                        <input type="number" class="form-control" id="lcSuperior" placeholder="65">
                     </div>
                 </div>
             </form>
@@ -113,13 +116,16 @@
             <form id="facaInferiorForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <input type="number" class="form-control" id="lrInferior" placeholder="L.R" value="65">
+                        <label for="lrInferior">L.R</label>
+                        <input type="number" class="form-control" id="lrInferior" placeholder="65">
                     </div>
                     <div class="form-group">
-                        <input type="number" class="form-control" id="mInferior" placeholder="M" value="65">
+                        <label for="mInferior">M</label>
+                        <input type="number" class="form-control" id="mInferior" placeholder="65">
                     </div>
                     <div class="form-group">
-                        <input type="number" class="form-control" id="lcInferior" placeholder="L.C" value="65">
+                        <label for="lcInferior">L.C</label>
+                        <input type="number" class="form-control" id="lcInferior" placeholder="65">
                     </div>
                 </div>
             </form>
@@ -198,12 +204,8 @@
         }
 
         function deletarDados() {
-            const launchSelector = document.getElementById('launchSelector');
-            const selectedLaunch = launchSelector.value;
-            if (!selectedLaunch) {
-                alert('Por favor, selecione um lançamento para deletar.');
-                return;
-            }
+            const selectedLaunch = document.getElementById('launchSelector').value;
+            if (!selectedLaunch) return;
 
             database.ref(`facas/${selectedLaunch}`).remove()
                 .then(() => {
