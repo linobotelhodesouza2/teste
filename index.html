@@ -70,29 +70,8 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulára</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
         
-        <!-- Contêiner do Gráfico -->
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <canvas id="chartFacaSuperior" class="chart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <canvas id="chartFacaInferior" class="chart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dropdown para Selecionar Lançamento -->
-        <div class="text-center mt-4">
-            <select id="launchSelector" class="form-control" style="max-width: 300px; margin: 0 auto;" onchange="loadDataByLaunch(this.value)">
-                <option value="">Selecione um lançamento</option>
-            </select>
-        </div>
-
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
             <div class="btn-group">
@@ -101,6 +80,13 @@
             </div>
             <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
             <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
+        </div>
+
+        <!-- Dropdown para Selecionar Lançamento -->
+        <div class="text-center mt-4">
+            <select id="launchSelector" class="form-control" style="max-width: 300px; margin: 0 auto;" onchange="loadDataByLaunch(this.value)">
+                <option value="">Selecione um lançamento</option>
+            </select>
         </div>
 
         <!-- Formulário de Faca Superior -->
@@ -138,6 +124,20 @@
                 </div>
             </form>
         </div>
+
+        <!-- Contêiner do Gráfico -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartFacaSuperior" class="chart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartFacaInferior" class="chart"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -170,11 +170,10 @@
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            // Contar lançamentos existentes para gerar o próximo nome de lançamento
             database.ref('facas').once('value', (snapshot) => {
                 const data = snapshot.val() || {};
-                const launchCount = Object.keys(data).length + 1;
-                const launchKey = `Lançamento ${launchCount}`;
+                const numLaunches = Object.keys(data).length + 1;
+                const launchKey = `Lançamento ${numLaunches}`;
 
                 const updates = {};
                 updates[`facas/${launchKey}/superior`] = dadosFacaSuperior;
@@ -183,7 +182,7 @@
                 database.ref().update(updates)
                     .then(() => {
                         loadAllLaunches();
-                        
+
                         facaSuperiorForm.reset();
                         facaInferiorForm.reset();
 
