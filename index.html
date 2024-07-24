@@ -26,16 +26,16 @@
             width: 100%;
             max-width: 80px;
             margin: 0 auto;
-            text-align: center; /* Centraliza o texto dentro das caixas */
+            text-align: center;
         }
         .form-row {
             justify-content: center;
         }
         .form-row .form-group {
-            margin-right: 10px; /* Espaçamento entre campos */
+            margin-right: 10px;
         }
         .form-row .form-group:last-child {
-            margin-right: 0; /* Remove margem no último campo */
+            margin-right: 0;
         }
         .chart-container {
             margin-top: 30px;
@@ -45,11 +45,12 @@
         }
         .chart {
             width: 100%;
-            max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
-            margin: 0 10px; /* Espaço entre os gráficos */
+            max-width: 400px;
+            margin: 0 10px;
         }
         .btn-primary, .btn-danger {
             margin: 5px;
+            width: 100px; /* Ajustar largura dos botões */
         }
         .btn-group {
             display: flex;
@@ -74,6 +75,17 @@
         .report-item h5 {
             margin-bottom: 10px;
         }
+        .input-group {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .input-group .form-control {
+            margin-right: 10px;
+        }
+        .input-group .form-control:last-child {
+            margin-right: 0;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -85,29 +97,24 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
 
-        <!-- Campo para Inserir a Data -->
-        <div class="text-center">
-            <input type="date" id="dataLancamento" class="form-control" style="max-width: 300px; margin: 0 auto;" placeholder="Insira a data">
-        </div>
-
-        <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
-        <div class="text-center mt-4">
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
-                <button type="button" class="btn btn-danger" onclick="deletarDados()">Deletar Dados</button>
-            </div>
-            <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
-            <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
-        </div>
-
-        <!-- Dropdown para Selecionar Lançamento -->
-        <div class="text-center mt-4">
-            <select id="launchSelector" class="form-control" style="max-width: 300px; margin: 0 auto;" onchange="loadDataByLaunch(this.value)">
+        <!-- Campo para Inserir a Data e Menu Suspenso -->
+        <div class="input-group">
+            <input type="date" id="dataLancamento" class="form-control" placeholder="Insira a data" style="max-width: 300px;">
+            <select id="launchSelector" class="form-control" style="max-width: 300px;">
                 <option value="">Selecione um lançamento</option>
             </select>
         </div>
+
+        <!-- Botões para Salvar e Deletar Dados -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
+            <button type="button" class="btn btn-danger" onclick="deletarDados()">Deletar Dados</button>
+        </div>
+
+        <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
+        <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
 
         <!-- Formulário de Faca Superior -->
         <div class="form-container mt-4">
@@ -209,6 +216,7 @@
 
             const newLaunchKey = Date.now().toString(); // Usar timestamp como chave única
             const updates = {};
+            updates[`facas/${newLaunchKey}/data`] = dataLancamento;
             updates[`facas/${newLaunchKey}/superior`] = dadosFacaSuperior;
             updates[`facas/${newLaunchKey}/inferior`] = dadosFacaInferior;
 
