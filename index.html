@@ -62,6 +62,9 @@
         #report {
             margin-top: 40px;
         }
+        .report-item {
+            margin-bottom: 10px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -73,7 +76,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formul Faca</h1>
 
         <!-- Campo para Inserir a Data -->
         <div class="text-center">
@@ -207,8 +210,6 @@
                 database.ref().update(updates)
                     .then(() => {
                         loadAllLaunches();
-
-                        // Mostrar mensagem de sucesso
                         document.getElementById('successMessage').innerText = 'Dados salvos com sucesso!';
                         document.getElementById('successMessage').style.display = 'block';
                         setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
@@ -279,7 +280,7 @@
                 formatter: (value, context) => {
                     const index = context.dataIndex;
                     const realValue = [data.lr, data.m, data.lc][index];
-                    return `${realValue} (${value}%)`;
+                    return `${value}%`;
                 },
                 color: '#000',
                 anchor: 'end',
@@ -294,14 +295,18 @@
             const inferiorVariation = calculateVariation(targetValues.inferior, data.inferior);
 
             const reportHTML = `
-                <h5>Faca Superior</h5>
-                <p>L.R: Esperado - ${targetValues.superior.lr}, Atual - ${data.superior.lr}, Variação - ${superiorVariation.lr}%</p>
-                <p>M: Esperado - ${targetValues.superior.m}, Atual - ${data.superior.m}, Variação - ${superiorVariation.m}%</p>
-                <p>L.C: Esperado - ${targetValues.superior.lc}, Atual - ${data.superior.lc}, Variação - ${superiorVariation.lc}%</p>
-                <h5>Faca Inferior</h5>
-                <p>L.R: Esperado - ${targetValues.inferior.lr}, Atual - ${data.inferior.lr}, Variação - ${inferiorVariation.lr}%</p>
-                <p>M: Esperado - ${targetValues.inferior.m}, Atual - ${data.inferior.m}, Variação - ${inferiorVariation.m}%</p>
-                <p>L.C: Esperado - ${targetValues.inferior.lc}, Atual - ${data.inferior.lc}, Variação - ${inferiorVariation.lc}%</p>
+                <div class="report-item">
+                    <h5>Faca Superior</h5>
+                    <p>L.R: ${superiorVariation.lr}%</p>
+                    <p>M: ${superiorVariation.m}%</p>
+                    <p>L.C: ${superiorVariation.lc}%</p>
+                </div>
+                <div class="report-item">
+                    <h5>Faca Inferior</h5>
+                    <p>L.R: ${inferiorVariation.lr}%</p>
+                    <p>M: ${inferiorVariation.m}%</p>
+                    <p>L.C: ${inferiorVariation.lc}%</p>
+                </div>
             `;
             reportContent.innerHTML = reportHTML;
         }
@@ -339,11 +344,7 @@
                         color: '#000',
                         anchor: 'end',
                         align: 'start',
-                        formatter: (value, context) => {
-                            const index = context.dataIndex;
-                            const realValue = [0, 0, 0][index]; // Valores iniciais zerados
-                            return `${realValue} (${value}%)`;
-                        }
+                        formatter: (value) => `${value}%`
                     },
                     legend: {
                         display: false
@@ -388,11 +389,7 @@
                         color: '#000',
                         anchor: 'end',
                         align: 'start',
-                        formatter: (value, context) => {
-                            const index = context.dataIndex;
-                            const realValue = [0, 0, 0][index]; // Valores iniciais zerados
-                            return `${realValue} (${value}%)`;
-                        }
+                        formatter: (value) => `${value}%`
                     },
                     legend: {
                         display: false
