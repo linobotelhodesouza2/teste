@@ -59,22 +59,6 @@
         .alert {
             display: none;
         }
-        .placeholder-text {
-            color: #aaa;
-            position: absolute;
-            pointer-events: none;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.8em;
-            font-weight: normal;
-        }
-        .input-wrapper {
-            position: relative;
-        }
-        .input-wrapper input {
-            padding-left: 50px; /* Espaço para o texto da marca d'água */
-        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -86,9 +70,9 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formuláe Faca</h1>
         
-        <!-- Caixa de Seleção de Lançamento -->
+        <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
             <div class="btn-group">
                 <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
@@ -110,17 +94,14 @@
             <h5 class="mb-3 text-center">Faca Superior</h5>
             <form id="facaSuperiorForm">
                 <div class="form-row">
-                    <div class="form-group input-wrapper">
+                    <div class="form-group">
                         <input type="number" class="form-control" id="lrSuperior" placeholder="68.5">
-                        <span class="placeholder-text">68.5</span>
                     </div>
-                    <div class="form-group input-wrapper">
+                    <div class="form-group">
                         <input type="number" class="form-control" id="mSuperior" placeholder="69">
-                        <span class="placeholder-text">69</span>
                     </div>
-                    <div class="form-group input-wrapper">
+                    <div class="form-group">
                         <input type="number" class="form-control" id="lcSuperior" placeholder="68.9">
-                        <span class="placeholder-text">68.9</span>
                     </div>
                 </div>
             </form>
@@ -131,17 +112,14 @@
             <h5 class="mb-3 text-center">Faca Inferior</h5>
             <form id="facaInferiorForm">
                 <div class="form-row">
-                    <div class="form-group input-wrapper">
+                    <div class="form-group">
                         <input type="number" class="form-control" id="lrInferior" placeholder="65">
-                        <span class="placeholder-text">65</span>
                     </div>
-                    <div class="form-group input-wrapper">
+                    <div class="form-group">
                         <input type="number" class="form-control" id="mInferior" placeholder="65">
-                        <span class="placeholder-text">65</span>
                     </div>
-                    <div class="form-group input-wrapper">
+                    <div class="form-group">
                         <input type="number" class="form-control" id="lcInferior" placeholder="65">
-                        <span class="placeholder-text">65</span>
                     </div>
                 </div>
             </form>
@@ -208,7 +186,6 @@
                         facaSuperiorForm.reset();
                         facaInferiorForm.reset();
 
-                        document.getElementById('successMessage').innerText = 'Dados salvos com sucesso!';
                         document.getElementById('successMessage').style.display = 'block';
                         setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
                     })
@@ -222,11 +199,13 @@
 
         function deletarDados() {
             const launchSelector = document.getElementById('launchSelector');
-            const selectedValue = launchSelector.value;
+            const selectedLaunch = launchSelector.value;
+            if (!selectedLaunch) {
+                alert('Por favor, selecione um lançamento para deletar.');
+                return;
+            }
 
-            if (!selectedValue) return;
-
-            database.ref(`facas/${selectedValue}`).remove()
+            database.ref(`facas/${selectedLaunch}`).remove()
                 .then(() => {
                     loadAllLaunches();
                     document.getElementById('successMessage').innerText = 'Lançamento deletado com sucesso!';
@@ -292,7 +271,7 @@
                 labels: ['L.R', 'M', 'L.C'],
                 datasets: [{
                     label: 'Faca Superior',
-                    data: [68.5, 69, 68.9],
+                    data: [0, 0, 0],
                     backgroundColor: ['rgba(75, 192, 192, 0.2)'],
                     borderColor: ['rgba(75, 192, 192, 1)'],
                     borderWidth: 1
@@ -311,7 +290,7 @@
                         align: 'center',
                         formatter: (value, context) => {
                             const index = context.dataIndex;
-                            const realValue = [68.5, 69, 68.9][index];
+                            const realValue = [0, 0, 0][index]; // Valores iniciais zerados
                             return `${realValue} (${value}%)`;
                         }
                     },
@@ -341,7 +320,7 @@
                 labels: ['L.R', 'M', 'L.C'],
                 datasets: [{
                     label: 'Faca Inferior',
-                    data: [65, 65, 65],
+                    data: [0, 0, 0],
                     backgroundColor: ['rgba(153, 102, 255, 0.2)'],
                     borderColor: ['rgba(153, 102, 255, 1)'],
                     borderWidth: 1
@@ -360,7 +339,7 @@
                         align: 'center',
                         formatter: (value, context) => {
                             const index = context.dataIndex;
-                            const realValue = [65, 65, 65][index];
+                            const realValue = [0, 0, 0][index]; // Valores iniciais zerados
                             return `${realValue} (${value}%)`;
                         }
                     },
