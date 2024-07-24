@@ -62,7 +62,16 @@
         #report {
             margin-top: 40px;
         }
+        .report-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
         .report-item {
+            margin: 10px;
+            text-align: center;
+        }
+        .report-item h5 {
             margin-bottom: 10px;
         }
     </style>
@@ -76,7 +85,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formul Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
 
         <!-- Campo para Inserir a Data -->
         <div class="text-center">
@@ -153,7 +162,7 @@
         <!-- Relatório Comparativo -->
         <div id="report" class="mt-5">
             <h3 class="text-center">Relatório Comparativo</h3>
-            <div id="reportContent" class="text-center"></div>
+            <div id="reportContent" class="report-container"></div>
         </div>
     </div>
 
@@ -172,7 +181,7 @@
         const database = firebase.database();
 
         const targetValues = {
-            superior: { lr: 68.6, m: 69.1, lc: 68.9 },
+            superior: { lr: 68.5, m: 69, lc: 68.9 },
             inferior: { lr: 65, m: 65, lc: 65 }
         };
 
@@ -202,7 +211,6 @@
                 const data = snapshot.val() || {};
                 const numLaunches = Object.keys(data).length + 1;
                 const launchKey = `Lançamento ${numLaunches} - ${dataLancamento}`;
-
                 const updates = {};
                 updates[`facas/${launchKey}/superior`] = dadosFacaSuperior;
                 updates[`facas/${launchKey}/inferior`] = dadosFacaInferior;
