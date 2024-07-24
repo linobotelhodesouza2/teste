@@ -70,17 +70,20 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulára</h1>
         
-        <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
-        <div class="text-center mt-4">
-            <input type="date" id="dateInput" class="form-control" style="max-width: 200px; margin: 0 auto;">
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
-                <button type="button" class="btn btn-danger" onclick="deletarDados()">Deletar Dados</button>
+        <!-- Contêiner do Gráfico -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartFacaSuperior" class="chart"></canvas>
+                </div>
             </div>
-            <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
-            <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <canvas id="chartFacaInferior" class="chart"></canvas>
+                </div>
+            </div>
         </div>
 
         <!-- Dropdown para Selecionar Lançamento -->
@@ -88,6 +91,16 @@
             <select id="launchSelector" class="form-control" style="max-width: 300px; margin: 0 auto;" onchange="loadDataByLaunch(this.value)">
                 <option value="">Selecione um lançamento</option>
             </select>
+        </div>
+
+        <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
+        <div class="text-center mt-4">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
+                <button type="button" class="btn btn-danger" onclick="deletarDados()">Deletar Dados</button>
+            </div>
+            <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
+            <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
         </div>
 
         <!-- Formulário de Faca Superior -->
@@ -125,20 +138,6 @@
                 </div>
             </form>
         </div>
-
-        <!-- Contêiner do Gráfico -->
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <canvas id="chartFacaSuperior" class="chart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <canvas id="chartFacaInferior" class="chart"></canvas>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -156,12 +155,6 @@
         const database = firebase.database();
 
         function salvarDados() {
-            const dateInput = document.getElementById('dateInput').value;
-            if (!dateInput) {
-                alert('Por favor, selecione uma data.');
-                return;
-            }
-
             const facaSuperiorForm = document.getElementById('facaSuperiorForm');
             const facaInferiorForm = document.getElementById('facaInferiorForm');
 
@@ -177,27 +170,32 @@
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            const launchKey = `Lançamento ${new Date().getTime()}`; // Usar timestamp para garantir unicidade
+            // Contar lançamentos existentes para gerar o próximo nome de lançamento
+            database.ref('facas').once('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                const launchCount = Object.keys(data).length + 1;
+                const launchKey = `Lançamento ${launchCount}`;
 
-            const updates = {};
-            updates[`facas/${dateInput}/${launchKey}/superior`] = dadosFacaSuperior;
-            updates[`facas/${dateInput}/${launchKey}/inferior`] = dadosFacaInferior;
+                const updates = {};
+                updates[`facas/${launchKey}/superior`] = dadosFacaSuperior;
+                updates[`facas/${launchKey}/inferior`] = dadosFacaInferior;
 
-            database.ref().update(updates)
-                .then(() => {
-                    loadAllLaunches();
-                    
-                    facaSuperiorForm.reset();
-                    facaInferiorForm.reset();
+                database.ref().update(updates)
+                    .then(() => {
+                        loadAllLaunches();
+                        
+                        facaSuperiorForm.reset();
+                        facaInferiorForm.reset();
 
-                    document.getElementById('successMessage').style.display = 'block';
-                    setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
-                })
-                .catch((error) => {
-                    console.error('Erro ao salvar dados:', error);
-                    document.getElementById('errorMessage').style.display = 'block';
-                    setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
-                });
+                        document.getElementById('successMessage').style.display = 'block';
+                        setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
+                    })
+                    .catch((error) => {
+                        console.error('Erro ao salvar dados:', error);
+                        document.getElementById('errorMessage').style.display = 'block';
+                        setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
+                    });
+            });
         }
 
         function deletarDados() {
@@ -208,13 +206,7 @@
                 return;
             }
 
-            const dateInput = document.getElementById('dateInput').value;
-            if (!dateInput) {
-                alert('Por favor, selecione uma data.');
-                return;
-            }
-
-            database.ref(`facas/${dateInput}/${selectedLaunch}`).remove()
+            database.ref(`facas/${selectedLaunch}`).remove()
                 .then(() => {
                     loadAllLaunches();
                 })
@@ -229,14 +221,11 @@
 
             database.ref('facas').once('value', (snapshot) => {
                 const data = snapshot.val() || {};
-                Object.keys(data).forEach(date => {
-                    const launches = data[date];
-                    Object.keys(launches).forEach(launchKey => {
-                        const option = document.createElement('option');
-                        option.value = `${date}/${launchKey}`;
-                        option.textContent = `${launchKey} (${date})`;
-                        launchSelector.appendChild(option);
-                    });
+                Object.keys(data).forEach(launchKey => {
+                    const option = document.createElement('option');
+                    option.value = launchKey;
+                    option.textContent = launchKey;
+                    launchSelector.appendChild(option);
                 });
             });
         }
@@ -244,8 +233,7 @@
         function loadDataByLaunch(launchKey) {
             if (!launchKey) return;
 
-            const [date, launch] = launchKey.split('/');
-            database.ref(`facas/${date}/${launch}`).once('value', (snapshot) => {
+            database.ref(`facas/${launchKey}`).once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     updateChart(chartFacaSuperior, data.superior);
@@ -368,10 +356,6 @@
 
         // Carregar lançamentos ao iniciar a página
         window.onload = function() {
-            document.getElementById('dateInput').addEventListener('change', () => {
-                loadAllLaunches();
-            });
-
             loadAllLaunches();
         };
     </script>
