@@ -26,16 +26,16 @@
             width: 100%;
             max-width: 80px;
             margin: 0 auto;
-            text-align: center;
+            text-align: center; /* Centraliza o texto dentro das caixas */
         }
         .form-row {
             justify-content: center;
         }
         .form-row .form-group {
-            margin-right: 10px;
+            margin-right: 10px; /* Espaçamento entre campos */
         }
         .form-row .form-group:last-child {
-            margin-right: 0;
+            margin-right: 0; /* Remove margem no último campo */
         }
         .chart-container {
             margin-top: 30px;
@@ -45,8 +45,8 @@
         }
         .chart {
             width: 100%;
-            max-width: 400px;
-            margin: 0 10px;
+            max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
+            margin: 0 10px; /* Espaço entre os gráficos */
         }
         .btn-primary, .btn-danger {
             margin: 5px;
@@ -70,7 +70,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulária</h1>
+        <h1 class="text-center mt-5 mb-4">Formul Faca</h1>
         
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
@@ -208,9 +208,14 @@
             database.ref(`facas/${selectedLaunch}`).remove()
                 .then(() => {
                     loadAllLaunches();
+                    document.getElementById('successMessage').innerText = 'Lançamento deletado com sucesso!';
+                    document.getElementById('successMessage').style.display = 'block';
+                    setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
                 })
                 .catch((error) => {
                     console.error('Erro ao deletar dados:', error);
+                    document.getElementById('errorMessage').style.display = 'block';
+                    setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
                 });
         }
 
@@ -250,7 +255,10 @@
                     const index = context.dataIndex;
                     const realValue = [data.lr, data.m, data.lc][index];
                     return `${realValue} (${value}%)`;
-                }
+                },
+                color: '#000',
+                anchor: 'center',
+                align: 'center'
             };
             chart.update();
         }
@@ -278,8 +286,8 @@
                 plugins: {
                     datalabels: {
                         color: '#000',
-                        anchor: 'end',
-                        align: 'top',
+                        anchor: 'center',
+                        align: 'center',
                         formatter: (value, context) => {
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
@@ -327,9 +335,8 @@
                 plugins: {
                     datalabels: {
                         color: '#000',
-                        anchor: 'end',
-                        align: 'top',
-                        offset: -10,
+                        anchor: 'center',
+                        align: 'center',
                         formatter: (value, context) => {
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
