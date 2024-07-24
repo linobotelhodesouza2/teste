@@ -85,7 +85,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de Fa</h1>
 
         <!-- Campo para Inserir a Data -->
         <div class="text-center">
@@ -281,14 +281,6 @@
         function updateChart(chart, data, target) {
             const percentageData = calculateAccuracyPercentage(data, target);
             chart.data.datasets[0].data = percentageData;
-            chart.data.datasets[0].datalabels = {
-                formatter: (value, context) => {
-                    return `${value}%`;
-                },
-                color: '#000',
-                anchor: 'end',
-                align: 'start'
-            };
             chart.update();
         }
 
