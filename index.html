@@ -85,7 +85,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
 
         <!-- Campo para Inserir a Data -->
         <div class="text-center">
@@ -207,28 +207,25 @@
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            database.ref('facas').once('value', (snapshot) => {
-                const data = snapshot.val() || {};
-                const totalLaunches = Object.keys(data).length + 1;
-                const launchKey = dataLancamento;
+            const totalLaunches = Object.keys(data).length + 1;
+            const launchKey = dataLancamento;
 
-                const updates = {};
-                updates[`facas/${launchKey}/superior`] = dadosFacaSuperior;
-                updates[`facas/${launchKey}/inferior`] = dadosFacaInferior;
+            const updates = {};
+            updates[`facas/${launchKey}/superior`] = dadosFacaSuperior;
+            updates[`facas/${launchKey}/inferior`] = dadosFacaInferior;
 
-                database.ref().update(updates)
-                    .then(() => {
-                        loadAllLaunches();
-                        document.getElementById('successMessage').innerText = 'Dados salvos com sucesso!';
-                        document.getElementById('successMessage').style.display = 'block';
-                        setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
-                    })
-                    .catch((error) => {
-                        console.error('Erro ao salvar dados:', error);
-                        document.getElementById('errorMessage').style.display = 'block';
-                        setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
-                    });
-            });
+            database.ref().update(updates)
+                .then(() => {
+                    loadAllLaunches();
+                    document.getElementById('successMessage').innerText = 'Dados salvos com sucesso!';
+                    document.getElementById('successMessage').style.display = 'block';
+                    setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
+                })
+                .catch((error) => {
+                    console.error('Erro ao salvar dados:', error);
+                    document.getElementById('errorMessage').style.display = 'block';
+                    setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
+                });
         }
 
         function deletarDados() {
@@ -274,21 +271,18 @@
             database.ref(`facas/${launchKey}`).once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    updateChart(chartFacaSuperior, data.superior);
-                    updateChart(chartFacaInferior, data.inferior);
+                    updateChart(chartFacaSuperior, data.superior, targetValues.superior);
+                    updateChart(chartFacaInferior, data.inferior, targetValues.inferior);
                     generateReport(data);
                 }
             });
         }
 
-        function updateChart(chart, data) {
-            const total = data.lr + data.m + data.lc;
-            const percentageData = [data.lr, data.m, data.lc].map(value => total > 0 ? (value / total * 100).toFixed(1) : 0);
+        function updateChart(chart, data, target) {
+            const percentageData = calculateAccuracyPercentage(data, target);
             chart.data.datasets[0].data = percentageData;
             chart.data.datasets[0].datalabels = {
                 formatter: (value, context) => {
-                    const index = context.dataIndex;
-                    const realValue = [data.lr, data.m, data.lc][index];
                     return `${value}%`;
                 },
                 color: '#000',
@@ -296,6 +290,15 @@
                 align: 'start'
             };
             chart.update();
+        }
+
+        function calculateAccuracyPercentage(data, target) {
+            return ['lr', 'm', 'lc'].map(key => {
+                const targetValue = target[key];
+                const actualValue = data[key];
+                const accuracy = 100 - Math.abs((actualValue - targetValue) / targetValue * 100);
+                return accuracy.toFixed(1);
+            });
         }
 
         function generateReport(data) {
