@@ -26,16 +26,16 @@
             width: 100%;
             max-width: 80px;
             margin: 0 auto;
-            text-align: center; /* Centraliza o texto dentro das caixas */
+            text-align: center;
         }
         .form-row {
             justify-content: center;
         }
         .form-row .form-group {
-            margin-right: 10px; /* Espaçamento entre campos */
+            margin-right: 10px;
         }
         .form-row .form-group:last-child {
-            margin-right: 0; /* Remove margem no último campo */
+            margin-right: 0;
         }
         .chart-container {
             margin-top: 30px;
@@ -45,8 +45,8 @@
         }
         .chart {
             width: 100%;
-            max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
-            margin: 0 10px; /* Espaço entre os gráficos */
+            max-width: 400px;
+            margin: 0 10px;
         }
         .btn-primary, .btn-danger {
             margin: 5px;
@@ -70,7 +70,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulária</h1>
         
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
@@ -329,6 +329,7 @@
                         color: '#000',
                         anchor: 'end',
                         align: 'top',
+                        offset: -10,
                         formatter: (value, context) => {
                             const index = context.dataIndex;
                             const realValue = [0, 0, 0][index]; // Valores iniciais zerados
