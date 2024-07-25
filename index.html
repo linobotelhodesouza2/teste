@@ -4,65 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Faca</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #e9ecef;
-            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
         }
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
-        .card {
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .card-header {
-            background-color: #007bff;
-            color: #fff;
-            padding: 15px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .card-body {
+        .form-container {
+            border: 1px solid #ddd;
             padding: 20px;
-        }
-        .form-control {
+            margin: 10px;
             border-radius: 10px;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-            border-radius: 10px;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-            border: none;
-            border-radius: 10px;
-        }
-        .btn-danger:hover {
-            background-color: #c82333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            background-color: #fff;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
-        .form-control::placeholder {
-            color: #6c757d;
-            opacity: 1; /* Para garantir que o placeholder não desapareça */
+        .form-control {
+            width: 80px;
+            text-align: center; /* Centraliza o texto dentro das caixas */
+        }
+        .form-row {
+            justify-content: center;
+        }
+        .form-row .form-group {
+            margin-right: 10px; /* Espaçamento entre campos */
+        }
+        .form-row .form-group:last-child {
+            margin-right: 0; /* Remove margem no último campo */
         }
         .chart-container {
-            margin-top: 20px;
-            text-align: center;
+            margin-top: 30px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
         }
         .chart {
-            max-width: 100%;
-            height: auto;
+            width: 100%;
+            max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
+            margin: 0 10px; /* Espaço entre os gráficos */
+        }
+        .btn-primary, .btn-danger {
+            margin: 5px;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
         .alert {
             display: none;
@@ -72,98 +61,35 @@
         }
         .report-container {
             display: flex;
-            flex-direction: row;
             justify-content: space-around;
             flex-wrap: wrap;
         }
         .report-item {
-            width: 100%;
-            max-width: 300px;
             margin: 10px;
             text-align: center;
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .report-item h5 {
             margin-bottom: 10px;
-        }
-        .text-center {
-            text-align: center;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário</h1>
 
         <!-- Campo para Inserir a Data -->
-        <div class="card">
-            <div class="card-header">Data do Lançamento</div>
-            <div class="card-body text-center">
-                <input type="date" id="dataLancamento" class="form-control" style="max-width: 300px; margin: 0 auto;" placeholder="Insira a data">
-            </div>
+        <div class="text-center">
+            <input type="date" id="dataLancamento" class="form-control" style="max-width: 300px; margin: 0 auto;" placeholder="Insira a data">
         </div>
 
-        <!-- Caixa de Seleção de Lançamento -->
-        <div class="card">
-            <div class="card-header">Selecionar Lançamento</div>
-            <div class="card-body text-center">
-                <select id="launchSelector" class="form-control" style="max-width: 300px; margin: 0 auto;" onchange="loadDataByLaunch(this.value)">
-                    <option value="">Selecione um lançamento</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Formulário de Faca Superior -->
-        <div class="card">
-            <div class="card-header">Faca Superior</div>
-            <div class="card-body">
-                <form id="facaSuperiorForm">
-                    <div class="form-row text-center">
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="lrSuperior" placeholder="68.5">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="mSuperior" placeholder="69">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="lcSuperior" placeholder="68.9">
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Formulário de Faca Inferior -->
-        <div class="card">
-            <div class="card-header">Faca Inferior</div>
-            <div class="card-body">
-                <form id="facaInferiorForm">
-                    <div class="form-row text-center">
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="lrInferior" placeholder="65">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="mInferior" placeholder="65">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="lcInferior" placeholder="65">
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Botões de Salvar e Deletar -->
+        <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
         <div class="text-center mt-4">
             <div class="btn-group">
                 <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
@@ -171,6 +97,49 @@
             </div>
             <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
             <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
+        </div>
+
+        <!-- Dropdown para Selecionar Lançamento -->
+        <div class="text-center mt-4">
+            <select id="launchSelector" class="form-control" style="max-width: 300px; margin: 0 auto;" onchange="loadDataByLaunch(this.value)">
+                <option value="">Selecione um lançamento</option>
+            </select>
+        </div>
+
+        <!-- Formulário de Faca Superior -->
+        <div class="form-container mt-4">
+            <h5 class="mb-3 text-center">Faca Superior</h5>
+            <form id="facaSuperiorForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="number" class="form-control" id="lrSuperior" placeholder="68.5">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control" id="mSuperior" placeholder="69">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control" id="lcSuperior" placeholder="68.9">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Formulário de Faca Inferior -->
+        <div class="form-container mt-4">
+            <h5 class="mb-3 text-center">Faca Inferior</h5>
+            <form id="facaInferiorForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="number" class="form-control" id="lrInferior" placeholder="65">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control" id="mInferior" placeholder="65">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control" id="lcInferior" placeholder="65">
+                    </div>
+                </div>
+            </form>
         </div>
 
         <!-- Contêiner do Gráfico -->
@@ -214,8 +183,14 @@
         };
 
         function salvarDados() {
+            const dataLancamento = document.getElementById('dataLancamento').value;
             const facaSuperiorForm = document.getElementById('facaSuperiorForm');
             const facaInferiorForm = document.getElementById('facaInferiorForm');
+
+            if (!dataLancamento) {
+                alert('Por favor, insira uma data.');
+                return;
+            }
 
             const dadosFacaSuperior = {
                 lr: parseFloat(facaSuperiorForm.lrSuperior.value) || 0,
@@ -233,6 +208,7 @@
             const updates = {};
             updates[`facas/${newLaunchKey}/superior`] = dadosFacaSuperior;
             updates[`facas/${newLaunchKey}/inferior`] = dadosFacaInferior;
+            updates[`facas/${newLaunchKey}/data`] = dataLancamento;
 
             database.ref().update(updates)
                 .then(() => {
@@ -276,10 +252,10 @@
 
             database.ref('facas').once('value', (snapshot) => {
                 const data = snapshot.val() || {};
-                Object.keys(data).forEach((launchKey, index) => {
+                Object.keys(data).forEach(launchKey => {
                     const option = document.createElement('option');
                     option.value = launchKey;
-                    option.textContent = `Lançamento ${index + 1}`;
+                    option.textContent = `Lançamento ${Object.keys(data).indexOf(launchKey) + 1}`;
                     launchSelector.appendChild(option);
                 });
             });
