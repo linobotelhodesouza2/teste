@@ -171,12 +171,12 @@
         }
 
         function updateChart(chart, data, targetValues) {
-            const variations = Object.keys(data).map(key => {
-                const variation = ((data[key] - targetValues[key]) / targetValues[key]) * 100;
-                return Math.max(0, variation.toFixed(1)); // Somente variações positivas
+            const percentages = Object.keys(data).map(key => {
+                const percentage = (data[key] / targetValues[key]) * 100;
+                return Math.min(100, percentage.toFixed(1)); // Limitar a 100%
             });
 
-            chart.data.datasets[0].data = variations;
+            chart.data.datasets[0].data = percentages;
             chart.update();
         }
 
@@ -205,14 +205,14 @@
             loadAllLaunches();
 
             window.chartFacaSuperior = new Chart(document.getElementById('chartFacaSuperiorCanvas'), {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: ['LR', 'M', 'LC'],
                     datasets: [
                         {
-                            label: 'Variação (%)',
+                            label: 'Aproximação (%)',
                             data: [],
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            backgroundColor: '#36a2eb',
                             borderColor: '#36a2eb',
                             borderWidth: 1
                         }
@@ -236,14 +236,14 @@
             });
 
             window.chartFacaInferior = new Chart(document.getElementById('chartFacaInferiorCanvas'), {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: ['LR', 'M', 'LC'],
                     datasets: [
                         {
-                            label: 'Variação (%)',
+                            label: 'Aproximação (%)',
                             data: [],
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            backgroundColor: '#4bc0c0',
                             borderColor: '#4bc0c0',
                             borderWidth: 1
                         }
