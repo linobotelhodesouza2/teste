@@ -60,10 +60,7 @@
             <button class="btn btn-primary" type="button" onclick="salvarDados()">Salvar</button>
             <button class="btn btn-danger" type="button" onclick="deletarDados()">Deletar</button>
         </div>
-        <div class="d-flex mt-3">
-            <input type="date" class="form-control" id="dataLancamento">
-            <select id="launchSelector" class="form-select ms-2" onchange="loadDataByLaunch(this.value)"></select>
-        </div>
+        <select id="launchSelector" class="form-select mt-3" onchange="loadDataByLaunch(this.value)"></select>
         <div id="chartFacaSuperior">
             <canvas id="chartFacaSuperiorCanvas"></canvas>
         </div>
@@ -175,8 +172,8 @@
 
         function updateChart(chart, data, targetValues) {
             const variations = Object.keys(data).map(key => {
-                const variation = ((data[key] - targetValues[key]) / targetValues[key]) * 10; // Modificado para escala de 0 a 10
-                return Math.max(0, variation.toFixed(1)); // Somente variações positivas
+                const variation = ((data[key] - targetValues[key]) / targetValues[key]).toFixed(1);
+                return variation;
             });
 
             chart.data.datasets[0].data = variations;
@@ -186,6 +183,7 @@
         function generateReport(data) {
             const reportContent = document.getElementById('reportContent');
             reportContent.innerHTML = `
+                <p><strong>Data de Lançamento:</strong> ${data.data}</p>
                 <div class="d-flex justify-content-between">
                     <div>
                         <h4>Faca Superior</h4>
@@ -231,8 +229,7 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            min: 0,
-                            max: 10 // Escala de 0 a 10
+                            max: 2 // Alterando a escala para 0 a 2
                         }
                     }
                 }
@@ -263,8 +260,7 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            min: 0,
-                            max: 10 // Escala de 0 a 10
+                            max: 2 // Alterando a escala para 0 a 2
                         }
                     }
                 }
