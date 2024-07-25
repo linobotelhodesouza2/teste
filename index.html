@@ -95,7 +95,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário </h1>
 
         <!-- Campo para Inserir a Data e Dropdown ao Lado -->
         <div class="input-group mb-4">
@@ -263,8 +263,9 @@
                 const data = snapshot.val() || {};
                 Object.keys(data).forEach(launchKey => {
                     const option = document.createElement('option');
+                    const date = data[launchKey].data;
                     option.value = launchKey;
-                    option.textContent = `Lançamento ${Object.keys(data).indexOf(launchKey) + 1}`;
+                    option.textContent = `Lançamento ${Object.keys(data).indexOf(launchKey) + 1} - ${date}`;
                     launchSelector.appendChild(option);
                 });
             });
