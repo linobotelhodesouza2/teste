@@ -44,7 +44,7 @@
         <div id="errorMessage" class="alert alert-danger" style="display: none;">Erro ao salvar dados!</div>
         <div class="mb-3">
             <label for="dataLancamento" class="form-label">Data de Lançamento</label>
-            <input type="date" class="form-control" id="dataLancamento">
+            <input type="date" class="form-control" id="dataLancamento" placeholder="Insira a data">
         </div>
         <div class="input-row">
             <input type="number" class="form-control" id="superiorLR" placeholder="68.5 LR">
@@ -171,9 +171,9 @@
         }
 
         function updateChart(chart, data, targetValues) {
-            const total = Object.values(targetValues).reduce((acc, val) => acc + val, 0);
             const percentageData = Object.keys(data).map(key => {
-                const percentage = total > 0 ? (data[key] / total) * 100 : 0;
+                const difference = Math.abs(data[key] - targetValues[key]);
+                const percentage = (1 - difference / targetValues[key]) * 100;
                 return parseFloat(percentage.toFixed(1));
             });
 
@@ -185,14 +185,20 @@
             const reportContent = document.getElementById('reportContent');
             reportContent.innerHTML = `
                 <p><strong>Data de Lançamento:</strong> ${data.data}</p>
-                <h4>Faca Superior</h4>
-                <p>LR: ${data.superior.lr}</p>
-                <p>M: ${data.superior.m}</p>
-                <p>LC: ${data.superior.lc}</p>
-                <h4>Faca Inferior</h4>
-                <p>LR: ${data.inferior.lr}</p>
-                <p>M: ${data.inferior.m}</p>
-                <p>LC: ${data.inferior.lc}</p>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>Faca Superior</h4>
+                        <p>LR: ${data.superior.lr}</p>
+                        <p>M: ${data.superior.m}</p>
+                        <p>LC: ${data.superior.lc}</p>
+                    </div>
+                    <div>
+                        <h4>Faca Inferior</h4>
+                        <p>LR: ${data.inferior.lr}</p>
+                        <p>M: ${data.inferior.m}</p>
+                        <p>LC: ${data.inferior.lc}</p>
+                    </div>
+                </div>
             `;
         }
 
