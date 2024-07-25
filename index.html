@@ -171,13 +171,11 @@
         }
 
         function updateChart(chart, data, targetValues) {
-            const percentageData = Object.keys(data).map(key => {
-                const difference = Math.abs(data[key] - targetValues[key]);
-                const percentage = (1 - difference / targetValues[key]) * 100;
-                return parseFloat(percentage.toFixed(1));
-            });
+            const mainData = Object.keys(data).map(key => data[key]);
+            const excessData = Object.keys(data).map(key => (data[key] > targetValues[key] ? data[key] - targetValues[key] : 0));
 
-            chart.data.datasets[0].data = percentageData;
+            chart.data.datasets[0].data = mainData;
+            chart.data.datasets[1].data = excessData;
             chart.update();
         }
 
@@ -209,13 +207,22 @@
                 type: 'bar',
                 data: {
                     labels: ['LR', 'M', 'LC'],
-                    datasets: [{
-                        label: 'Faca Superior',
-                        data: [],
-                        backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe'],
-                        borderColor: ['#ff6384', '#36a2eb', '#cc65fe'],
-                        borderWidth: 1
-                    }]
+                    datasets: [
+                        {
+                            label: 'Faca Superior',
+                            data: [],
+                            backgroundColor: '#36a2eb',
+                            borderColor: '#36a2eb',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Excesso',
+                            data: [],
+                            backgroundColor: '#ff6384',
+                            borderColor: '#ff6384',
+                            borderWidth: 1
+                        }
+                    ]
                 },
                 options: {
                     plugins: {
@@ -238,13 +245,22 @@
                 type: 'bar',
                 data: {
                     labels: ['LR', 'M', 'LC'],
-                    datasets: [{
-                        label: 'Faca Inferior',
-                        data: [],
-                        backgroundColor: ['#ffcd56', '#4bc0c0', '#9966ff'],
-                        borderColor: ['#ffcd56', '#4bc0c0', '#9966ff'],
-                        borderWidth: 1
-                    }]
+                    datasets: [
+                        {
+                            label: 'Faca Inferior',
+                            data: [],
+                            backgroundColor: '#4bc0c0',
+                            borderColor: '#4bc0c0',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Excesso',
+                            data: [],
+                            backgroundColor: '#ffcd56',
+                            borderColor: '#ffcd56',
+                            borderWidth: 1
+                        }
+                    ]
                 },
                 options: {
                     plugins: {
