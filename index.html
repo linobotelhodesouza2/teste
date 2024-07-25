@@ -60,10 +60,7 @@
             <button class="btn btn-primary" type="button" onclick="salvarDados()">Salvar</button>
             <button class="btn btn-danger" type="button" onclick="deletarDados()">Deletar</button>
         </div>
-        <div class="d-flex align-items-center mt-3">
-            <input type="date" class="form-control me-2" id="dateInput" placeholder="Insira a data">
-            <select id="launchSelector" class="form-select" onchange="loadDataByLaunch(this.value)"></select>
-        </div>
+        <select id="launchSelector" class="form-select mt-3" onchange="loadDataByLaunch(this.value)"></select>
         <div id="chartFacaSuperior">
             <canvas id="chartFacaSuperiorCanvas"></canvas>
         </div>
@@ -166,20 +163,21 @@
             database.ref(`facas/${launchKey}`).once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    updateChart(chartFacaSuperior, data.superior, targetValues.superior);
-                    updateChart(chartFacaInferior, data.inferior, targetValues.inferior);
+                    updateChart(chartFacaSuperior, data.superior, targetValues.superior, 'Faca Superior');
+                    updateChart(chartFacaInferior, data.inferior, targetValues.inferior, 'Faca Inferior');
                     generateReport(data);
                 }
             });
         }
 
-        function updateChart(chart, data, targetValues) {
+        function updateChart(chart, data, targetValues, title) {
             const percentages = Object.keys(data).map(key => {
                 const percentage = (data[key] / targetValues[key]) * 100;
                 return Math.min(100, percentage.toFixed(1)); // Limitar a 100%
             });
 
             chart.data.datasets[0].data = percentages;
+            chart.options.plugins.datalabels.labels.title.text = title;
             chart.update();
         }
 
@@ -190,15 +188,15 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h4>Faca Superior</h4>
-                        <p>LR: ${(data.superior.lr - targetValues.superior.lr).toFixed(1)}%</p>
-                        <p>M: ${(data.superior.m - targetValues.superior.m).toFixed(1)}%</p>
-                        <p>LC: ${(data.superior.lc - targetValues.superior.lc).toFixed(1)}%</p>
+                        <p>LR: ${((data.superior.lr / targetValues.superior.lr) * 100).toFixed(1)}%</p>
+                        <p>M: ${((data.superior.m / targetValues.superior.m) * 100).toFixed(1)}%</p>
+                        <p>LC: ${((data.superior.lc / targetValues.superior.lc) * 100).toFixed(1)}%</p>
                     </div>
                     <div>
                         <h4>Faca Inferior</h4>
-                        <p>LR: ${(data.inferior.lr - targetValues.inferior.lr).toFixed(1)}%</p>
-                        <p>M: ${(data.inferior.m - targetValues.inferior.m).toFixed(1)}%</p>
-                        <p>LC: ${(data.inferior.lc - targetValues.inferior.lc).toFixed(1)}%</p>
+                        <p>LR: ${((data.inferior.lr / targetValues.inferior.lr) * 100).toFixed(1)}%</p>
+                        <p>M: ${((data.inferior.m / targetValues.inferior.m) * 100).toFixed(1)}%</p>
+                        <p>LC: ${((data.inferior.lc / targetValues.inferior.lc) * 100).toFixed(1)}%</p>
                     </div>
                 </div>
             `;
@@ -214,7 +212,7 @@
                     labels: ['LR', 'M', 'LC'],
                     datasets: [
                         {
-                            label: 'Aproximação (%)',
+                            label: 'Faca Superior',
                             data: [],
                             backgroundColor: '#36a2eb',
                             borderColor: '#36a2eb',
@@ -248,7 +246,7 @@
                     labels: ['LR', 'M', 'LC'],
                     datasets: [
                         {
-                            label: 'Aproximação (%)',
+                            label: 'Faca Inferior',
                             data: [],
                             backgroundColor: '#4bc0c0',
                             borderColor: '#4bc0c0',
