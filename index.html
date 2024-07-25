@@ -22,7 +22,6 @@
             margin-bottom: 10px;
         }
         .form-control {
-            width: 80px;
             text-align: center; /* Centraliza o texto dentro das caixas */
         }
         .form-row {
@@ -79,10 +78,19 @@
             text-align: center; /* Centraliza o texto dentro dos campos */
         }
         .input-group .form-control.input-date {
-            width: 100px;
+            width: 120px;
         }
         .input-group .form-control.input-dropdown {
             width: 200px;
+        }
+        .input-group .form-control.input-submit {
+            width: 100%;
+        }
+        .input-group .form-control.input-margin {
+            margin-right: 10px; /* Espaço entre data e dropdown */
+        }
+        .btn-group .btn {
+            flex: 1;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -100,16 +108,17 @@
         <!-- Campo para Inserir a Data e Dropdown ao Lado -->
         <div class="input-group mb-4">
             <input type="date" id="dataLancamento" class="form-control input-date" placeholder="Insira a data">
+            <input type="text" class="form-control input-margin" readonly>
             <select id="launchSelector" class="form-control input-dropdown" onchange="loadDataByLaunch(this.value)">
                 <option value="">Selecione um lançamento</option>
             </select>
         </div>
 
-        <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
+        <!-- Botões de Salvar e Deletar -->
         <div class="text-center mb-4">
             <div class="btn-group">
-                <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
-                <button type="button" class="btn btn-danger" onclick="deletarDados()">Deletar Dados</button>
+                <button type="button" class="btn btn-primary input-submit" onclick="salvarDados()">Salvar Dados</button>
+                <button type="button" class="btn btn-danger input-submit" onclick="deletarDados()">Deletar Dados</button>
             </div>
             <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
             <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
@@ -213,7 +222,8 @@
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            const newLaunchKey = Date.now().toString(); // Usar timestamp como chave única
+            const newLaunchKey = database.ref().child('facas').push().key;
+
             const updates = {};
             updates[`facas/${newLaunchKey}/superior`] = dadosFacaSuperior;
             updates[`facas/${newLaunchKey}/inferior`] = dadosFacaInferior;
