@@ -171,11 +171,12 @@
         }
 
         function updateChart(chart, data, targetValues) {
-            const mainData = Object.keys(data).map(key => data[key]);
-            const excessData = Object.keys(data).map(key => (data[key] > targetValues[key] ? data[key] - targetValues[key] : 0));
+            const variations = Object.keys(data).map(key => {
+                const variation = ((data[key] - targetValues[key]) / targetValues[key]) * 100;
+                return Math.max(0, variation.toFixed(1)); // Somente variações positivas
+            });
 
-            chart.data.datasets[0].data = mainData;
-            chart.data.datasets[1].data = excessData;
+            chart.data.datasets[0].data = variations;
             chart.update();
         }
 
@@ -186,15 +187,15 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h4>Faca Superior</h4>
-                        <p>LR: ${data.superior.lr}</p>
-                        <p>M: ${data.superior.m}</p>
-                        <p>LC: ${data.superior.lc}</p>
+                        <p>LR: ${(data.superior.lr - targetValues.superior.lr).toFixed(1)}%</p>
+                        <p>M: ${(data.superior.m - targetValues.superior.m).toFixed(1)}%</p>
+                        <p>LC: ${(data.superior.lc - targetValues.superior.lc).toFixed(1)}%</p>
                     </div>
                     <div>
                         <h4>Faca Inferior</h4>
-                        <p>LR: ${data.inferior.lr}</p>
-                        <p>M: ${data.inferior.m}</p>
-                        <p>LC: ${data.inferior.lc}</p>
+                        <p>LR: ${(data.inferior.lr - targetValues.inferior.lr).toFixed(1)}%</p>
+                        <p>M: ${(data.inferior.m - targetValues.inferior.m).toFixed(1)}%</p>
+                        <p>LC: ${(data.inferior.lc - targetValues.inferior.lc).toFixed(1)}%</p>
                     </div>
                 </div>
             `;
@@ -209,17 +210,10 @@
                     labels: ['LR', 'M', 'LC'],
                     datasets: [
                         {
-                            label: 'Faca Superior',
+                            label: 'Variação (%)',
                             data: [],
                             backgroundColor: '#36a2eb',
                             borderColor: '#36a2eb',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Excesso',
-                            data: [],
-                            backgroundColor: '#ff6384',
-                            borderColor: '#ff6384',
                             borderWidth: 1
                         }
                     ]
@@ -247,17 +241,10 @@
                     labels: ['LR', 'M', 'LC'],
                     datasets: [
                         {
-                            label: 'Faca Inferior',
+                            label: 'Variação (%)',
                             data: [],
                             backgroundColor: '#4bc0c0',
                             borderColor: '#4bc0c0',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Excesso',
-                            data: [],
-                            backgroundColor: '#ffcd56',
-                            borderColor: '#ffcd56',
                             borderWidth: 1
                         }
                     ]
