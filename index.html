@@ -2,14 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulário de Faca</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
-            font-size: 16px; /* Fonte padrão para mobile */
-            overflow-x: hidden; /* Evita rolagem horizontal */
         }
         .form-container {
             border: 1px solid #ddd;
@@ -17,27 +15,24 @@
             margin: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1;
             background-color: #fff;
-            width: 100%;
-            box-sizing: border-box;
         }
         .form-group {
             margin-bottom: 10px;
         }
         .form-control {
-            width: 100%; /* Ajusta a largura dos campos de input */
+            width: 80px;
             text-align: center; /* Centraliza o texto dentro das caixas */
         }
         .form-row {
-            flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: center;
         }
         .form-row .form-group {
-            margin-right: 0; /* Remove margem entre campos */
-            flex: 1; /* Ocupa todo o espaço disponível */
+            margin-right: 10px; /* Espaçamento entre campos */
         }
-        .form-row .form-group:nth-child(n+2) {
-            margin-left: 10px; /* Espaçamento entre campos */
+        .form-row .form-group:last-child {
+            margin-right: 0; /* Remove margem no último campo */
         }
         .chart-container {
             margin-top: 30px;
@@ -47,16 +42,15 @@
         }
         .chart {
             width: 100%;
-            max-width: 400px; /* Ajusta o tamanho máximo dos gráficos */
-            margin: 0; /* Remove margem entre gráficos */
+            max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
+            margin: 0 10px; /* Espaço entre os gráficos */
         }
         .btn-primary, .btn-danger {
             margin: 5px;
         }
         .btn-group {
             display: flex;
-            flex-direction: column; /* Empilha os botões verticalmente */
-            align-items: center;
+            justify-content: center;
             margin-top: 20px;
         }
         .alert {
@@ -67,28 +61,28 @@
         }
         .report-container {
             display: flex;
-            flex-direction: column; /* Exibe os itens verticalmente */
-            align-items: center;
+            justify-content: space-around;
+            flex-wrap: wrap;
         }
         .report-item {
-            margin: 10px 0;
+            margin: 10px;
             text-align: center;
         }
         .report-item h5 {
             margin-bottom: 10px;
         }
         .input-group {
-            max-width: 100%;
+            max-width: 400px;
             margin: 0 auto;
         }
         .input-group .form-control {
             text-align: center; /* Centraliza o texto dentro dos campos */
         }
         .input-group .form-control.input-date {
-            width: 100%; /* Ajusta a largura da data */
+            width: 100px;
         }
         .input-group .form-control.input-dropdown {
-            width: 100%; /* Ajusta a largura do dropdown */
+            width: 200px;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -159,12 +153,12 @@
 
         <!-- Contêiner do Gráfico -->
         <div class="row mt-4">
-            <div class="col-12">
+            <div class="col-md-6">
                 <div class="chart-container">
                     <canvas id="chartFacaSuperior" class="chart"></canvas>
                 </div>
             </div>
-            <div class="col-12 mt-4">
+            <div class="col-md-6">
                 <div class="chart-container">
                     <canvas id="chartFacaInferior" class="chart"></canvas>
                 </div>
@@ -212,13 +206,14 @@
                 m: parseFloat(facaSuperiorForm.mSuperior.value) || 0,
                 lc: parseFloat(facaSuperiorForm.lcSuperior.value) || 0
             };
+
             const dadosFacaInferior = {
                 lr: parseFloat(facaInferiorForm.lrInferior.value) || 0,
                 m: parseFloat(facaInferiorForm.mInferior.value) || 0,
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            const newLaunchKey = database.ref().child('facas').push().key;
+            const newLaunchKey = Date.now().toString(); // Usar timestamp como chave única
             const updates = {};
             updates[`facas/${newLaunchKey}/superior`] = dadosFacaSuperior;
             updates[`facas/${newLaunchKey}/inferior`] = dadosFacaInferior;
