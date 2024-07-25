@@ -60,7 +60,10 @@
             <button class="btn btn-primary" type="button" onclick="salvarDados()">Salvar</button>
             <button class="btn btn-danger" type="button" onclick="deletarDados()">Deletar</button>
         </div>
-        <select id="launchSelector" class="form-select mt-3" onchange="loadDataByLaunch(this.value)"></select>
+        <div class="d-flex mt-3">
+            <input type="date" class="form-control" id="dataLancamento">
+            <select id="launchSelector" class="form-select ms-2" onchange="loadDataByLaunch(this.value)"></select>
+        </div>
         <div id="chartFacaSuperior">
             <canvas id="chartFacaSuperiorCanvas"></canvas>
         </div>
@@ -172,7 +175,7 @@
 
         function updateChart(chart, data, targetValues) {
             const variations = Object.keys(data).map(key => {
-                const variation = ((data[key] - targetValues[key]) / targetValues[key]) * 100;
+                const variation = ((data[key] - targetValues[key]) / targetValues[key]) * 10; // Modificado para escala de 0 a 10
                 return Math.max(0, variation.toFixed(1)); // Somente variações positivas
             });
 
@@ -183,7 +186,6 @@
         function generateReport(data) {
             const reportContent = document.getElementById('reportContent');
             reportContent.innerHTML = `
-                <p><strong>Data de Lançamento:</strong> ${data.data}</p>
                 <div class="d-flex justify-content-between">
                     <div>
                         <h4>Faca Superior</h4>
@@ -229,7 +231,8 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 100
+                            min: 0,
+                            max: 10 // Escala de 0 a 10
                         }
                     }
                 }
@@ -260,7 +263,8 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 100
+                            min: 0,
+                            max: 10 // Escala de 0 a 10
                         }
                     }
                 }
