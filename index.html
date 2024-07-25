@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Formulário de Faca</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
+            font-size: 16px; /* Fonte padrão para mobile */
+            overflow-x: hidden; /* Evita rolagem horizontal */
         }
         .form-container {
             border: 1px solid #ddd;
@@ -15,24 +17,27 @@
             margin: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex: 1;
             background-color: #fff;
+            width: 100%;
+            box-sizing: border-box;
         }
         .form-group {
             margin-bottom: 10px;
         }
         .form-control {
-            width: 80px;
+            width: 100%; /* Ajusta a largura dos campos de input */
             text-align: center; /* Centraliza o texto dentro das caixas */
         }
         .form-row {
-            justify-content: center;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
         .form-row .form-group {
-            margin-right: 10px; /* Espaçamento entre campos */
+            margin-right: 0; /* Remove margem entre campos */
+            flex: 1; /* Ocupa todo o espaço disponível */
         }
-        .form-row .form-group:last-child {
-            margin-right: 0; /* Remove margem no último campo */
+        .form-row .form-group:nth-child(n+2) {
+            margin-left: 10px; /* Espaçamento entre campos */
         }
         .chart-container {
             margin-top: 30px;
@@ -42,15 +47,16 @@
         }
         .chart {
             width: 100%;
-            max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
-            margin: 0 10px; /* Espaço entre os gráficos */
+            max-width: 400px; /* Ajusta o tamanho máximo dos gráficos */
+            margin: 0; /* Remove margem entre gráficos */
         }
         .btn-primary, .btn-danger {
             margin: 5px;
         }
         .btn-group {
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* Empilha os botões verticalmente */
+            align-items: center;
             margin-top: 20px;
         }
         .alert {
@@ -61,28 +67,28 @@
         }
         .report-container {
             display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
+            flex-direction: column; /* Exibe os itens verticalmente */
+            align-items: center;
         }
         .report-item {
-            margin: 10px;
+            margin: 10px 0;
             text-align: center;
         }
         .report-item h5 {
             margin-bottom: 10px;
         }
         .input-group {
-            max-width: 400px;
+            max-width: 100%;
             margin: 0 auto;
         }
         .input-group .form-control {
             text-align: center; /* Centraliza o texto dentro dos campos */
         }
         .input-group .form-control.input-date {
-            width: 100px;
+            width: 100%; /* Ajusta a largura da data */
         }
         .input-group .form-control.input-dropdown {
-            width: 200px;
+            width: 100%; /* Ajusta a largura do dropdown */
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -95,7 +101,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário </h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
 
         <!-- Campo para Inserir a Data e Dropdown ao Lado -->
         <div class="input-group mb-4">
@@ -153,12 +159,12 @@
 
         <!-- Contêiner do Gráfico -->
         <div class="row mt-4">
-            <div class="col-md-6">
+            <div class="col-12">
                 <div class="chart-container">
                     <canvas id="chartFacaSuperior" class="chart"></canvas>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-12 mt-4">
                 <div class="chart-container">
                     <canvas id="chartFacaInferior" class="chart"></canvas>
                 </div>
@@ -206,14 +212,13 @@
                 m: parseFloat(facaSuperiorForm.mSuperior.value) || 0,
                 lc: parseFloat(facaSuperiorForm.lcSuperior.value) || 0
             };
-
             const dadosFacaInferior = {
                 lr: parseFloat(facaInferiorForm.lrInferior.value) || 0,
                 m: parseFloat(facaInferiorForm.mInferior.value) || 0,
                 lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
             };
 
-            const newLaunchKey = Date.now().toString(); // Usar timestamp como chave única
+            const newLaunchKey = database.ref().child('facas').push().key;
             const updates = {};
             updates[`facas/${newLaunchKey}/superior`] = dadosFacaSuperior;
             updates[`facas/${newLaunchKey}/inferior`] = dadosFacaInferior;
