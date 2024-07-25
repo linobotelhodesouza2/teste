@@ -35,6 +35,10 @@
             padding: 10px;
             margin-top: 20px;
         }
+        .datalabels {
+            font-weight: bold;
+            color: #000;
+        }
     </style>
 </head>
 <body>
@@ -60,7 +64,13 @@
             <button class="btn btn-primary" type="button" onclick="salvarDados()">Salvar</button>
             <button class="btn btn-danger" type="button" onclick="deletarDados()">Deletar</button>
         </div>
-        <select id="launchSelector" class="form-select mt-3" onchange="loadDataByLaunch(this.value)"></select>
+        <div class="mt-3 d-flex align-items-center">
+            <label for="dataLancamento" class="me-2">Data de Lançamento:</label>
+            <input type="text" class="form-control me-2" id="launchDate" placeholder="Insira a data" readonly>
+            <select id="launchSelector" class="form-select" onchange="loadDataByLaunch(this.value)">
+                <option value="">Selecione um lançamento</option>
+            </select>
+        </div>
         <div id="chartFacaSuperior">
             <canvas id="chartFacaSuperiorCanvas"></canvas>
         </div>
@@ -95,6 +105,11 @@
             const inferiorM = parseFloat(document.getElementById('inferiorM').value) || targetValues.inferior.m;
             const inferiorLC = parseFloat(document.getElementById('inferiorLC').value) || targetValues.inferior.lc;
             const dataLancamento = document.getElementById('dataLancamento').value;
+
+            if (!dataLancamento) {
+                alert('Por favor, insira a data do lançamento.');
+                return;
+            }
 
             const dadosFacaSuperior = { lr: superiorLR, m: superiorM, lc: superiorLC };
             const dadosFacaInferior = { lr: inferiorLR, m: inferiorM, lc: inferiorLC };
@@ -147,11 +162,11 @@
 
             database.ref('facas').once('value', (snapshot) => {
                 const data = snapshot.val() || {};
-                Object.keys(data).forEach(launchKey => {
+                Object.keys(data).forEach((launchKey, index) => {
                     const option = document.createElement('option');
                     const date = data[launchKey].data;
                     option.value = launchKey;
-                    option.textContent = `Lançamento ${Object.keys(data).indexOf(launchKey) + 1} - ${date}`;
+                    option.textContent = `Lançamento ${index + 1} - ${date}`;
                     launchSelector.appendChild(option);
                 });
             });
@@ -163,22 +178,27 @@
             database.ref(`facas/${launchKey}`).once('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    updateChart(chartFacaSuperior, data.superior, targetValues.superior, 'Faca Superior');
-                    updateChart(chartFacaInferior, data.inferior, targetValues.inferior, 'Faca Inferior');
+                    updateCharts(data.superior, data.inferior);
                     generateReport(data);
                 }
             });
         }
 
-        function updateChart(chart, data, targetValues, title) {
-            const percentages = Object.keys(data).map(key => {
-                const percentage = (data[key] / targetValues[key]) * 100;
-                return Math.min(100, percentage.toFixed(1)); // Limitar a 100%
+        function updateCharts(superiorData, inferiorData) {
+            const superiorPercentages = ['lr', 'm', 'lc'].map(key => {
+                const percentage = Math.min(100, (superiorData[key] / targetValues.superior[key]) * 100);
+                return percentage.toFixed(1);
+            });
+            const inferiorPercentages = ['lr', 'm', 'lc'].map(key => {
+                const percentage = Math.min(100, (inferiorData[key] / targetValues.inferior[key]) * 100);
+                return percentage.toFixed(1);
             });
 
-            chart.data.datasets[0].data = percentages;
-            chart.options.plugins.datalabels.labels.title.text = title;
-            chart.update();
+            window.chartFacaSuperior.data.datasets[0].data = superiorPercentages;
+            window.chartFacaSuperior.update();
+
+            window.chartFacaInferior.data.datasets[0].data = inferiorPercentages;
+            window.chartFacaInferior.update();
         }
 
         function generateReport(data) {
