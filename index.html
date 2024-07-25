@@ -71,6 +71,19 @@
         .report-item h5 {
             margin-bottom: 10px;
         }
+        .input-group {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .input-group .form-control {
+            text-align: center; /* Centraliza o texto dentro dos campos */
+        }
+        .input-group .form-control.input-date {
+            width: 100px;
+        }
+        .input-group .form-control.input-dropdown {
+            width: 200px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -82,15 +95,18 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário</h1>
+        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
 
-        <!-- Campo para Inserir a Data -->
-        <div class="text-center">
-            <input type="date" id="dataLancamento" class="form-control" style="max-width: 300px; margin: 0 auto;" placeholder="Insira a data">
+        <!-- Campo para Inserir a Data e Dropdown ao Lado -->
+        <div class="input-group mb-4">
+            <input type="date" id="dataLancamento" class="form-control input-date" placeholder="Insira a data">
+            <select id="launchSelector" class="form-control input-dropdown" onchange="loadDataByLaunch(this.value)">
+                <option value="">Selecione um lançamento</option>
+            </select>
         </div>
 
         <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
-        <div class="text-center mt-4">
+        <div class="text-center mb-4">
             <div class="btn-group">
                 <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
                 <button type="button" class="btn btn-danger" onclick="deletarDados()">Deletar Dados</button>
@@ -99,15 +115,8 @@
             <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
         </div>
 
-        <!-- Dropdown para Selecionar Lançamento -->
-        <div class="text-center mt-4">
-            <select id="launchSelector" class="form-control" style="max-width: 300px; margin: 0 auto;" onchange="loadDataByLaunch(this.value)">
-                <option value="">Selecione um lançamento</option>
-            </select>
-        </div>
-
         <!-- Formulário de Faca Superior -->
-        <div class="form-container mt-4">
+        <div class="form-container">
             <h5 class="mb-3 text-center">Faca Superior</h5>
             <form id="facaSuperiorForm">
                 <div class="form-row">
