@@ -172,8 +172,8 @@
 
         function updateChart(chart, data, targetValues) {
             const variations = Object.keys(data).map(key => {
-                const variation = (data[key] - targetValues[key]) / targetValues[key];
-                return Math.max(0, variation.toFixed(3)); // Variação de 0 a 1
+                const variation = ((data[key] - targetValues[key]) / targetValues[key]) * 100;
+                return Math.max(0, variation.toFixed(1)); // Somente variações positivas
             });
 
             chart.data.datasets[0].data = variations;
@@ -187,15 +187,15 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h4>Faca Superior</h4>
-                        <p>LR: ${((data.superior.lr - targetValues.superior.lr) / targetValues.superior.lr * 100).toFixed(1)}%</p>
-                        <p>M: ${((data.superior.m - targetValues.superior.m) / targetValues.superior.m * 100).toFixed(1)}%</p>
-                        <p>LC: ${((data.superior.lc - targetValues.superior.lc) / targetValues.superior.lc * 100).toFixed(1)}%</p>
+                        <p>LR: ${(data.superior.lr - targetValues.superior.lr).toFixed(1)}%</p>
+                        <p>M: ${(data.superior.m - targetValues.superior.m).toFixed(1)}%</p>
+                        <p>LC: ${(data.superior.lc - targetValues.superior.lc).toFixed(1)}%</p>
                     </div>
                     <div>
                         <h4>Faca Inferior</h4>
-                        <p>LR: ${((data.inferior.lr - targetValues.inferior.lr) / targetValues.inferior.lr * 100).toFixed(1)}%</p>
-                        <p>M: ${((data.inferior.m - targetValues.inferior.m) / targetValues.inferior.m * 100).toFixed(1)}%</p>
-                        <p>LC: ${((data.inferior.lc - targetValues.inferior.lc) / targetValues.inferior.lc * 100).toFixed(1)}%</p>
+                        <p>LR: ${(data.inferior.lr - targetValues.inferior.lr).toFixed(1)}%</p>
+                        <p>M: ${(data.inferior.m - targetValues.inferior.m).toFixed(1)}%</p>
+                        <p>LC: ${(data.inferior.lc - targetValues.inferior.lc).toFixed(1)}%</p>
                     </div>
                 </div>
             `;
@@ -205,14 +205,14 @@
             loadAllLaunches();
 
             window.chartFacaSuperior = new Chart(document.getElementById('chartFacaSuperiorCanvas'), {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: ['LR', 'M', 'LC'],
                     datasets: [
                         {
                             label: 'Variação (%)',
                             data: [],
-                            backgroundColor: '#36a2eb',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
                             borderColor: '#36a2eb',
                             borderWidth: 1
                         }
@@ -223,27 +223,27 @@
                         datalabels: {
                             display: true,
                             color: 'black',
-                            formatter: (value) => `${(value * 100).toFixed(1)}%`
+                            formatter: (value) => `${value}%`
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 1
+                            max: 100
                         }
                     }
                 }
             });
 
             window.chartFacaInferior = new Chart(document.getElementById('chartFacaInferiorCanvas'), {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: ['LR', 'M', 'LC'],
                     datasets: [
                         {
                             label: 'Variação (%)',
                             data: [],
-                            backgroundColor: '#4bc0c0',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
                             borderColor: '#4bc0c0',
                             borderWidth: 1
                         }
@@ -254,13 +254,13 @@
                         datalabels: {
                             display: true,
                             color: 'black',
-                            formatter: (value) => `${(value * 100).toFixed(1)}%`
+                            formatter: (value) => `${value}%`
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 1
+                            max: 100
                         }
                     }
                 }
