@@ -206,6 +206,7 @@
 
             window.chartFacaSuperior = new Chart(document.getElementById('chartFacaSuperiorCanvas'), {
                 type: 'bar',
+                plugins: [ChartDataLabels],
                 data: {
                     labels: ['LR', 'M', 'LC'],
                     datasets: [
@@ -223,13 +224,15 @@
                         datalabels: {
                             display: true,
                             color: 'black',
+                            anchor: 'end',
+                            align: 'start',
                             formatter: (value) => `${value}%`
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 100
+                            display: false // Ocultar a escala y
                         }
                     }
                 }
@@ -237,6 +240,7 @@
 
             window.chartFacaInferior = new Chart(document.getElementById('chartFacaInferiorCanvas'), {
                 type: 'bar',
+                plugins: [ChartDataLabels],
                 data: {
                     labels: ['LR', 'M', 'LC'],
                     datasets: [
@@ -254,13 +258,15 @@
                         datalabels: {
                             display: true,
                             color: 'black',
+                            anchor: 'end',
+                            align: 'start',
                             formatter: (value) => `${value}%`
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 100
+                            display: false // Ocultar a escala y
                         }
                     }
                 }
