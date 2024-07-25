@@ -2,178 +2,141 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Faca</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aplicação de Lançamentos</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-image: url('https://i.pinimg.com/736x/01/22/d9/0122d95177d733f1dabd36acca11fef5.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: white;
         }
-        .form-container {
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin: 10px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex: 1;
-            background-color: #fff;
-        }
-        .form-group {
-            margin-bottom: 10px;
-        }
-        .form-control {
-            width: 80px;
-            text-align: center; /* Centraliza o texto dentro das caixas */
-        }
-        .form-row {
+
+        .input-group-text {
+            min-width: 70px;
             justify-content: center;
         }
-        .form-row .form-group {
-            margin-right: 10px; /* Espaçamento entre campos */
+
+        .input-group-prepend {
+            margin-right: -1px;
         }
-        .form-row .form-group:last-child {
-            margin-right: 0; /* Remove margem no último campo */
+
+        .values-below {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 5px;
         }
+
         .chart-container {
-            margin-top: 30px;
-            width: 100%;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
         }
-        .chart {
-            width: 100%;
-            max-width: 400px; /* Ajustar o tamanho dos gráficos para desktop */
-            margin: 0 10px; /* Espaço entre os gráficos */
-        }
-        .btn-primary, .btn-danger {
-            margin: 5px;
-        }
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .alert {
-            display: none;
-        }
-        #report {
-            margin-top: 40px;
-        }
-        .report-container {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
+
         .report-item {
-            margin: 10px;
+            flex: 1;
+            margin-right: 20px;
             text-align: center;
         }
-        .report-item h5 {
-            margin-bottom: 10px;
-        }
-        .input-group {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        .input-group .form-control {
-            text-align: center; /* Centraliza o texto dentro dos campos */
-        }
-        .input-group .form-control.input-date {
-            width: 100px;
-        }
-        .input-group .form-control.input-dropdown {
-            width: 200px;
+
+        #successMessage, #errorMessage {
+            display: none;
+            margin-top: 10px;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formuláe Faca</h1>
-
-        <!-- Campo para Inserir a Data e Dropdown ao Lado -->
-        <div class="input-group mb-4">
-            <input type="date" id="dataLancamento" class="form-control input-date" placeholder="Insira a data">
-            <select id="launchSelector" class="form-control input-dropdown" onchange="loadDataByLaunch(this.value)">
-                <option value="">Selecione um lançamento</option>
-            </select>
-        </div>
-
-        <!-- Caixa de Seleção de Data e Dropdown para Seleção de Lançamento -->
-        <div class="text-center mb-4">
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
-                <button type="button" class="btn btn-danger" onclick="deletarDados()">Deletar Dados</button>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Inserir Dados</h2>
+                <div class="form-group">
+                    <label for="dataLancamento">Data:</label>
+                    <input type="date" id="dataLancamento" class="form-control">
+                </div>
+                <h4>Faca Superior</h4>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">L.R</span>
+                    </div>
+                    <input type="number" id="facaSuperiorLR" class="form-control" placeholder="0">
+                </div>
+                <div class="values-below">
+                    <span id="facaSuperiorLRValue">0</span>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">M</span>
+                    </div>
+                    <input type="number" id="facaSuperiorM" class="form-control" placeholder="0">
+                </div>
+                <div class="values-below">
+                    <span id="facaSuperiorMValue">0</span>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">L.C</span>
+                    </div>
+                    <input type="number" id="facaSuperiorLC" class="form-control" placeholder="0">
+                </div>
+                <div class="values-below">
+                    <span id="facaSuperiorLCValue">0</span>
+                </div>
+                <h4>Faca Inferior</h4>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">L.R</span>
+                    </div>
+                    <input type="number" id="facaInferiorLR" class="form-control" placeholder="0">
+                </div>
+                <div class="values-below">
+                    <span id="facaInferiorLRValue">0</span>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">M</span>
+                    </div>
+                    <input type="number" id="facaInferiorM" class="form-control" placeholder="0">
+                </div>
+                <div class="values-below">
+                    <span id="facaInferiorMValue">0</span>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">L.C</span>
+                    </div>
+                    <input type="number" id="facaInferiorLC" class="form-control" placeholder="0">
+                </div>
+                <div class="values-below">
+                    <span id="facaInferiorLCValue">0</span>
+                </div>
+                <button class="btn btn-primary btn-block" onclick="salvarDados()">Salvar</button>
+                <button class="btn btn-danger btn-block" onclick="deletarDados()">Deletar</button>
+                <div id="successMessage" class="alert alert-success">Dados salvos com sucesso!</div>
+                <div id="errorMessage" class="alert alert-danger">Erro ao salvar dados.</div>
             </div>
-            <div class="alert alert-success mt-3" id="successMessage">Dados salvos com sucesso!</div>
-            <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
-        </div>
-
-        <!-- Formulário de Faca Superior -->
-        <div class="form-container">
-            <h5 class="mb-3 text-center">Faca Superior</h5>
-            <form id="facaSuperiorForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="lrSuperior" placeholder="68.5">
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="mSuperior" placeholder="69">
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="lcSuperior" placeholder="68.9">
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <!-- Formulário de Faca Inferior -->
-        <div class="form-container mt-4">
-            <h5 class="mb-3 text-center">Faca Inferior</h5>
-            <form id="facaInferiorForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="lrInferior" placeholder="65">
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="mInferior" placeholder="65">
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="lcInferior" placeholder="65">
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <!-- Contêiner do Gráfico -->
-        <div class="row mt-4">
-            <div class="col-md-6">
+            <div class="col-md-8">
+                <h2>Lançamentos</h2>
+                <select id="launchSelector" class="form-control mb-3" onchange="loadDataByLaunch(this.value)"></select>
                 <div class="chart-container">
-                    <canvas id="chartFacaSuperior" class="chart"></canvas>
+                    <div class="chart-item">
+                        <canvas id="chartFacaSuperior"></canvas>
+                    </div>
+                    <div class="chart-item">
+                        <canvas id="chartFacaInferior"></canvas>
+                    </div>
                 </div>
+                <div id="reportContent" class="mt-3"></div>
             </div>
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <canvas id="chartFacaInferior" class="chart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Relatório Comparativo -->
-        <div id="report" class="mt-5">
-            <h3 class="text-center">Relatório Comparativo</h3>
-            <div id="reportContent" class="report-container"></div>
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script>
-        // Configuração do Firebase
+        // Firebase configuration and initialization
         const firebaseConfig = {
             apiKey: "AIzaSyDEsJtoWAUNgStvKg-0mE5CS8qlSLQt7bA",
             authDomain: "myapp2-a3c3f.firebaseapp.com",
@@ -183,248 +146,113 @@
             messagingSenderId: "746305842581",
             appId: "1:746305842581:web:0059c0e45f82fd07a01a9c"
         };
-        firebase.initializeApp(firebaseConfig);
+        const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // Placeholder values
         const targetValues = {
-            superior: { lr: 68.5, m: 69, lc: 68.9 },
-            inferior: { lr: 65, m: 65, lc: 65 }
+            superior: { lr: 100, m: 100, lc: 100 },
+            inferior: { lr: 100, m: 100, lc: 100 }
         };
 
+        document.getElementById('facaSuperiorLR').addEventListener('input', (e) => updateValues('facaSuperiorLR', e.target.value));
+        document.getElementById('facaSuperiorM').addEventListener('input', (e) => updateValues('facaSuperiorM', e.target.value));
+        document.getElementById('facaSuperiorLC').addEventListener('input', (e) => updateValues('facaSuperiorLC', e.target.value));
+        document.getElementById('facaInferiorLR').addEventListener('input', (e) => updateValues('facaInferiorLR', e.target.value));
+        document.getElementById('facaInferiorM').addEventListener('input', (e) => updateValues('facaInferiorM', e.target.value));
+        document.getElementById('facaInferiorLC').addEventListener('input', (e) => updateValues('facaInferiorLC', e.target.value));
+
+        function updateValues(id, value) {
+            document.getElementById(`${id}Value`).textContent = value || '0';
+        }
+
         function salvarDados() {
-            const dataLancamento = document.getElementById('dataLancamento').value;
-            const facaSuperiorForm = document.getElementById('facaSuperiorForm');
-            const facaInferiorForm = document.getElementById('facaInferiorForm');
-
-            if (!dataLancamento) {
-                alert('Por favor, insira uma data.');
-                return;
-            }
-
             const dadosFacaSuperior = {
-                lr: parseFloat(facaSuperiorForm.lrSuperior.value) || 0,
-                m: parseFloat(facaSuperiorForm.mSuperior.value) || 0,
-                lc: parseFloat(facaSuperiorForm.lcSuperior.value) || 0
+                lr: parseFloat(document.getElementById('facaSuperiorLR').value) || 0,
+                m: parseFloat(document.getElementById('facaSuperiorM').value) || 0,
+                lc: parseFloat(document.getElementById('facaSuperiorLC').value) || 0
             };
 
             const dadosFacaInferior = {
-                lr: parseFloat(facaInferiorForm.lrInferior.value) || 0,
-                m: parseFloat(facaInferiorForm.mInferior.value) || 0,
-                lc: parseFloat(facaInferiorForm.lcInferior.value) || 0
+                lr: parseFloat(document.getElementById('facaInferiorLR').value) || 0,
+                m: parseFloat(document.getElementById('facaInferiorM').value) || 0,
+                lc: parseFloat(document.getElementById('facaInferiorLC').value) || 0
             };
 
-            const newLaunchKey = Date.now().toString(); // Usar timestamp como chave única
-            const updates = {};
-            updates[`facas/${newLaunchKey}/superior`] = dadosFacaSuperior;
-            updates[`facas/${newLaunchKey}/inferior`] = dadosFacaInferior;
-            updates[`facas/${newLaunchKey}/data`] = dataLancamento;
+            const dataLancamento = document.getElementById('dataLancamento').value;
 
-            database.ref().update(updates)
-                .then(() => {
-                    loadAllLaunches();
-                    document.getElementById('successMessage').innerText = 'Dados salvos com sucesso!';
-                    document.getElementById('successMessage').style.display = 'block';
-                    setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
-                })
-                .catch((error) => {
-                    console.error('Erro ao salvar dados:', error);
-                    document.getElementById('errorMessage').style.display = 'block';
-                    setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
-                });
-        }
-
-        function deletarDados() {
-            const selectedLaunch = document.getElementById('launchSelector').value;
-
-            if (!selectedLaunch) {
-                alert('Por favor, selecione um lançamento.');
+            if (!dataLancamento) {
+                alert('Por favor, insira a data do lançamento.');
                 return;
             }
 
-            database.ref(`facas/${selectedLaunch}`).remove()
-                .then(() => {
-                    loadAllLaunches();
-                    document.getElementById('successMessage').innerText = 'Lançamento deletado com sucesso!';
-                    document.getElementById('successMessage').style.display = 'block';
-                    setTimeout(() => document.getElementById('successMessage').style.display = 'none', 3000);
-                })
-                .catch((error) => {
-                    console.error('Erro ao deletar dados:', error);
+            const newLaunchKey = database.ref().child('launches').push().key;
+
+            const updates = {};
+            updates['/launches/' + newLaunchKey] = {
+                dataLancamento,
+                dadosFacaSuperior,
+                dadosFacaInferior
+            };
+
+            database.ref().update(updates, function(error) {
+                if (error) {
                     document.getElementById('errorMessage').style.display = 'block';
-                    setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
-                });
+                } else {
+                    document.getElementById('successMessage').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 3000);
+                }
+            });
         }
 
-        function loadAllLaunches() {
-            const launchSelector = document.getElementById('launchSelector');
-            launchSelector.innerHTML = '<option value="">Selecione um lançamento</option>'; // Limpar opções anteriores
-
-            database.ref('facas').once('value', (snapshot) => {
-                const data = snapshot.val() || {};
-                Object.keys(data).forEach(launchKey => {
-                    const option = document.createElement('option');
-                    const date = data[launchKey].data;
-                    option.value = launchKey;
-                    option.textContent = `Lançamento ${Object.keys(data).indexOf(launchKey) + 1} - ${date}`;
-                    launchSelector.appendChild(option);
-                });
-            });
+        function deletarDados() {
+            // Deletar lógica a ser adicionada
         }
 
         function loadDataByLaunch(launchKey) {
             if (!launchKey) return;
 
-            database.ref(`facas/${launchKey}`).once('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    updateChart(chartFacaSuperior, data.superior, targetValues.superior);
-                    updateChart(chartFacaInferior, data.inferior, targetValues.inferior);
-                    generateReport(data);
-                }
+            database.ref('/launches/' + launchKey).once('value').then(function(snapshot) {
+                const launchData = snapshot.val();
+
+                document.getElementById('dataLancamento').value = launchData.dataLancamento;
+                document.getElementById('facaSuperiorLR').value = launchData.dadosFacaSuperior.lr;
+                document.getElementById('facaSuperiorM').value = launchData.dadosFacaSuperior.m;
+                document.getElementById('facaSuperiorLC').value = launchData.dadosFacaSuperior.lc;
+                document.getElementById('facaInferiorLR').value = launchData.dadosFacaInferior.lr;
+                document.getElementById('facaInferiorM').value = launchData.dadosFacaInferior.m;
+                document.getElementById('facaInferiorLC').value = launchData.dadosFacaInferior.lc;
+
+                updateValues('facaSuperiorLR', launchData.dadosFacaSuperior.lr);
+                updateValues('facaSuperiorM', launchData.dadosFacaSuperior.m);
+                updateValues('facaSuperiorLC', launchData.dadosFacaSuperior.lc);
+                updateValues('facaInferiorLR', launchData.dadosFacaInferior.lr);
+                updateValues('facaInferiorM', launchData.dadosFacaInferior.m);
+                updateValues('facaInferiorLC', launchData.dadosFacaInferior.lc);
+
+                // Atualizar gráficos
             });
         }
 
-        function updateChart(chart, data, targetValues) {
-            const total = Object.values(targetValues).reduce((acc, val) => acc + val, 0);
-            const percentageData = Object.keys(data).map(key => {
-                const percentage = total > 0 ? (data[key] / targetValues[key] * 100).toFixed(1) : 0;
-                return Math.min(percentage, 100); // Garantir que a porcentagem não exceda 100%
+        function carregarLançamentos() {
+            database.ref('/launches/').once('value', function(snapshot) {
+                const launchSelector = document.getElementById('launchSelector');
+                launchSelector.innerHTML = '<option value="">Selecione um lançamento</option>';
+
+                snapshot.forEach(function(childSnapshot) {
+                    const key = childSnapshot.key;
+                    const launch = childSnapshot.val();
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = `Lançamento ${launch.dataLancamento}`;
+                    launchSelector.appendChild(option);
+                });
             });
-
-            chart.data.datasets[0].data = percentageData;
-            chart.data.datasets[0].datalabels = {
-                formatter: (value) => `${value}%`,
-                color: '#000',
-                anchor: 'end',
-                align: 'start'
-            };
-            chart.update();
         }
 
-        function generateReport(data) {
-            const reportContent = document.getElementById('reportContent');
-            const superiorVariation = calculateVariation(targetValues.superior, data.superior);
-            const inferiorVariation = calculateVariation(targetValues.inferior, data.inferior);
-
-            const reportHTML = `
-                <div class="report-item">
-                    <h5>Faca Superior</h5>
-                    <p>L.R: ${superiorVariation.lr}%</p>
-                    <p>M: ${superiorVariation.m}%</p>
-                    <p>L.C: ${superiorVariation.lc}%</p>
-                </div>
-                <div class="report-item">
-                    <h5>Faca Inferior</h5>
-                    <p>L.R: ${inferiorVariation.lr}%</p>
-                    <p>M: ${inferiorVariation.m}%</p>
-                    <p>L.C: ${inferiorVariation.lc}%</p>
-                </div>
-            `;
-            reportContent.innerHTML = reportHTML;
-        }
-
-        function calculateVariation(expected, actual) {
-            return {
-                lr: Math.min(((actual.lr / expected.lr) * 100).toFixed(2), 100),
-                m: Math.min(((actual.m / expected.m) * 100).toFixed(2), 100),
-                lc: Math.min(((actual.lc / expected.lc) * 100).toFixed(2), 100)
-            };
-        }
-
-        // Configuração do Chart.js para o gráfico de Faca Superior
-        const ctxSuperior = document.getElementById('chartFacaSuperior').getContext('2d');
-        const chartFacaSuperior = new Chart(ctxSuperior, {
-            type: 'bar',
-            data: {
-                labels: ['L.R', 'M', 'L.C'],
-                datasets: [{
-                    label: 'Faca Superior',
-                    data: [0, 0, 0],
-                    backgroundColor: ['rgba(75, 192, 192, 0.2)'],
-                    borderColor: ['rgba(75, 192, 192, 1)'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        display: false // Ocultar a escala y
-                    }
-                },
-                plugins: {
-                    datalabels: {
-                        color: '#000',
-                        anchor: 'end',
-                        align: 'start',
-                        formatter: (value) => `${value}%`
-                    },
-                    legend: {
-                        display: false
-                    },
-                    title: {
-                        display: true,
-                        text: 'Faca Superior',
-                        position: 'left',
-                        rotation: -90,
-                        padding: {
-                            top: 0,
-                            bottom: 10
-                        }
-                    }
-                }
-            },
-            plugins: [ChartDataLabels]
-        });
-
-        // Configuração do Chart.js para o gráfico de Faca Inferior
-        const ctxInferior = document.getElementById('chartFacaInferior').getContext('2d');
-        const chartFacaInferior = new Chart(ctxInferior, {
-            type: 'bar',
-            data: {
-                labels: ['L.R', 'M', 'L.C'],
-                datasets: [{
-                    label: 'Faca Inferior',
-                    data: [0, 0, 0],
-                    backgroundColor: ['rgba(153, 102, 255, 0.2)'],
-                    borderColor: ['rgba(153, 102, 255, 1)'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        display: false // Ocultar a escala y
-                    }
-                },
-                plugins: {
-                    datalabels: {
-                        color: '#000',
-                        anchor: 'end',
-                        align: 'start',
-                        formatter: (value) => `${value}%`
-                    },
-                    legend: {
-                        display: false
-                    },
-                    title: {
-                        display: true,
-                        text: 'Faca Inferior',
-                        position: 'left',
-                        rotation: -90,
-                        padding: {
-                            top: 0,
-                            bottom: 10
-                        }
-                    }
-                }
-            },
-            plugins: [ChartDataLabels]
-        });
-
-        // Carregar lançamentos ao iniciar a página
-        window.onload = function() {
-            loadAllLaunches();
-        };
+        carregarLançamentos();
     </script>
 </body>
 </html>
