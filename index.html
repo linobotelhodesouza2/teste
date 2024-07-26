@@ -27,6 +27,12 @@
             flex: 1;
             margin: 5px;
         }
+        .historico {
+            margin-top: 20px;
+        }
+        .historico .table {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -58,6 +64,12 @@
             <select id="launchSelector" class="form-select" onchange="loadDataByLaunch(this.value)">
                 <option value="">Selecione um lançamento</option>
             </select>
+        </div>
+        <div class="historico">
+            <h4>Histórico de Lançamentos</h4>
+            <div id="historicoTable">
+                <!-- Histórico será preenchido aqui -->
+            </div>
         </div>
     </div>
     <script>
@@ -150,6 +162,7 @@
                     option.textContent = `Lançamento ${index + 1} - ${date}`;
                     launchSelector.appendChild(option);
                 });
+                updateHistorico(data);
             });
         }
 
@@ -173,9 +186,29 @@
             document.getElementById('inferiorLC').value = inferiorData.lc;
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            loadAllLaunches();
-        });
+        function updateHistorico(data) {
+            const historicoTable = document.getElementById('historicoTable');
+            historicoTable.innerHTML = ''; // Limpar histórico anterior
+
+            Object.keys(data).forEach((launchKey) => {
+                const launch = data[launchKey];
+                const dataLancamento = launch.data;
+                const superior = launch.superior;
+                const inferior = launch.inferior;
+
+                const historicoRow = document.createElement('div');
+                historicoRow.classList.add('historico-row');
+                historicoRow.innerHTML = `
+                    <div><strong>Data:</strong> ${dataLancamento}</div>
+                    <div><strong>Faca Superior:</strong> LR: ${superior.lr}, M: ${superior.m}, LC: ${superior.lc}</div>
+                    <div><strong>Faca Inferior:</strong> LR: ${inferior.lr}, M: ${inferior.m}, LC: ${inferior.lc}</div>
+                `;
+
+                historicoTable.appendChild(historicoRow);
+            });
+        }
+
+        window.onload = loadAllLaunches;
     </script>
 </body>
 </html>
