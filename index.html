@@ -9,13 +9,39 @@
         .form-section {
             border: 1px solid #ccc;
             padding: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .form-section h4 {
             text-align: center;
+            margin-bottom: 10px;
+        }
+        .form-section .form-row {
+            display: flex;
+            justify-content: space-around;
+        }
+        .form-section .form-group {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .form-section .form-group:last-child {
+            margin-right: 0;
         }
         .history-entry {
             margin-bottom: 10px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+        .form-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        .form-buttons .btn {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .form-buttons .btn:last-child {
+            margin-right: 0;
         }
     </style>
 </head>
@@ -25,15 +51,15 @@
             <div class="form-section">
                 <h4>Faca Superior</h4>
                 <div class="form-row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group">
                         <label for="lcSuperior">LC</label>
                         <input type="number" class="form-control" id="lcSuperior" required>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group">
                         <label for="mSuperior">M</label>
                         <input type="number" class="form-control" id="mSuperior" required>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group">
                         <label for="lrSuperior">LR</label>
                         <input type="number" class="form-control" id="lrSuperior" required>
                     </div>
@@ -43,28 +69,24 @@
             <div class="form-section">
                 <h4>Faca Inferior</h4>
                 <div class="form-row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group">
                         <label for="lcInferior">LC</label>
                         <input type="number" class="form-control" id="lcInferior" required>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group">
                         <label for="mInferior">M</label>
                         <input type="number" class="form-control" id="mInferior" required>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group">
                         <label for="lrInferior">LR</label>
                         <input type="number" class="form-control" id="lrInferior" required>
                     </div>
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <button type="submit" class="btn btn-primary btn-block">Salvar</button>
-                </div>
-                <div class="form-group col-md-6">
-                    <button type="button" class="btn btn-danger btn-block" id="delete-btn">Deletar</button>
-                </div>
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="button" class="btn btn-danger" id="delete-btn">Deletar</button>
             </div>
         </form>
 
