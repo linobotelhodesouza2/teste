@@ -3,212 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Faca</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Formulário de Facas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .form-container {
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin: 10px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex: 1;
-            background-color: #fff;
-        }
-        .form-group {
+        .form-section {
+            border: 1px solid #ccc;
+            padding: 10px;
             margin-bottom: 15px;
         }
-        .form-control {
-            width: 100%;
-            max-width: 80px;
+        .form-section h4 {
             text-align: center;
         }
-        .form-row {
-            justify-content: space-between;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-        }
-        .alert {
-            display: none;
-        }
-        .history-container {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background-color: #fff;
-        }
-        .history-item {
-            padding: 10px;
+        .history-entry {
             margin-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .history-item:last-child {
-            border-bottom: none;
-        }
-        .history-date {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .history-values {
-            display: flex;
-            justify-content: space-between;
-        }
-        .history-values div {
-            flex: 1;
-            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center mt-5 mb-4">Formulário de Faca</h1>
-        
-        <div class="d-flex justify-content-between flex-wrap">
-            <!-- Formulário de Faca Superior -->
-            <div class="form-container">
-                <h5 class="mb-3">Faca Superior</h5>
-                <form id="facaSuperiorForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="lrSuperior" placeholder="68.5 L.R">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="mSuperior" placeholder="69 M">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="lcSuperior" placeholder="68.9 L.C">
-                        </div>
+    <div class="container mt-4">
+        <form id="faca-form">
+            <div class="form-section">
+                <h4>Faca Superior</h4>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="lcSuperior">LC</label>
+                        <input type="number" class="form-control" id="lcSuperior" required>
                     </div>
-                </form>
+                    <div class="form-group col-md-4">
+                        <label for="mSuperior">M</label>
+                        <input type="number" class="form-control" id="mSuperior" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="lrSuperior">LR</label>
+                        <input type="number" class="form-control" id="lrSuperior" required>
+                    </div>
+                </div>
             </div>
 
-            <!-- Formulário de Faca Inferior -->
-            <div class="form-container">
-                <h5 class="mb-3">Faca Inferior</h5>
-                <form id="facaInferiorForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="lrInferior" placeholder="65 L.R">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="mInferior" placeholder="65 M">
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="lcInferior" placeholder="65 L.C">
-                        </div>
+            <div class="form-section">
+                <h4>Faca Inferior</h4>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="lcInferior">LC</label>
+                        <input type="number" class="form-control" id="lcInferior" required>
                     </div>
-                </form>
+                    <div class="form-group col-md-4">
+                        <label for="mInferior">M</label>
+                        <input type="number" class="form-control" id="mInferior" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="lrInferior">LR</label>
+                        <input type="number" class="form-control" id="lrInferior" required>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Botões de Salvar e Deletar -->
-        <div class="text-center mt-4">
-            <button type="button" class="btn btn-primary" onclick="salvarDados()">Salvar Dados</button>
-            <button type="button" class="btn btn-danger" onclick="deletarDados()">Deletar Dados</button>
-            <div class="alert alert-success mt-3" id="successMessage">Dados salvos corretamente!</div>
-            <div class="alert alert-danger mt-3" id="errorMessage">Erro ao salvar dados. Tente novamente.</div>
-        </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <button type="submit" class="btn btn-primary btn-block">Salvar</button>
+                </div>
+                <div class="form-group col-md-6">
+                    <button type="button" class="btn btn-danger btn-block" id="delete-btn">Deletar</button>
+                </div>
+            </div>
+        </form>
 
-        <!-- Histórico de Lançamentos -->
-        <div class="history-container">
-            <h5>Histórico de Lançamentos</h5>
-            <div id="history"></div>
+        <h4>Histórico de Lançamentos</h4>
+        <div id="history" class="mt-3">
+            <!-- Histórico de lançamentos será inserido aqui -->
         </div>
     </div>
 
     <script>
-        const expectedValues = {
-            superior: { lr: 68.5, m: 69, lc: 68.9 },
-            inferior: { lr: 65, m: 65, lc: 65 }
-        };
+        document.getElementById('faca-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const lcSuperior = document.getElementById('lcSuperior').value;
+            const mSuperior = document.getElementById('mSuperior').value;
+            const lrSuperior = document.getElementById('lrSuperior').value;
+            const lcInferior = document.getElementById('lcInferior').value;
+            const mInferior = document.getElementById('mInferior').value;
+            const lrInferior = document.getElementById('lrInferior').value;
 
-        let launchCounter = 1;
-        let launches = [];
-
-        function salvarDados() {
-            const date = new Date().toLocaleDateString('pt-BR');
-            const lrSuperior = parseFloat(document.getElementById('lrSuperior').value) || 0;
-            const mSuperior = parseFloat(document.getElementById('mSuperior').value) || 0;
-            const lcSuperior = parseFloat(document.getElementById('lcSuperior').value) || 0;
-            const lrInferior = parseFloat(document.getElementById('lrInferior').value) || 0;
-            const mInferior = parseFloat(document.getElementById('mInferior').value) || 0;
-            const lcInferior = parseFloat(document.getElementById('lcInferior').value) || 0;
-
-            const launch = {
-                id: launchCounter++,
-                date,
-                superior: { lr: lrSuperior, m: mSuperior, lc: lcSuperior },
-                inferior: { lr: lrInferior, m: mInferior, lc: lcInferior }
-            };
-
-            launches.push(launch);
-            updateHistory();
-            clearInputs();
-            document.getElementById('successMessage').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('successMessage').style.display = 'none';
-            }, 3000);
-        }
-
-        function deletarDados() {
-            if (launches.length > 0) {
-                launches.pop();
-                updateHistory();
-            }
-        }
-
-        function updateHistory() {
             const history = document.getElementById('history');
-            history.innerHTML = '';
-            launches.forEach(launch => {
-                const variationSuperior = calculateVariation(launch.superior, expectedValues.superior);
-                const variationInferior = calculateVariation(launch.inferior, expectedValues.inferior);
+            const entry = document.createElement('div');
+            entry.className = 'history-entry';
+            entry.innerHTML = `
+                <p><strong>Faca Superior:</strong> LC: ${lcSuperior}, M: ${mSuperior}, LR: ${lrSuperior}</p>
+                <p><strong>Faca Inferior:</strong> LC: ${lcInferior}, M: ${mInferior}, LR: ${lrInferior}</p>
+            `;
+            history.appendChild(entry);
 
-                history.innerHTML += `
-                    <div class="history-item">
-                        <div class="history-date">${launch.date}</div>
-                        <div class="history-values">
-                            <div>
-                                <strong>Lançamento ${launch.id}</strong>
-                            </div>
-                            <div>
-                                Superior: L.R=${variationSuperior.lr}%, M=${variationSuperior.m}%, L.C=${variationSuperior.lc}%
-                            </div>
-                            <div>
-                                Inferior: L.R=${variationInferior.lr}%, M=${variationInferior.m}%, L.C=${variationInferior.lc}%
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+            document.getElementById('faca-form').reset();
+        });
 
-        function calculateVariation(values, expectedValues) {
-            return {
-                lr: ((values.lr / expectedValues.lr) * 100).toFixed(2),
-                m: ((values.m / expectedValues.m) * 100).toFixed(2),
-                lc: ((values.lc / expectedValues.lc) * 100).toFixed(2)
-            };
-        }
-
-        function clearInputs() {
-            document.getElementById('facaSuperiorForm').reset();
-            document.getElementById('facaInferiorForm').reset();
-        }
+        document.getElementById('delete-btn').addEventListener('click', function () {
+            document.getElementById('history').innerHTML = '';
+        });
     </script>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
