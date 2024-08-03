@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeto Responsivo com Leitor de PDF</title>
+    <title>Projeto Responsivo com Galeria de PDFs</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
         body {
@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
-            overflow-x: hidden; /* Remove a barra de rolagem lateral */
+            overflow-x: hidden;
         }
 
         header {
@@ -73,10 +73,10 @@
         }
 
         .expanded main {
-            margin-top: 6px; /* Altura ajustada quando o menu estiver expandido */
+            margin-top: 6px;
         }
 
-        .pdf-container, .links-container {
+        .pdf-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
@@ -84,7 +84,7 @@
             align-items: center;
         }
 
-        .pdf-item, .link-item {
+        .pdf-item {
             width: 100px;
             height: 140px;
             border: 1px solid #ccc;
@@ -100,29 +100,35 @@
             background-position: center;
         }
 
-        .pdf-item:hover, .link-item:hover {
+        .pdf-item:hover {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
-        .link-item {
-            background-image: none;
+        .pdf-viewer-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 20;
+            justify-content: center;
+            align-items: center;
         }
 
         .pdf-viewer {
-            width: 100%;
-            height: calc(100vh - 60px); /* Ajusta a altura do iframe para preencher a tela */
-            border: 1px solid #ccc;
-            padding: 10px;
+            width: 80%;
+            height: 80%;
             background-color: white;
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
+            border-radius: 8px;
+            padding: 10px;
+            overflow-y: auto;
         }
 
         .pdf-viewer canvas {
             width: 100%;
             height: auto;
-            border-radius: 4px;
         }
 
         .pdf-viewer button {
@@ -140,49 +146,20 @@
             background-color: #45a049;
         }
 
-        .iframe-container {
-            width: 100%;
-            height: calc(100vh - 60px); /* Ajusta a altura do iframe para preencher a tela */
-            border: none;
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .back-button {
+        .pdf-viewer-close {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            top: 20px;
+            right: 20px;
+            background-color: red;
             color: white;
             border: none;
+            padding: 10px;
             cursor: pointer;
-            border-radius: 4px;
-            z-index: 10;
+            border-radius: 50%;
         }
 
-        .back-button:hover {
-            background-color: #45a049;
-        }
-
-        .fullscreen {
-            width: 100vw;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: white;
-            z-index: 100;
-            overflow: auto;
-            padding: 0;
-            margin: 0;
+        .pdf-viewer-close:hover {
+            background-color: darkred;
         }
     </style>
 </head>
@@ -203,6 +180,18 @@
         <!-- O conteúdo das páginas será carregado aqui -->
     </main>
 
+    <!-- Modal para visualização de PDFs -->
+    <div class="pdf-viewer-modal" id="pdfViewerModal">
+        <div class="pdf-viewer" id="pdfViewer">
+            <button class="pdf-viewer-close" id="pdfViewerClose">&times;</button>
+            <div id="pdfCanvasContainer"></div>
+            <div id="pdfNavigation">
+                <button id="prevPage">Página Anterior</button>
+                <button id="nextPage">Próxima Página</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const pageContent = {
             home: `
@@ -215,20 +204,11 @@
             `,
             links: `
                 <h1>Links Úteis</h1>
-                <div class="links-container">
-                    <div class="link-item"><a href="https://app.livemes.com/fe/industry/main/#!/dashboard" target="_blank">LiveMes</a></div>
-                    <div class="link-item"><a href="https://splan.ab-inbev.com/home" target="_blank">Splan</a></div>
-                    <div class="link-item"><a href="https://smartcheck.ambev.com.br/admin/activities?login=true" target="_blank">Smath Check</a></div>
-                    <div class="link-item"><a href="https://aurora.ab-inbev.com/" target="_blank">Aurora</a></div>
-                    <div class="link-item"><a href="https://degreed.com/profile/dguser4xdnx27/overview" target="_blank">Degrred</a></div>
-                    <div class="link-item"><a href="https://ab-inbev.acadia.sysalli.com/browse" target="_blank">Acadia</a></div>
-                </div>
+                <p>Aqui você pode adicionar links úteis.</p>
             `,
             pagina3: `
                 <h1>Página 3</h1>
-                <div class="iframe-container">
-                    <iframe src="https://lino-b.web.app"></iframe>
-                </div>
+                <p>Conteúdo da página 3.</p>
             `
         };
 
@@ -275,42 +255,74 @@
             const pdfContainer = document.querySelector('.pdf-container');
             const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf', 'documento4.pdf', 'documento5.pdf'];
             const covers = [
-                'https://img.freepik.com/fotos-gratis/respingo-colorido-abstrato-3d-background-generativo-ai-background_60438-2509/100x140.png?text=Capa+1',
+                'https://via.placeholder.com/100x140.png?text=Capa+1',
                 'https://via.placeholder.com/100x140.png?text=Capa+2',
                 'https://via.placeholder.com/100x140.png?text=Capa+3',
                 'https://via.placeholder.com/100x140.png?text=Capa+4',
                 'https://via.placeholder.com/100x140.png?text=Capa+5'
             ];
 
-            pdfContainer.innerHTML = '';
-
             pdfs.forEach((pdf, index) => {
                 const pdfItem = document.createElement('div');
                 pdfItem.classList.add('pdf-item');
-                pdfItem.style.backgroundImage = `url(${covers[index]})`;
-                pdfItem.addEventListener('click', () => {
-                    openPDF(pdf);
-                });
+                pdfItem.style.backgroundImage = `url(${covers[index]})`; // Adiciona a imagem de capa
+                pdfItem.addEventListener('click', () => openPDFModal(pdf));
                 pdfContainer.appendChild(pdfItem);
             });
         }
 
-        function openPDF(pdfPath) {
-            const content = document.getElementById('content');
-            content.innerHTML = `
-                <button class="back-button" onclick="goBack()">Voltar</button>
-                <div class="pdf-viewer">
-                    <iframe src="${pdfPath}"></iframe>
-                </div>
-            `;
-            document.querySelector('header').style.display = 'none'; // Oculta o cabeçalho enquanto visualiza o PDF
-        }
+        function openPDFModal(pdfName) {
+            const modal = document.getElementById('pdfViewerModal');
+            modal.style.display = 'flex';
 
-        function goBack() {
-            const content = document.getElementById('content');
-            content.innerHTML = pageContent['leitura'];
-            loadPDFs();
-            document.querySelector('header').style.display = 'flex'; // Mostra o cabeçalho novamente
+            const pdfPath = 'pdfs/' + pdfName;
+            let currentPage = 1;
+            const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
+            pdfCanvasContainer.innerHTML = '';
+
+            const loadingTask = pdfjsLib.getDocument(pdfPath);
+            loadingTask.promise.then(pdf => {
+                const numPages = pdf.numPages;
+
+                function renderPage(pageNum) {
+                    pdf.getPage(pageNum).then(page => {
+                        const scale = 1.5;
+                        const viewport = page.getViewport({ scale });
+                        const canvas = document.createElement('canvas');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        const context = canvas.getContext('2d');
+                        const renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+                        page.render(renderContext).promise.then(() => {
+                            pdfCanvasContainer.innerHTML = '';
+                            pdfCanvasContainer.appendChild(canvas);
+                        });
+                    });
+                }
+
+                renderPage(currentPage);
+
+                document.getElementById('prevPage').addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderPage(currentPage);
+                    }
+                });
+
+                document.getElementById('nextPage').addEventListener('click', () => {
+                    if (currentPage < numPages) {
+                        currentPage++;
+                        renderPage(currentPage);
+                    }
+                });
+            });
+
+            document.getElementById('pdfViewerClose').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
         }
     </script>
 </body>
