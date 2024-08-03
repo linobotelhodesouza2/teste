@@ -10,81 +10,64 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            transition: margin-left 0.3s ease;
+            overflow-x: hidden;
         }
 
         header {
             background-color: #333;
             color: white;
             padding: 1rem;
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .menu-toggle {
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: inline-block;
+            margin-right: 1rem;
+        }
+
+        nav {
+            width: 250px;
+            background-color: #444;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            transition: left 0.3s ease;
+            z-index: 2;
         }
 
         nav ul {
             list-style-type: none;
             padding: 0;
             margin: 0;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        nav ul li {
-            margin: 0 1rem;
         }
 
         nav ul li a {
+            display: block;
             color: white;
             text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
+            padding: 1rem;
+            border-bottom: 1px solid #555;
         }
 
-        nav ul li a:hover {
-            background-color: #555;
-        }
-
-        .menu-toggle {
-            display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .menu-toggle.active ~ nav ul {
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            top: 60px;
-            right: 0;
-            background-color: #333;
-            width: 100%;
-        }
-
-        main {
+        .main-content {
             padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding-top: 5rem;
+            transition: margin-left 0.3s ease;
+            margin-left: 0;
         }
 
         @media (max-width: 768px) {
-            nav ul {
-                display: none;
-                flex-direction: column;
-            }
-            
-            .menu-toggle {
-                display: block;
-            }
-            
-            nav ul li {
-                margin-bottom: 0.5rem;
-                text-align: center;
+            nav {
+                width: 100%;
+                left: -100%;
             }
         }
 
@@ -92,42 +75,30 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
-            justify-content: center;
-            align-items: center;
+            margin-top: 2rem;
         }
 
         .pdf-item {
-            width: 100px;
-            height: 140px;
+            height: 200px;
             border: 1px solid #ccc;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            background-color: white;
-            border-radius: 4px;
-            transition: box-shadow 0.3s ease;
-        }
-
-        .pdf-item:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
         .pdf-viewer {
             width: 100%;
             max-width: 800px;
-            margin: 2rem auto 0;
+            margin: 2rem auto;
             border: 1px solid #ccc;
             padding: 10px;
-            background-color: white;
-            border-radius: 4px;
         }
 
         .pdf-viewer canvas {
             width: 100%;
             height: auto;
-            border-radius: 4px;
         }
 
         .pdf-viewer button {
@@ -136,9 +107,6 @@
             color: white;
             border: none;
             cursor: pointer;
-            margin: 10px 5px;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
         }
 
         .pdf-viewer button:hover {
@@ -148,20 +116,22 @@
 </head>
 <body>
     <header>
-        <div class="menu-toggle">&#9776;</div>
-        <nav>
-            <ul>
-                <li><a href="#" data-page="home">Home</a></li>
-                <li><a href="#" data-page="leitura">Leitura</a></li>
-                <li><a href="#" data-page="pagina2">Página 2</a></li>
-                <li><a href="#" data-page="pagina3">Página 3</a></li>
-            </ul>
-        </nav>
+        <span class="menu-toggle">&#9776;</span>
+        <h1>Projeto Responsivo com Leitor de PDF</h1>
     </header>
 
-    <main id="content">
+    <nav>
+        <ul>
+            <li><a href="#" data-page="home">Home</a></li>
+            <li><a href="#" data-page="leitura">Leitura</a></li>
+            <li><a href="#" data-page="pagina2">Página 2</a></li>
+            <li><a href="#" data-page="pagina3">Página 3</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-content" id="content">
         <!-- O conteúdo das páginas será carregado aqui -->
-    </main>
+    </div>
 
     <script>
         const pageContent = {
@@ -187,6 +157,8 @@
             const content = document.getElementById('content');
             const navLinks = document.querySelectorAll('nav ul li a');
             const menuToggle = document.querySelector('.menu-toggle');
+            const nav = document.querySelector('nav');
+            const mainContent = document.querySelector('.main-content');
 
             function loadPage(page) {
                 content.innerHTML = pageContent[page];
@@ -200,11 +172,19 @@
                     e.preventDefault();
                     const page = e.target.getAttribute('data-page');
                     loadPage(page);
+                    nav.style.left = '-250px';
+                    mainContent.style.marginLeft = '0';
                 });
             });
 
             menuToggle.addEventListener('click', () => {
-                menuToggle.classList.toggle('active');
+                if (nav.style.left === '-250px') {
+                    nav.style.left = '0';
+                    mainContent.style.marginLeft = '250px';
+                } else {
+                    nav.style.left = '-250px';
+                    mainContent.style.marginLeft = '0';
+                }
             });
 
             // Carregar a página inicial
@@ -213,7 +193,7 @@
 
         function loadPDFs() {
             const pdfContainer = document.querySelector('.pdf-container');
-            const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf', 'documento4.pdf', 'documento5.pdf'];
+            const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf'];
 
             pdfs.forEach(pdf => {
                 const pdfItem = document.createElement('div');
@@ -259,6 +239,8 @@
                             pageIndicator.textContent = `Página ${pageNum} de ${numPages}`;
                             pageIndicator.style.textAlign = 'center';
                             viewer.appendChild(pageIndicator);
+                        }).catch(error => {
+                            console.error('Erro ao renderizar a página:', error);
                         });
                     });
                 }
@@ -288,9 +270,9 @@
                 buttonContainer.style.display = 'flex';
                 buttonContainer.style.justifyContent = 'space-between';
                 buttonContainer.style.marginTop = '10px';
-                buttonContainer.appendChild(prevButton);
-                buttonContainer.appendChild(nextButton);
                 viewer.appendChild(buttonContainer);
+                viewer.appendChild(prevButton);
+                viewer.appendChild(nextButton);
             }).catch(error => {
                 console.error('Erro ao carregar o PDF:', error);
                 const errorMessage = document.createElement('div');
