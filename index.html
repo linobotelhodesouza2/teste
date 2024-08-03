@@ -219,6 +219,9 @@
                     e.preventDefault();
                     const page = e.target.getAttribute('data-page');
                     loadPage(page);
+                    // Fecha o menu ao selecionar uma opção
+                    nav.style.maxHeight = null;
+                    body.classList.remove('expanded');
                 });
             });
 
@@ -268,6 +271,7 @@
             loadingTask.promise.then(pdf => {
                 let currentPage = 1;
                 const numPages = pdf.numPages;
+                const viewer = document.querySelector('.pdf-viewer');
 
                 function renderPage(pageNum) {
                     pdf.getPage(pageNum).then(page => {
