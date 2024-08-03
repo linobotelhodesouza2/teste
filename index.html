@@ -15,6 +15,13 @@
         header {
             background-color: #333;
             padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav {
+            display: none;
         }
 
         nav ul {
@@ -28,46 +35,19 @@
         nav ul li a {
             color: white;
             text-decoration: none;
+            padding: 1rem;
+            display: block;
         }
 
         .menu-toggle {
             display: none;
+            cursor: pointer;
+            color: white;
+            font-size: 1.5rem;
         }
 
         main {
             padding: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            nav ul {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 60px;
-                right: 0;
-                background-color: #333;
-                width: 100%;
-            }
-
-            nav ul li {
-                margin-bottom: 0.5rem;
-                text-align: center;
-            }
-
-            nav ul li a {
-                display: block;
-                padding: 1rem;
-            }
-
-            .menu-toggle {
-                display: block;
-                color: white;
-                font-size: 1.5rem;
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                cursor: pointer;
-            }
         }
 
         .pdf-container {
@@ -78,8 +58,8 @@
         }
 
         .pdf-item {
-            width: 30%;
-            height: 100px;
+            width: 200px;
+            height: 280px;
             border: 1px solid #ccc;
             cursor: pointer;
             display: flex;
@@ -112,12 +92,45 @@
         .pdf-viewer button:hover {
             background-color: #45a049;
         }
+
+        @media (max-width: 768px) {
+            nav {
+                display: block;
+            }
+
+            nav ul {
+                flex-direction: column;
+                background-color: #333;
+                position: absolute;
+                width: 100%;
+                left: 0;
+                top: 60px;
+                display: none;
+            }
+
+            nav ul.show {
+                display: flex;
+            }
+
+            nav ul li {
+                margin-bottom: 0.5rem;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .pdf-item {
+                width: calc(33.33% - 10px);
+                height: auto;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
+        <div class="menu-toggle">&#9776;</div>
         <nav>
-            <span class="menu-toggle">☰</span>
             <ul>
                 <li><a href="#" data-page="home">Home</a></li>
                 <li><a href="#" data-page="leitura">Leitura</a></li>
@@ -155,7 +168,7 @@
             const content = document.getElementById('content');
             const navLinks = document.querySelectorAll('nav ul li a');
             const menuToggle = document.querySelector('.menu-toggle');
-            const navMenu = document.querySelector('nav ul');
+            const nav = document.querySelector('nav ul');
 
             function loadPage(page) {
                 content.innerHTML = pageContent[page];
@@ -169,14 +182,12 @@
                     e.preventDefault();
                     const page = e.target.getAttribute('data-page');
                     loadPage(page);
-                    if (window.innerWidth <= 768) {
-                        navMenu.style.display = 'none';
-                    }
+                    nav.classList.remove('show');
                 });
             });
 
             menuToggle.addEventListener('click', () => {
-                navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+                nav.classList.toggle('show');
             });
 
             // Carregar a página inicial
@@ -203,7 +214,6 @@
             document.querySelector('.pdf-container').appendChild(viewer);
 
             const pdfPath = 'pdfs/' + pdfName;
-            console.log('Tentando carregar o PDF:', pdfPath);
 
             const loadingTask = pdfjsLib.getDocument(pdfPath);
             loadingTask.promise.then(pdf => {
