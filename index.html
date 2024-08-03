@@ -271,14 +271,16 @@
         function loadPDFs() {
             const pdfContainer = document.querySelector('.pdf-container');
             const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf', 'documento4.pdf', 'documento5.pdf'];
+            
+            // Imagens de capa locais
             const covers = [
-                'https://via.placeholder.com/100x140.png?text=Capa+1',
-                'https://via.placeholder.com/100x140.png?text=Capa+2',
-                'https://via.placeholder.com/100x140.png?text=Capa+3',
-                'https://via.placeholder.com/100x140.png?text=Capa+4',
-                'https://via.placeholder.com/100x140.png?text=Capa+5'
+                'https://t3.ftcdn.net/jpg/05/85/86/44/360_F_585864419_kgIYUcDQ0yiLOCo1aRjeu7kRxndcoitz.jpg'
+                'images/capa2.jpg',
+                'images/capa3.jpg',
+                'images/capa4.jpg',
+                'images/capa5.jpg'
             ];
-
+        
             pdfs.forEach((pdf, index) => {
                 const pdfItem = document.createElement('div');
                 pdfItem.classList.add('pdf-item');
