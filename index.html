@@ -110,12 +110,13 @@
 
         .pdf-viewer {
             width: 100%;
-            max-width: 800px;
-            margin: 2rem auto 0;
+            height: calc(100vh - 60px); /* Ajusta a altura do iframe para preencher a tela */
             border: 1px solid #ccc;
             padding: 10px;
             background-color: white;
             border-radius: 4px;
+            overflow: hidden;
+            position: relative;
         }
 
         .pdf-viewer canvas {
@@ -152,6 +153,36 @@
             width: 100%;
             height: 100%;
             border: none;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
+        }
+
+        .fullscreen {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: white;
+            z-index: 100;
+            overflow: auto;
+            padding: 0;
+            margin: 0;
         }
     </style>
 </head>
@@ -250,77 +281,35 @@
                 'https://via.placeholder.com/100x140.png?text=Capa+5'
             ];
 
+            pdfContainer.innerHTML = '';
+
             pdfs.forEach((pdf, index) => {
                 const pdfItem = document.createElement('div');
                 pdfItem.classList.add('pdf-item');
-                pdfItem.style.backgroundImage = `url(${covers[index]})`; // Adiciona a imagem de capa
-                pdfItem.addEventListener('click', () => openPDF(pdf));
+                pdfItem.style.backgroundImage = `url(${covers[index]})`;
+                pdfItem.addEventListener('click', () => {
+                    openPDF(pdf);
+                });
                 pdfContainer.appendChild(pdfItem);
             });
         }
 
-        function openPDF(pdfName) {
-            const viewer = document.createElement('div');
-            viewer.classList.add('pdf-viewer');
-            document.querySelector('.pdf-container').innerHTML = '';
-            document.querySelector('.pdf-container').appendChild(viewer);
+        function openPDF(pdfPath) {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <button class="back-button" onclick="goBack()">Voltar</button>
+                <div class="pdf-viewer">
+                    <iframe src="${pdfPath}"></iframe>
+                </div>
+            `;
+            document.querySelector('header').style.display = 'none'; // Oculta o cabeçalho enquanto visualiza o PDF
+        }
 
-            const pdfPath = 'pdfs/' + pdfName;
-
-            const loadingTask = pdfjsLib.getDocument(pdfPath);
-            loadingTask.promise.then(pdf => {
-                let currentPage = 1;
-                const numPages = pdf.numPages;
-                const viewer = document.querySelector('.pdf-viewer');
-
-                function renderPage(pageNum) {
-                    pdf.getPage(pageNum).then(page => {
-                        const scale = 1.5;
-                        const viewport = page.getViewport({ scale });
-                        const canvas = document.createElement('canvas');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        viewer.innerHTML = '';
-                        viewer.appendChild(canvas);
-
-                        const context = canvas.getContext('2d');
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        };
-                        page.render(renderContext).promise.then(() => {
-                            viewer.appendChild(canvas);
-                        });
-                    });
-                }
-
-                renderPage(currentPage);
-
-                const prevButton = document.createElement('button');
-                prevButton.textContent = 'Página Anterior';
-                const nextButton = document.createElement('button');
-                nextButton.textContent = 'Próxima Página';
-
-                prevButton.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        renderPage(currentPage);
-                    }
-                });
-
-                nextButton.addEventListener('click', () => {
-                    if (currentPage < numPages) {
-                        currentPage++;
-                        renderPage(currentPage);
-                    }
-                });
-
-                const buttonContainer = document.createElement('div');
-                buttonContainer.style.textAlign = 'center';
-                buttonContainer.appendChild(prevButton);
-                buttonContainer.appendChild(nextButton);
-                viewer.appendChild(buttonContainer);
-            });
+        function goBack() {
+            const content = document.getElementById('content');
+            content.innerHTML = pageContent['leitura'];
+            loadPDFs();
+            document.querySelector('header').style.display = 'flex'; // Mostra o cabeçalho novamente
         }
     </script>
 </body>
