@@ -13,6 +13,10 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            background-image: url('https://t3.ftcdn.net/jpg/05/85/86/44/360_F_585864419_kgIYUcDQ0yiLOCo1aRjeu7kRxndcoitz.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
         header {
@@ -36,6 +40,8 @@
         main {
             flex: 1;
             padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.8); /* Fundo branco com transparência */
+            border-radius: 10px;
         }
 
         footer {
@@ -285,18 +291,12 @@
                             renderPage(currentPage);
                         }
                     });
-
-                }).catch(error => {
-                    console.error('Erro ao carregar o PDF:', error);
-                    const errorMessage = document.createElement('div');
-                    errorMessage.textContent = 'Erro ao carregar o PDF. Verifique o caminho do arquivo.';
-                    pdfCanvasContainer.appendChild(errorMessage);
                 });
 
                 modal.style.display = 'flex';
             }
 
-            document.querySelector('.modal-content button.close').addEventListener('click', () => {
+            document.querySelector('.modal .close').addEventListener('click', () => {
                 modal.style.display = 'none';
                 document.getElementById('pdfCanvasContainer').innerHTML = '';
             });
@@ -308,11 +308,18 @@
 
             // Inicializa com a página inicial
             loadPage('home');
+
+            // Adiciona funcionalidade para empurrar o conteúdo para baixo ao abrir o menu
+            document.querySelector('nav').addEventListener('click', () => {
+                document.body.classList.toggle('menu-open');
+            });
         });
 
-        // Adiciona funcionalidade para empurrar o conteúdo para baixo ao abrir o menu
-        document.querySelector('nav').addEventListener('click', () => {
-            document.body.classList.toggle('menu-open');
+        // Fecha o menu automaticamente ao clicar em um item
+        document.querySelectorAll('nav ul li a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.body.classList.remove('menu-open');
+            });
         });
     </script>
 </body>
