@@ -10,67 +10,42 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            transition: margin-top 0.3s ease;
+            background-color: #f4f4f4;
+            transition: margin-left 0.3s ease;
         }
 
         header {
             background-color: #333;
+            color: white;
             padding: 1rem;
             position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
         }
 
         .menu-toggle {
             font-size: 1.5rem;
             cursor: pointer;
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .menu-toggle span {
-            display: block;
-            width: 100%;
-            height: 3px;
-            background-color: white;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .menu-toggle span:nth-child(1) {
-            transform-origin: top left;
-        }
-
-        .menu-toggle span:nth-child(2) {
-            opacity: 1;
-        }
-
-        .menu-toggle span:nth-child(3) {
-            transform-origin: bottom left;
-        }
-
-        .menu-toggle.open span:nth-child(1) {
-            transform: rotate(45deg);
-        }
-
-        .menu-toggle.open span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .menu-toggle.open span:nth-child(3) {
-            transform: rotate(-45deg);
         }
 
         nav {
-            background-color: #333;
-            color: white;
-            max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease;
+            background-color: #333;
+            max-height: 0;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+        }
+
+        nav.expanded {
+            max-height: 500px; /* altura máxima para o menu expandido */
+            opacity: 1;
         }
 
         nav ul {
@@ -82,59 +57,78 @@
         }
 
         nav ul li {
-            padding: 1rem;
-            text-align: center;
+            margin: 0;
         }
 
         nav ul li a {
             color: white;
             text-decoration: none;
+            padding: 8px 16px;
             display: block;
+            border-bottom: 1px solid #444;
+            transition: background-color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: #555;
         }
 
         main {
             padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transition: margin-top 0.3s ease;
         }
 
         .expanded main {
-            margin-top: 6px;
+            margin-top: 60px; /* altura ajustada quando o menu estiver expandido */
         }
 
         .pdf-container {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
+            justify-content: center;
+            align-items: center;
         }
 
         .pdf-item {
-            width: calc(33.33% - 1rem); /* Ajusta o tamanho para 3 PDFs por linha */
-            height: 280px;
+            width: 100px;
+            height: 140px;
             border: 1px solid #ccc;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            position: relative;
+            background-color: white;
+            border-radius: 4px;
+            transition: box-shadow 0.3s ease;
+            background-size: cover;
+            background-position: center;
         }
 
-        .pdf-item img {
-            width: 100%;
-            height: auto;
+        .pdf-item:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
         .pdf-viewer {
             width: 100%;
             max-width: 800px;
-            margin: 0 auto;
+            margin: 2rem auto 0;
             border: 1px solid #ccc;
             padding: 10px;
+            background-color: white;
+            border-radius: 4px;
         }
 
         .pdf-viewer canvas {
             width: 100%;
             height: auto;
+            border-radius: 4px;
         }
 
         .pdf-viewer button {
@@ -143,6 +137,9 @@
             color: white;
             border: none;
             cursor: pointer;
+            margin: 10px 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
 
         .pdf-viewer button:hover {
@@ -152,12 +149,8 @@
 </head>
 <body>
     <header>
-        <div class="menu-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <nav>
+        <div class="menu-toggle">&#9776;</div>
+        <nav id="navMenu">
             <ul>
                 <li><a href="#" data-page="home">Home</a></li>
                 <li><a href="#" data-page="leitura">Leitura</a></li>
@@ -195,7 +188,8 @@
             const content = document.getElementById('content');
             const navLinks = document.querySelectorAll('nav ul li a');
             const menuToggle = document.querySelector('.menu-toggle');
-            const nav = document.querySelector('nav');
+            const navMenu = document.getElementById('navMenu');
+            const header = document.querySelector('header');
             const body = document.body;
 
             function loadPage(page) {
@@ -214,13 +208,12 @@
             });
 
             menuToggle.addEventListener('click', () => {
-                menuToggle.classList.toggle('open');  // Adiciona ou remove a classe 'open'
-                if (nav.style.maxHeight) {
-                    nav.style.maxHeight = null;
-                    body.classList.remove('expanded');
+                if (navMenu.classList.contains('expanded')) {
+                    navMenu.classList.remove('expanded');
+                    body.classList.remove('menu-open');
                 } else {
-                    nav.style.maxHeight = nav.scrollHeight + "px";
-                    body.classList.add('expanded');
+                    navMenu.classList.add('expanded');
+                    body.classList.add('menu-open');
                 }
             });
 
@@ -230,19 +223,19 @@
 
         function loadPDFs() {
             const pdfContainer = document.querySelector('.pdf-container');
-            // Liste os nomes dos seus arquivos PDF aqui
-            const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf'];
+            const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf', 'documento4.pdf', 'documento5.pdf'];
+            const covers = [
+                'https://via.placeholder.com/100x140.png?text=Capa+1',
+                'https://via.placeholder.com/100x140.png?text=Capa+2',
+                'https://via.placeholder.com/100x140.png?text=Capa+3',
+                'https://via.placeholder.com/100x140.png?text=Capa+4',
+                'https://via.placeholder.com/100x140.png?text=Capa+5'
+            ];
 
-            pdfs.forEach(pdf => {
+            pdfs.forEach((pdf, index) => {
                 const pdfItem = document.createElement('div');
                 pdfItem.classList.add('pdf-item');
-                pdfItem.textContent = pdf;
-
-                // Adicionar uma imagem aleatória de capa
-                const coverImg = document.createElement('img');
-                coverImg.src = 'https://via.placeholder.com/200x280?text=' + encodeURIComponent(pdf);
-                pdfItem.appendChild(coverImg);
-
+                pdfItem.style.backgroundImage = `url(${covers[index]})`; // Adiciona a imagem de capa
                 pdfItem.addEventListener('click', () => openPDF(pdf));
                 pdfContainer.appendChild(pdfItem);
             });
@@ -254,9 +247,7 @@
             document.querySelector('.pdf-container').innerHTML = '';
             document.querySelector('.pdf-container').appendChild(viewer);
 
-            // Verifique se o caminho está correto
             const pdfPath = 'pdfs/' + pdfName;
-            console.log('Tentando carregar o PDF:', pdfPath); // Adicione esta linha
 
             const loadingTask = pdfjsLib.getDocument(pdfPath);
             loadingTask.promise.then(pdf => {
@@ -281,20 +272,15 @@
                             viewer.innerHTML = '';
                             viewer.appendChild(canvas);
 
-                            // Adicionar indicador de página
                             const pageIndicator = document.createElement('div');
                             pageIndicator.textContent = `Página ${pageNum} de ${numPages}`;
-                            pageIndicator.style.textAlign = 'center';
                             viewer.appendChild(pageIndicator);
-                        }).catch(error => {
-                            console.error('Erro ao renderizar a página:', error);
                         });
                     });
                 }
 
                 renderPage(currentPage);
 
-                // Adicionar botões de navegação
                 const prevButton = document.createElement('button');
                 prevButton.textContent = 'Anterior';
                 const nextButton = document.createElement('button');
@@ -318,10 +304,7 @@
                 buttonContainer.style.textAlign = 'center';
                 buttonContainer.appendChild(prevButton);
                 buttonContainer.appendChild(nextButton);
-
                 viewer.appendChild(buttonContainer);
-            }).catch(error => {
-                console.error('Erro ao carregar o PDF:', error);
             });
         }
     </script>
