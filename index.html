@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeto Responsivo com Galeria de PDFs</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <title>Galeria com Efeito Fading</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -104,7 +103,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
-        .pdf-viewer-modal {
+        .image-viewer-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -112,41 +111,26 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.8);
-            z-index: 20;
             justify-content: center;
             align-items: center;
+            transition: opacity 0.5s ease;
+            opacity: 0;
+            z-index: 20;
         }
 
-        .pdf-viewer {
-            width: 80%;
-            height: 80%;
-            background-color: white;
+        .image-viewer-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .image-viewer img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
             border-radius: 8px;
-            padding: 10px;
-            overflow-y: auto;
         }
 
-        .pdf-viewer canvas {
-            width: 100%;
-            height: auto;
-        }
-
-        .pdf-viewer button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin: 10px 5px;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-
-        .pdf-viewer button:hover {
-            background-color: #45a049;
-        }
-
-        .pdf-viewer-close {
+        .image-viewer-close {
             position: absolute;
             top: 20px;
             right: 20px;
@@ -158,7 +142,7 @@
             border-radius: 50%;
         }
 
-        .pdf-viewer-close:hover {
+        .image-viewer-close:hover {
             background-color: darkred;
         }
     </style>
@@ -180,15 +164,11 @@
         <!-- O conteúdo das páginas será carregado aqui -->
     </main>
 
-    <!-- Modal para visualização de PDFs -->
-    <div class="pdf-viewer-modal" id="pdfViewerModal">
-        <div class="pdf-viewer" id="pdfViewer">
-            <button class="pdf-viewer-close" id="pdfViewerClose">&times;</button>
-            <div id="pdfCanvasContainer"></div>
-            <div id="pdfNavigation">
-                <button id="prevPage">Página Anterior</button>
-                <button id="nextPage">Próxima Página</button>
-            </div>
+    <!-- Modal para visualização de imagens -->
+    <div class="image-viewer-modal" id="imageViewerModal">
+        <div class="image-viewer">
+            <button class="image-viewer-close" id="imageViewerClose">&times;</button>
+            <img id="imageViewerImage" src="" alt="Imagem">
         </div>
     </div>
 
@@ -266,62 +246,20 @@
                 const pdfItem = document.createElement('div');
                 pdfItem.classList.add('pdf-item');
                 pdfItem.style.backgroundImage = `url(${covers[index]})`; // Adiciona a imagem de capa
-                pdfItem.addEventListener('click', () => openPDFModal(pdf));
+                pdfItem.addEventListener('click', () => openImageViewer(covers[index]));
                 pdfContainer.appendChild(pdfItem);
             });
         }
 
-        function openPDFModal(pdfName) {
-            const modal = document.getElementById('pdfViewerModal');
-            modal.style.display = 'flex';
+        function openImageViewer(imageSrc) {
+            const modal = document.getElementById('imageViewerModal');
+            const imageViewerImage = document.getElementById('imageViewerImage');
 
-            const pdfPath = 'pdfs/' + pdfName;
-            let currentPage = 1;
-            const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
-            pdfCanvasContainer.innerHTML = '';
+            imageViewerImage.src = imageSrc;
+            modal.classList.add('show');
 
-            const loadingTask = pdfjsLib.getDocument(pdfPath);
-            loadingTask.promise.then(pdf => {
-                const numPages = pdf.numPages;
-
-                function renderPage(pageNum) {
-                    pdf.getPage(pageNum).then(page => {
-                        const scale = 1.5;
-                        const viewport = page.getViewport({ scale });
-                        const canvas = document.createElement('canvas');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        const context = canvas.getContext('2d');
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        };
-                        page.render(renderContext).promise.then(() => {
-                            pdfCanvasContainer.innerHTML = '';
-                            pdfCanvasContainer.appendChild(canvas);
-                        });
-                    });
-                }
-
-                renderPage(currentPage);
-
-                document.getElementById('prevPage').addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        renderPage(currentPage);
-                    }
-                });
-
-                document.getElementById('nextPage').addEventListener('click', () => {
-                    if (currentPage < numPages) {
-                        currentPage++;
-                        renderPage(currentPage);
-                    }
-                });
-            });
-
-            document.getElementById('pdfViewerClose').addEventListener('click', () => {
-                modal.style.display = 'none';
+            document.getElementById('imageViewerClose').addEventListener('click', () => {
+                modal.classList.remove('show');
             });
         }
     </script>
