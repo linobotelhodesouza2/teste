@@ -6,12 +6,15 @@
     <title>Projeto Responsivo com Galeria de PDFs</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            overflow-x: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
         }
 
         header {
@@ -63,6 +66,7 @@
         }
 
         main {
+            flex: 1;
             padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
@@ -124,6 +128,7 @@
             border-radius: 8px;
             padding: 10px;
             overflow-y: auto;
+            position: relative;
         }
 
         .pdf-viewer canvas {
@@ -161,6 +166,14 @@
         .pdf-viewer-close:hover {
             background-color: darkred;
         }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            position: relative;
+        }
     </style>
 </head>
 <body>
@@ -191,6 +204,10 @@
             </div>
         </div>
     </div>
+
+    <footer>
+        &copy; 2024 Lino Botelho de Souza
+    </footer>
 
     <script>
         const pageContent = {
@@ -275,13 +292,11 @@
             const modal = document.getElementById('pdfViewerModal');
             modal.style.display = 'flex';
 
-            const pdfPath = 'pdfs/' + pdfName;
-            let currentPage = 1;
-            const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
-            pdfCanvasContainer.innerHTML = '';
+            const pdfPath = 'path/to/pdf/' + pdfName;
 
-            const loadingTask = pdfjsLib.getDocument(pdfPath);
-            loadingTask.promise.then(pdf => {
+            pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
+                const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
+                let currentPage = 1;
                 const numPages = pdf.numPages;
 
                 function renderPage(pageNum) {
