@@ -3,31 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Página Inicial</title>
+    <title>Menu - LINO</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            margin: 20px;
-            padding: 20px;
-            background-image: url('https://i.pinimg.com/736x/01/22/d9/0122d95177d733f1dabd36acca11fef5.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="container">
-        <h2 class="mb-4">Página Inicial</h2>
-        <a href="cortes_e_perimetros.html" class="btn btn-primary">Ir para Cortes e Perímetros</a>
+    <div class="menu">
+        <a href="#" onclick="showPage('page1')">Página 1</a>
+        <a href="#" onclick="showPage('page2')">Página 2</a>
+        <a href="#" onclick="showPage('page3')">Página 3</a>
     </div>
+
+    <div class="content">
+        <div id="iframe-container">
+            <iframe id="iframe" src="" frameborder="0"></iframe>
+        </div>
+        <div id="page1" class="page" style="display: block;">
+            <h1>Bem-vindo à Página 1</h1>
+            <p>Conteúdo da Página 1.</p>
+        </div>
+        <div id="page2" class="page" style="display: none;">
+            <h1>Links Úteis</h1>
+            <ul>
+                <li><a href="https://www.example.com">Link 1</a></li>
+                <li><a href="https://www.example.com">Link 2</a></li>
+                <li><a href="https://www.example.com">Link 3</a></li>
+            </ul>
+        </div>
+        <div id="page3" class="page" style="display: none;">
+            <p>Carregando Página 3...</p>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
