@@ -1,148 +1,245 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Facas</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Projeto Responsivo com Leitor de PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
-        .form-section {
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 1rem;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav ul li {
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        .pdf-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pdf-item {
+            width: 200px;
+            height: 280px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
             border: 1px solid #ccc;
             padding: 10px;
-            margin-bottom: 10px;
         }
-        .form-section h4 {
-            text-align: center;
-            margin-bottom: 10px;
+
+        .pdf-viewer canvas {
+            width: 100%;
+            height: auto;
         }
-        .form-section .form-row {
-            display: flex;
-            justify-content: space-around;
+
+        .pdf-viewer button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
-        .form-section .form-group {
-            flex: 1;
-            margin-right: 10px;
-        }
-        .form-section .form-group:last-child {
-            margin-right: 0;
-        }
-        .history-entry {
-            margin-bottom: 10px;
-            border-top: 1px solid #ccc;
-            padding-top: 10px;
-        }
-        .form-buttons {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 15px;
-        }
-        .form-buttons .btn {
-            flex: 1;
-            margin-right: 10px;
-        }
-        .form-buttons .btn:last-child {
-            margin-right: 0;
+
+        .pdf-viewer button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <form id="faca-form">
-            <div class="form-section">
-                <h4>Faca Superior</h4>
-                <div class="form-row">
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="lcSuperior" placeholder="LC" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="mSuperior" placeholder="M" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="lrSuperior" placeholder="LR" required>
-                    </div>
-                </div>
-            </div>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#" data-page="home">Home</a></li>
+                <li><a href="#" data-page="leitura">Leitura</a></li>
+                <li><a href="#" data-page="pagina2">Página 2</a></li>
+                <li><a href="#" data-page="pagina3">Página 3</a></li>
+            </ul>
+        </nav>
+    </header>
 
-            <div class="form-section">
-                <h4>Faca Inferior</h4>
-                <div class="form-row">
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="lcInferior" placeholder="LC" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="mInferior" placeholder="M" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="lrInferior" placeholder="LR" required>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-buttons">
-                <button type="submit" class="btn btn-primary">Salvar</button>
-                <button type="button" class="btn btn-danger" id="delete-btn">Deletar</button>
-            </div>
-        </form>
-
-        <h4>Histórico de Lançamentos</h4>
-        <div class="form-group">
-            <select class="form-control" id="history-dropdown">
-                <option selected disabled>Selecione a data do histórico</option>
-                <!-- Opções serão adicionadas dinamicamente -->
-            </select>
-        </div>
-        <div id="history" class="mt-3">
-            <!-- Histórico de lançamentos será inserido aqui -->
-        </div>
-    </div>
+    <main id="content">
+        <!-- O conteúdo das páginas será carregado aqui -->
+    </main>
 
     <script>
-        document.getElementById('faca-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const lcSuperior = document.getElementById('lcSuperior').value;
-            const mSuperior = document.getElementById('mSuperior').value;
-            const lrSuperior = document.getElementById('lrSuperior').value;
-            const lcInferior = document.getElementById('lcInferior').value;
-            const mInferior = document.getElementById('mInferior').value;
-            const lrInferior = document.getElementById('lrInferior').value;
+        const pageContent = {
+            home: `
+                <h1>Bem-vindo à Página Inicial</h1>
+                <p>Este é um projeto responsivo com um menu na parte superior e quatro páginas diferentes.</p>
+            `,
+            leitura: `
+                <h1>Leitura de PDFs</h1>
+                <div class="pdf-container"></div>
+            `,
+            pagina2: `
+                <h1>Página 2</h1>
+                <p>Este é o conteúdo da Página 2.</p>
+            `,
+            pagina3: `
+                <h1>Página 3</h1>
+                <p>Este é o conteúdo da Página 3.</p>
+            `
+        };
 
-            const currentDate = new Date().toLocaleDateString();
-            const historyDropdown = document.getElementById('history-dropdown');
-            const newOption = document.createElement('option');
-            newOption.value = currentDate;
-            newOption.text = currentDate;
-            historyDropdown.add(newOption);
+        document.addEventListener('DOMContentLoaded', () => {
+            const content = document.getElementById('content');
+            const navLinks = document.querySelectorAll('nav ul li a');
 
-            const history = document.getElementById('history');
-            const entry = document.createElement('div');
-            entry.className = 'history-entry';
-            entry.setAttribute('data-date', currentDate);
-            entry.innerHTML = `
-                <p><strong>Faca Superior:</strong> LC: ${lcSuperior}, M: ${mSuperior}, LR: ${lrSuperior}</p>
-                <p><strong>Faca Inferior:</strong> LC: ${lcInferior}, M: ${mInferior}, LR: ${lrInferior}</p>
-            `;
-            history.appendChild(entry);
-
-            document.getElementById('faca-form').reset();
-        });
-
-        document.getElementById('delete-btn').addEventListener('click', function () {
-            document.getElementById('history').innerHTML = '';
-            const historyDropdown = document.getElementById('history-dropdown');
-            historyDropdown.innerHTML = '<option selected disabled>Selecione a data do histórico</option>';
-        });
-
-        document.getElementById('history-dropdown').addEventListener('change', function () {
-            const selectedDate = this.value;
-            const entries = document.querySelectorAll('.history-entry');
-            entries.forEach(entry => {
-                if (entry.getAttribute('data-date') === selectedDate) {
-                    entry.style.display = 'block';
-                } else {
-                    entry.style.display = 'none';
+            function loadPage(page) {
+                content.innerHTML = pageContent[page];
+                if (page === 'leitura') {
+                    loadPDFs();
                 }
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = e.target.getAttribute('data-page');
+                    loadPage(page);
+                });
             });
+
+            // Carregar a página inicial
+            loadPage('home');
         });
+
+        function loadPDFs() {
+            const pdfContainer = document.querySelector('.pdf-container');
+            // Liste os nomes dos seus arquivos PDF aqui
+            const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf'];
+
+            pdfs.forEach(pdf => {
+                const pdfItem = document.createElement('div');
+                pdfItem.classList.add('pdf-item');
+                pdfItem.textContent = pdf;
+                pdfItem.addEventListener('click', () => openPDF(pdf));
+                pdfContainer.appendChild(pdfItem);
+            });
+        }
+
+        function openPDF(pdfName) {
+            const viewer = document.createElement('div');
+            viewer.classList.add('pdf-viewer');
+            document.querySelector('.pdf-container').innerHTML = '';
+            document.querySelector('.pdf-container').appendChild(viewer);
+
+            // Verifique se o caminho está correto
+            const pdfPath = 'pdfs/' + pdfName;
+            console.log('Tentando carregar o PDF:', pdfPath); // Adicione esta linha
+
+            const loadingTask = pdfjsLib.getDocument(pdfPath);
+            loadingTask.promise.then(pdf => {
+                let currentPage = 1;
+                const numPages = pdf.numPages;
+
+                function renderPage(pageNum) {
+                    pdf.getPage(pageNum).then(page => {
+                        const scale = viewer.clientWidth / page.getViewport({ scale: 1 }).width;
+                        const viewport = page.getViewport({ scale });
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        const renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+
+                        page.render(renderContext).promise.then(() => {
+                            viewer.innerHTML = '';
+                            viewer.appendChild(canvas);
+
+                            // Adicionar indicador de página
+                            const pageIndicator = document.createElement('div');
+                            pageIndicator.textContent = `Página ${pageNum} de ${numPages}`;
+                            pageIndicator.style.textAlign = 'center';
+                            viewer.appendChild(pageIndicator);
+                        }).catch(error => {
+                            console.error('Erro ao renderizar a página:', error);
+                        });
+                    });
+                }
+
+                renderPage(currentPage);
+
+                // Adicionar botões de navegação
+                const prevButton = document.createElement('button');
+                prevButton.textContent = 'Anterior';
+                const nextButton = document.createElement('button');
+                nextButton.textContent = 'Próxima';
+
+                prevButton.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderPage(currentPage);
+                    }
+                });
+
+                nextButton.addEventListener('click', () => {
+                    if (currentPage < numPages) {
+                        currentPage++;
+                        renderPage(currentPage);
+                    }
+                });
+
+                const buttonContainer = document.createElement('div');
+                buttonContainer.style.display = 'flex';
+                buttonContainer.style.justifyContent = 'space-between';
+                buttonContainer.style.marginTop = '10px';
+                buttonContainer.appendChild(prevButton);
+                buttonContainer.appendChild(nextButton);
+                viewer.appendChild(buttonContainer);
+            }).catch(error => {
+                console.error('Erro ao carregar o PDF:', error);
+                const errorMessage = document.createElement('div');
+                errorMessage.textContent = 'Erro ao carregar o PDF. Verifique o caminho do arquivo.';
+                viewer.appendChild(errorMessage);
+            });
+        }
     </script>
 </body>
 </html>
