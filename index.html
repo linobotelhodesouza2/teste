@@ -6,12 +6,12 @@
     <title>Projeto Responsivo com Galeria de PDFs</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
-        body {
+        body, html {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            height: 100%;
             background-color: #f4f4f4;
-            overflow-x: hidden;
         }
 
         header {
@@ -70,6 +70,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transition: margin-top 0.3s ease;
+            flex-grow: 1;
         }
 
         .expanded main {
@@ -78,21 +79,17 @@
 
         .pdf-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             gap: 1rem;
             justify-content: center;
             align-items: center;
         }
 
         .pdf-item {
-            width: 100px;
-            height: 140px;
+            width: 100%;
+            padding-bottom: 140%; /* Proporção de 100x140 */
             border: 1px solid #ccc;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
             background-color: white;
             border-radius: 4px;
             transition: box-shadow 0.3s ease;
@@ -168,41 +165,51 @@
             background-color: #333;
             color: white;
             margin-top: 2rem;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        #wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="menu-toggle">&#9776;</div>
-        <nav>
-            <ul>
-                <li><a href="#" data-page="home">Home</a></li>
-                <li><a href="#" data-page="leitura">Leitura</a></li>
-                <li><a href="#" data-page="links">Links Úteis</a></li>
-                <li><a href="#" data-page="pagina3">Página 3</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div id="wrapper">
+        <header>
+            <div class="menu-toggle">&#9776;</div>
+            <nav>
+                <ul>
+                    <li><a href="#" data-page="home">Home</a></li>
+                    <li><a href="#" data-page="leitura">Leitura</a></li>
+                    <li><a href="#" data-page="links">Links Úteis</a></li>
+                    <li><a href="#" data-page="pagina3">Página 3</a></li>
+                </ul>
+            </nav>
+        </header>
 
-    <main id="content">
-        <!-- O conteúdo das páginas será carregado aqui -->
-    </main>
+        <main id="content">
+            <!-- O conteúdo das páginas será carregado aqui -->
+        </main>
 
-    <!-- Modal para visualização de PDFs -->
-    <div class="pdf-viewer-modal" id="pdfViewerModal">
-        <div class="pdf-viewer" id="pdfViewer">
-            <button class="pdf-viewer-close" id="pdfViewerClose">&times;</button>
-            <div id="pdfCanvasContainer"></div>
-            <div id="pdfNavigation">
-                <button id="prevPage">Página Anterior</button>
-                <button id="nextPage">Próxima Página</button>
+        <!-- Modal para visualização de PDFs -->
+        <div class="pdf-viewer-modal" id="pdfViewerModal">
+            <div class="pdf-viewer" id="pdfViewer">
+                <button class="pdf-viewer-close" id="pdfViewerClose">&times;</button>
+                <div id="pdfCanvasContainer"></div>
+                <div id="pdfNavigation">
+                    <button id="prevPage">Página Anterior</button>
+                    <button id="nextPage">Próxima Página</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <footer>
-        &copy; 2024 Lino Botelho. Todos os direitos reservados.
-    </footer>
+        <footer>
+            &copy; 2024 Lino Botelho. Todos os direitos reservados.
+        </footer>
+    </div>
 
     <script>
         const pageContent = {
@@ -278,18 +285,17 @@
                 const pdfItem = document.createElement('div');
                 pdfItem.classList.add('pdf-item');
                 pdfItem.style.backgroundImage = `url(${covers[index]})`; // Adiciona a imagem de capa
-                pdfItem.addEventListener('click', () => openPDFModal(pdf));
+                pdfItem.addEventListener('click', () => openPDF(pdf));
                 pdfContainer.appendChild(pdfItem);
             });
         }
 
-        function openPDFModal(pdfName) {
+        function openPDF(pdfPath) {
             const modal = document.getElementById('pdfViewerModal');
-            modal.style.display = 'flex';
-
-            const pdfPath = 'pdfs/' + pdfName;
-            let currentPage = 1;
             const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
+            let currentPage = 1;
+
+            modal.style.display = 'flex';
             pdfCanvasContainer.innerHTML = '';
 
             pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
