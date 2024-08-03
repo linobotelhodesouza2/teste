@@ -6,16 +6,12 @@
     <title>Projeto Responsivo com Galeria de PDFs</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
-        html, body {
-            height: 100%;
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
+            background-color: #f4f4f4;
+            overflow-x: hidden;
         }
 
         header {
@@ -67,7 +63,6 @@
         }
 
         main {
-            flex: 1;
             padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
@@ -166,13 +161,6 @@
         .pdf-viewer-close:hover {
             background-color: darkred;
         }
-
-        footer {
-            text-align: center;
-            padding: 1rem;
-            background-color: #333;
-            color: white;
-        }
     </style>
 </head>
 <body>
@@ -203,10 +191,6 @@
             </div>
         </div>
     </div>
-
-    <footer>
-        &copy; 2024 Lino Botelho. Todos os direitos reservados.
-    </footer>
 
     <script>
         const pageContent = {
@@ -289,13 +273,15 @@
 
         function openPDFModal(pdfName) {
             const modal = document.getElementById('pdfViewerModal');
-            const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
-            let currentPage = 1;
-
             modal.style.display = 'flex';
 
-            const pdfPath = `./pdfs/${pdfName}`;
-            pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
+            const pdfPath = 'pdfs/' + pdfName;
+            let currentPage = 1;
+            const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
+            pdfCanvasContainer.innerHTML = '';
+
+            const loadingTask = pdfjsLib.getDocument(pdfPath);
+            loadingTask.promise.then(pdf => {
                 const numPages = pdf.numPages;
 
                 function renderPage(pageNum) {
