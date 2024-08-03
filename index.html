@@ -10,11 +10,17 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f4;
         }
 
         header {
             background-color: #333;
+            color: white;
             padding: 1rem;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         nav ul {
@@ -25,22 +31,60 @@
             justify-content: space-around;
         }
 
+        nav ul li {
+            margin: 0 1rem;
+        }
+
         nav ul li a {
             color: white;
             text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: #555;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .menu-toggle.active ~ nav ul {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background-color: #333;
+            width: 100%;
         }
 
         main {
             padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         @media (max-width: 768px) {
             nav ul {
+                display: none;
                 flex-direction: column;
+            }
+            
+            .menu-toggle {
+                display: block;
             }
             
             nav ul li {
                 margin-bottom: 0.5rem;
+                text-align: center;
             }
         }
 
@@ -48,6 +92,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
+            justify-content: center;
         }
 
         .pdf-item {
@@ -59,19 +104,29 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            background-color: white;
+            border-radius: 4px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .pdf-item:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
         .pdf-viewer {
             width: 100%;
             max-width: 800px;
-            margin: 0 auto;
+            margin: 2rem auto 0;
             border: 1px solid #ccc;
             padding: 10px;
+            background-color: white;
+            border-radius: 4px;
         }
 
         .pdf-viewer canvas {
             width: 100%;
             height: auto;
+            border-radius: 4px;
         }
 
         .pdf-viewer button {
@@ -80,6 +135,9 @@
             color: white;
             border: none;
             cursor: pointer;
+            margin: 10px 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
 
         .pdf-viewer button:hover {
@@ -89,6 +147,7 @@
 </head>
 <body>
     <header>
+        <div class="menu-toggle">&#9776;</div>
         <nav>
             <ul>
                 <li><a href="#" data-page="home">Home</a></li>
@@ -126,6 +185,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const content = document.getElementById('content');
             const navLinks = document.querySelectorAll('nav ul li a');
+            const menuToggle = document.querySelector('.menu-toggle');
 
             function loadPage(page) {
                 content.innerHTML = pageContent[page];
@@ -142,13 +202,16 @@
                 });
             });
 
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+            });
+
             // Carregar a página inicial
             loadPage('home');
         });
 
         function loadPDFs() {
             const pdfContainer = document.querySelector('.pdf-container');
-            // Liste os nomes dos seus arquivos PDF aqui
             const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf'];
 
             pdfs.forEach(pdf => {
@@ -166,9 +229,7 @@
             document.querySelector('.pdf-container').innerHTML = '';
             document.querySelector('.pdf-container').appendChild(viewer);
 
-            // Verifique se o caminho está correto
             const pdfPath = 'pdfs/' + pdfName;
-            console.log('Tentando carregar o PDF:', pdfPath); // Adicione esta linha
 
             const loadingTask = pdfjsLib.getDocument(pdfPath);
             loadingTask.promise.then(pdf => {
@@ -193,20 +254,16 @@
                             viewer.innerHTML = '';
                             viewer.appendChild(canvas);
 
-                            // Adicionar indicador de página
                             const pageIndicator = document.createElement('div');
                             pageIndicator.textContent = `Página ${pageNum} de ${numPages}`;
                             pageIndicator.style.textAlign = 'center';
                             viewer.appendChild(pageIndicator);
-                        }).catch(error => {
-                            console.error('Erro ao renderizar a página:', error);
                         });
                     });
                 }
 
                 renderPage(currentPage);
 
-                // Adicionar botões de navegação
                 const prevButton = document.createElement('button');
                 prevButton.textContent = 'Anterior';
                 const nextButton = document.createElement('button');
