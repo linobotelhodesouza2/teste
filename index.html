@@ -6,12 +6,16 @@
     <title>Projeto Responsivo com Galeria de PDFs</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
-        body, html {
-            font-family: Arial, sans-serif;
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            height: 100%;
-            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
         }
 
         header {
@@ -63,6 +67,7 @@
         }
 
         main {
+            flex: 1;
             padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
@@ -70,7 +75,6 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transition: margin-top 0.3s ease;
-            flex-grow: 1;
         }
 
         .expanded main {
@@ -79,17 +83,21 @@
 
         .pdf-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
             justify-content: center;
             align-items: center;
         }
 
         .pdf-item {
-            width: 100%;
-            padding-bottom: 140%; /* Proporção de 100x140 */
+            width: 100px;
+            height: 140px;
             border: 1px solid #ccc;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             background-color: white;
             border-radius: 4px;
             transition: box-shadow 0.3s ease;
@@ -164,52 +172,41 @@
             padding: 1rem;
             background-color: #333;
             color: white;
-            margin-top: 2rem;
-            flex-shrink: 0;
-            width: 100%;
-        }
-
-        #wrapper {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
         }
     </style>
 </head>
 <body>
-    <div id="wrapper">
-        <header>
-            <div class="menu-toggle">&#9776;</div>
-            <nav>
-                <ul>
-                    <li><a href="#" data-page="home">Home</a></li>
-                    <li><a href="#" data-page="leitura">Leitura</a></li>
-                    <li><a href="#" data-page="links">Links Úteis</a></li>
-                    <li><a href="#" data-page="pagina3">Página 3</a></li>
-                </ul>
-            </nav>
-        </header>
+    <header>
+        <div class="menu-toggle">&#9776;</div>
+        <nav>
+            <ul>
+                <li><a href="#" data-page="home">Home</a></li>
+                <li><a href="#" data-page="leitura">Leitura</a></li>
+                <li><a href="#" data-page="links">Links Úteis</a></li>
+                <li><a href="#" data-page="pagina3">Página 3</a></li>
+            </ul>
+        </nav>
+    </header>
 
-        <main id="content">
-            <!-- O conteúdo das páginas será carregado aqui -->
-        </main>
+    <main id="content">
+        <!-- O conteúdo das páginas será carregado aqui -->
+    </main>
 
-        <!-- Modal para visualização de PDFs -->
-        <div class="pdf-viewer-modal" id="pdfViewerModal">
-            <div class="pdf-viewer" id="pdfViewer">
-                <button class="pdf-viewer-close" id="pdfViewerClose">&times;</button>
-                <div id="pdfCanvasContainer"></div>
-                <div id="pdfNavigation">
-                    <button id="prevPage">Página Anterior</button>
-                    <button id="nextPage">Próxima Página</button>
-                </div>
+    <!-- Modal para visualização de PDFs -->
+    <div class="pdf-viewer-modal" id="pdfViewerModal">
+        <div class="pdf-viewer" id="pdfViewer">
+            <button class="pdf-viewer-close" id="pdfViewerClose">&times;</button>
+            <div id="pdfCanvasContainer"></div>
+            <div id="pdfNavigation">
+                <button id="prevPage">Página Anterior</button>
+                <button id="nextPage">Próxima Página</button>
             </div>
         </div>
-
-        <footer>
-            &copy; 2024 Lino Botelho. Todos os direitos reservados.
-        </footer>
     </div>
+
+    <footer>
+        &copy; 2024 Lino Botelho. Todos os direitos reservados.
+    </footer>
 
     <script>
         const pageContent = {
@@ -285,19 +282,19 @@
                 const pdfItem = document.createElement('div');
                 pdfItem.classList.add('pdf-item');
                 pdfItem.style.backgroundImage = `url(${covers[index]})`; // Adiciona a imagem de capa
-                pdfItem.addEventListener('click', () => openPDF(pdf));
+                pdfItem.addEventListener('click', () => openPDFModal(pdf));
                 pdfContainer.appendChild(pdfItem);
             });
         }
 
-        function openPDF(pdfPath) {
+        function openPDFModal(pdfName) {
             const modal = document.getElementById('pdfViewerModal');
             const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
             let currentPage = 1;
 
             modal.style.display = 'flex';
-            pdfCanvasContainer.innerHTML = '';
 
+            const pdfPath = `./pdfs/${pdfName}`;
             pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
                 const numPages = pdf.numPages;
 
