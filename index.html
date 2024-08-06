@@ -87,10 +87,24 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transition: margin-top 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .expanded main {
             margin-top: 6px;
+        }
+
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.5;
+            filter: blur(2px);
         }
 
         .pdf-container {
@@ -228,6 +242,10 @@
     <script>
         const pageContent = {
             home: `
+                <video class="video-background" autoplay muted loop>
+                    <source src="path/to/video.mp4" type="video/mp4">
+                    Seu navegador não suporta o elemento de vídeo.
+                </video>
                 <h1>Bem-vindo à Página Inicial</h1>
                 <p>Este é um projeto responsivo com um menu na parte superior e quatro páginas diferentes.</p>
             `,
@@ -271,24 +289,24 @@
                     const pdfItem = document.createElement('div');
                     pdfItem.className = 'pdf-item';
                     pdfItem.style.backgroundImage = `url('path/to/cover.jpg')`; // Substitua pela URL da capa do PDF
-                    pdfItem.innerHTML = `<span>${pdf.name}</span>`;
+                    pdfItem.textContent = pdf.name;
                     pdfItem.addEventListener('click', () => {
-                        showPDFModal(pdf.path);
+                        openPDF(pdf.path);
                     });
                     pdfContainer.appendChild(pdfItem);
                 });
             }
 
-            function showPDFModal(pdfPath) {
+            function openPDF(pdfPath) {
                 const modal = document.getElementById('pdfViewerModal');
-                modal.style.display = 'flex';
-
-                const pdfjsLib = window['pdfjs-dist/build/pdf'];
-                const pdfViewer = document.getElementById('pdfViewer');
                 const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
                 let currentPage = 1;
 
-                pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
+                modal.style.display = 'flex';
+
+                pdfCanvasContainer.innerHTML = '';
+
+                jsLib.getDocument(pdfPath).promise.then(pdf => {
                     function renderPage(pageNum) {
                         pdf.getPage(pageNum).then(page => {
                             const scale = 1.5;
