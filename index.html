@@ -2,19 +2,21 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Projeto Responsivo com Galeria de PDFs</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
         html, body {
+            overflow: hidden;
             height: 100%;
+            width: 100%;
+            max-height: 100%;
+            max-width: 100%;
             margin: 0;
+            padding: 0;
             font-family: 'Roboto', sans-serif;
             color: #333;
             background-color: #f9f9f9;
-        }
-
-        body {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -246,10 +248,10 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            const content = document.getElementById('content');
             const navLinks = document.querySelectorAll('nav ul li a');
-            const menuToggle = document.querySelector('.menu-toggle');
+            const content = document.getElementById('content');
             const nav = document.querySelector('nav');
+            const menuToggle = document.querySelector('.menu-toggle');
             const body = document.body;
 
             function loadPage(page) {
@@ -356,6 +358,13 @@
 
             // Carrega a página inicial
             loadPage('home');
+        });
+
+        window.addEventListener('resize', function() {
+            // Define a largura e altura mínimas para a janela
+            if (window.innerWidth < 800 || window.innerHeight < 600) {
+                window.resizeTo(800, 600);
+            }
         });
     </script>
 </body>
