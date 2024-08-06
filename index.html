@@ -4,24 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeto Responsivo com Galeria de PDFs</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
         html, body {
             height: 100%;
             margin: 0;
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f9;
             color: #333;
+            background-color: #f9f9f9;
         }
 
         body {
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
         }
 
         header {
-            background-color: #333;
+            background-color: #007bff;
             color: white;
             padding: 1rem;
             position: relative;
@@ -29,13 +29,14 @@
             justify-content: space-between;
             align-items: center;
             z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         nav {
             overflow: hidden;
             transition: max-height 0.3s ease;
             max-height: 0;
-            background-color: #333;
+            background-color: #007bff;
         }
 
         nav ul {
@@ -53,31 +54,35 @@
         nav ul li a {
             color: white;
             text-decoration: none;
-            padding: 8px 16px;
+            padding: 10px 20px;
             display: block;
-            border-bottom: 1px solid #444;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            border-bottom: 1px solid #0056b3;
+            transition: background-color 0.3s ease, padding-left 0.3s ease;
         }
 
         nav ul li a:hover {
-            background-color: #555;
+            background-color: #0056b3;
+            padding-left: 25px;
+        }
+
+        nav ul li a.active {
+            background-color: #004085;
         }
 
         .menu-toggle {
             font-size: 1.5rem;
             cursor: pointer;
-            transition: color 0.3s ease;
         }
 
         .menu-toggle:hover {
-            color: #f4f4f9;
+            color: #ccc;
         }
 
         main {
             flex: 1;
             padding: 2rem;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 20px auto;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -90,13 +95,14 @@
 
         .pdf-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1.5rem;
             justify-content: center;
             align-items: center;
         }
 
         .pdf-item {
+            width: 100px;
             height: 140px;
             border: 1px solid #ccc;
             cursor: pointer;
@@ -105,15 +111,16 @@
             justify-content: center;
             text-align: center;
             background-color: white;
-            border-radius: 4px;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             background-size: cover;
             background-position: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .pdf-item:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            transform: translateY(-5px);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .pdf-viewer-modal {
@@ -127,12 +134,6 @@
             z-index: 20;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.3s ease;
-        }
-
-        .pdf-viewer-modal.show {
-            display: flex;
-            opacity: 1;
         }
 
         .pdf-viewer {
@@ -175,7 +176,6 @@
             padding: 10px;
             cursor: pointer;
             border-radius: 50%;
-            transition: background-color 0.3s ease;
         }
 
         .pdf-viewer-close:hover {
@@ -188,8 +188,6 @@
             text-align: center;
             padding: 1rem;
             position: relative;
-            bottom: 0;
-            width: 100%;
             margin-top: auto;
         }
     </style>
@@ -199,63 +197,165 @@
         <div class="menu-toggle">&#9776;</div>
         <nav>
             <ul>
-                <li><a href="#pagina1">Página 1</a></li>
-                <li><a href="#pagina2">Links Úteis</a></li>
-                <li><a href="#pagina3">Página 3</a></li>
+                <li><a href="#" data-page="home">Home</a></li>
+                <li><a href="#" data-page="leitura">Leitura</a></li>
+                <li><a href="#" data-page="links">Links Úteis</a></li>
+                <li><a href="#" data-page="pagina3">Página 3</a></li>
             </ul>
         </nav>
     </header>
 
-    <main>
-        <h1>Galeria de PDFs</h1>
-        <div class="pdf-container">
-            <div class="pdf-item" style="background-image: url('path/to/image1.jpg');">PDF 1</div>
-            <div class="pdf-item" style="background-image: url('path/to/image2.jpg');">PDF 2</div>
-            <div class="pdf-item" style="background-image: url('path/to/image3.jpg');">PDF 3</div>
-            <!-- Adicione mais PDFs conforme necessário -->
-        </div>
+    <main id="content">
+        <!-- O conteúdo das páginas será carregado aqui -->
+    </main>
 
-        <div class="pdf-viewer-modal" id="pdfModal">
-            <div class="pdf-viewer">
-                <button class="pdf-viewer-close" id="pdfViewerClose">&times;</button>
-                <div id="pdfCanvasContainer"></div>
-                <button id="prevPage">Anterior</button>
-                <button id="nextPage">Próxima</button>
+    <!-- Modal para visualização de PDFs -->
+    <div class="pdf-viewer-modal" id="pdfViewerModal">
+        <div class="pdf-viewer" id="pdfViewer">
+            <button class="pdf-viewer-close" id="pdfViewerClose">&times;</button>
+            <div id="pdfCanvasContainer"></div>
+            <div id="pdfNavigation">
+                <button id="prevPage">Página Anterior</button>
+                <button id="nextPage">Próxima Página</button>
             </div>
         </div>
-    </main>
+    </div>
 
     <footer>
         &copy; 2024 Lino Botelho de Souza
     </footer>
 
     <script>
-        const menuToggle = document.querySelector('.menu-toggle');
-        const nav = document.querySelector('nav');
-        const main = document.querySelector('main');
-        const modal = document.getElementById('pdfModal');
+        const pageContent = {
+            home: `
+                <h1>Bem-vindo à Página Inicial</h1>
+                <p>Este é um projeto responsivo com um menu na parte superior e quatro páginas diferentes.</p>
+            `,
+            leitura: `
+                <h1>Leitura de PDFs</h1>
+                <div class="pdf-container"></div>
+            `,
+            links: `
+                <h1>Links Úteis</h1>
+                <p>Aqui você pode adicionar links úteis.</p>
+            `,
+            pagina3: `
+                <h1>Página 3</h1>
+                <p>Conteúdo da página 3.</p>
+            `
+        };
 
-        menuToggle.addEventListener('click', () => {
-            nav.style.max-height = nav.style.max-height === '0px' || !nav.style.max-height ? '300px' : '0px';
-            main.classList.toggle('expanded');
-        });
+        document.addEventListener('DOMContentLoaded', () => {
+            const content = document.getElementById('content');
+            const navLinks = document.querySelectorAll('nav ul li a');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const nav = document.querySelector('nav');
+            const body = document.body;
 
-        document.querySelectorAll('nav a').forEach(link => {
-            link.addEventListener('click', () => {
-                nav.style.max-height = '0px';
-                main.classList.remove('expanded');
-            });
-        });
+            function loadPage(page) {
+                content.innerHTML = pageContent[page];
+                if (page === 'leitura') {
+                    loadPDFGallery();
+                }
+            }
 
-        document.querySelectorAll('.pdf-item').forEach(item => {
-            item.addEventListener('click', () => {
+            function loadPDFGallery() {
+                const pdfContainer = document.querySelector('.pdf-container');
+                const pdfList = [
+                    {name: "PDF 1", path: "path/to/pdf1.pdf"},
+                    {name: "PDF 2", path: "path/to/pdf2.pdf"},
+                    {name: "PDF 3", path: "path/to/pdf3.pdf"}
+                ];
+
+                pdfList.forEach(pdf => {
+                    const pdfItem = document.createElement('div');
+                    pdfItem.className = 'pdf-item';
+                    pdfItem.style.backgroundImage = `url('path/to/cover.jpg')`; // Substitua pela URL da capa do PDF
+                    pdfItem.innerHTML = `<span>${pdf.name}</span>`;
+                    pdfItem.addEventListener('click', () => {
+                        showPDFModal(pdf.path);
+                    });
+                    pdfContainer.appendChild(pdfItem);
+                });
+            }
+
+            function showPDFModal(pdfPath) {
+                const modal = document.getElementById('pdfViewerModal');
                 modal.style.display = 'flex';
-                // Carregue o PDF relevante aqui
-            });
-        });
 
-        document.getElementById('pdfViewerClose').addEventListener('click', () => {
-            modal.style.display = 'none';
+                const pdfjsLib = window['pdfjs-dist/build/pdf'];
+                const pdfViewer = document.getElementById('pdfViewer');
+                const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
+                let currentPage = 1;
+
+                pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
+                    function renderPage(pageNum) {
+                        pdf.getPage(pageNum).then(page => {
+                            const scale = 1.5;
+                            const viewport = page.getViewport({ scale });
+                            const canvas = document.createElement('canvas');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+                            const context = canvas.getContext('2d');
+                            const renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+                            page.render(renderContext).promise.then(() => {
+                                pdfCanvasContainer.innerHTML = '';
+                                pdfCanvasContainer.appendChild(canvas);
+                            });
+                        });
+                    }
+
+                    renderPage(currentPage);
+
+                    document.getElementById('prevPage').addEventListener('click', () => {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            renderPage(currentPage);
+                        }
+                    });
+
+                    document.getElementById('nextPage').addEventListener('click', () => {
+                        if (currentPage < pdf.numPages) {
+                            currentPage++;
+                            renderPage(currentPage);
+                        }
+                    });
+                });
+
+                document.getElementById('pdfViewerClose').addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const page = event.target.dataset.page;
+                    loadPage(page);
+
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    event.target.classList.add('active');
+
+                    nav.style.maxHeight = null; // Fecha o menu ao selecionar
+                    body.classList.remove('expanded');
+                });
+            });
+
+            menuToggle.addEventListener('click', () => {
+                if (nav.style.maxHeight) {
+                    nav.style.maxHeight = null;
+                    body.classList.remove('expanded');
+                } else {
+                    nav.style.maxHeight = nav.scrollHeight + 'px';
+                    body.classList.add('expanded');
+                }
+            });
+
+            // Carrega a página inicial
+            loadPage('home');
         });
     </script>
 </body>
