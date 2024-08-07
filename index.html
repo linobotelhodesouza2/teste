@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
-            overflow-x: hidden; /* Remove a barra de rolagem lateral */
+            overflow-x: hidden;
         }
 
         header {
@@ -73,7 +73,7 @@
         }
 
         .expanded main {
-            margin-top: 6px; /* Altura ajustada quando o menu estiver expandido */
+            margin-top: 6px;
         }
 
         .pdf-container, .links-container {
@@ -141,7 +141,7 @@
 
         .iframe-container {
             width: 100%;
-            height: calc(100vh - 60px); /* Ajusta a altura do iframe para preencher a tela */
+            height: calc(100vh - 60px);
             border: none;
             background-color: #fff;
             border-radius: 8px;
@@ -152,6 +152,35 @@
             width: 100%;
             height: 100%;
             border: none;
+        }
+
+        /* Estilo para o vídeo em tela cheia */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Estilo para o footer */
+        footer {
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            z-index: 1;
         }
     </style>
 </head>
@@ -172,12 +201,20 @@
         <!-- O conteúdo das páginas será carregado aqui -->
     </main>
 
+    <footer>
+        <p>&copy; 2024 Meu Projeto. Todos os direitos reservados.</p>
+    </footer>
+
+    <div class="video-background">
+        <video autoplay muted loop>
+            <source src="https://cdn.coverr.co/videos/coverr-digital-technology-big-data-connection-5725/1080p.mp4" type="video/mp4">
+            Seu navegador não suporta o elemento de vídeo.
+        </video>
+    </div>
+
     <script>
         const pageContent = {
-            home: `
-                <h1>Bem-vindo à Página Inicial</h1>
-                <p>Este é um projeto responsivo com um menu na parte superior e quatro páginas diferentes.</p>
-            `,
+            home: ``,
             leitura: `
                 <h1>Leitura de PDFs</h1>
                 <div class="pdf-container"></div>
@@ -219,7 +256,6 @@
                     e.preventDefault();
                     const page = e.target.getAttribute('data-page');
                     loadPage(page);
-                    // Fecha o menu ao selecionar uma opção
                     nav.style.maxHeight = null;
                     body.classList.remove('expanded');
                 });
@@ -235,7 +271,6 @@
                 }
             });
 
-            // Carregar a página inicial
             loadPage('home');
         });
 
@@ -252,27 +287,23 @@
 
             pdfs.forEach((pdf, index) => {
                 const pdfItem = document.createElement('div');
-                pdfItem.classList.add('pdf-item');
-                pdfItem.style.backgroundImage = `url(${covers[index]})`; // Adiciona a imagem de capa
-                pdfItem.addEventListener('click', () => openPDF(pdf));
+                pdfItem.className = 'pdf-item';
+                pdfItem.style.backgroundImage = `url(${covers[index]})`;
+                pdfItem.addEventListener('click', () => {
+                    openPDF(pdf);
+                });
                 pdfContainer.appendChild(pdfItem);
             });
         }
 
-        function openPDF(pdfName) {
-            const viewer = document.createElement('div');
-            viewer.classList.add('pdf-viewer');
-            document.querySelector('.pdf-container').innerHTML = '';
-            document.querySelector('.pdf-container').appendChild(viewer);
-
-            const pdfPath = 'pdfs/' + pdfName;
-
+        function openPDF(pdfPath) {
+            const viewer = document.querySelector('.pdf-viewer');
+            viewer.innerHTML = ''; // Limpa o visualizador antes de carregar um novo PDF
             const loadingTask = pdfjsLib.getDocument(pdfPath);
             loadingTask.promise.then(pdf => {
                 let currentPage = 1;
                 const numPages = pdf.numPages;
-                const viewer = document.querySelector('.pdf-viewer');
-
+                
                 function renderPage(pageNum) {
                     pdf.getPage(pageNum).then(page => {
                         const scale = 1.5;
