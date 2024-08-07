@@ -2,26 +2,23 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeto Responsivo com Galeria de PDFs</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
         html, body {
             height: 100%;
             margin: 0;
-            font-family: 'Roboto', sans-serif;
-            color: #333;
-            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
         }
 
         body {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
         header {
-            background-color: #1a1a1a;
+            background-color: #333;
             color: white;
             padding: 1rem;
             position: relative;
@@ -29,16 +26,13 @@
             justify-content: space-between;
             align-items: center;
             z-index: 10;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         nav {
             overflow: hidden;
-            transition: max-height 0.5s ease;
+            transition: max-height 0.3s ease;
             max-height: 0;
-            background-color: #1a1a1a;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            border-top: 1px solid #333;
+            background-color: #333;
         }
 
         nav ul {
@@ -56,79 +50,40 @@
         nav ul li a {
             color: white;
             text-decoration: none;
-            padding: 15px 20px;
+            padding: 8px 16px;
             display: block;
-            border-bottom: 1px solid #333;
-            transition: background-color 0.3s ease, padding-left 0.3s ease, color 0.3s ease;
-            display: flex;
-            align-items: center;
+            border-bottom: 1px solid #444;
+            transition: background-color 0.3s ease;
         }
 
         nav ul li a:hover {
-            background-color: #444;
-            padding-left: 25px;
-            color: #ffcc00;
-        }
-
-        nav ul li a.active {
-            background-color: #333;
+            background-color: #555;
         }
 
         .menu-toggle {
-            font-size: 2rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .menu-toggle::before {
-            content: '';
-            display: inline-block;
-            width: 30px;
-            height: 2px;
-            background-color: white;
-            box-shadow: 0 8px 0 white, 0 16px 0 white;
-            transition: transform 0.3s ease;
-        }
-
-        .menu-toggle.expanded::before {
-            transform: rotate(90deg);
         }
 
         main {
             flex: 1;
             padding: 2rem;
             max-width: 1200px;
-            margin: 20px auto;
+            margin: 0 auto;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transition: margin-top 0.3s ease;
-            position: relative;
-            z-index: 1;
         }
 
         .expanded main {
             margin-top: 6px;
         }
 
-        .video-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-            opacity: 0.5;
-            filter: blur(2px);
-        }
-
         .pdf-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
             justify-content: center;
             align-items: center;
         }
@@ -143,16 +98,14 @@
             justify-content: center;
             text-align: center;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            transition: box-shadow 0.3s ease;
             background-size: cover;
             background-position: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .pdf-item:hover {
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
         .pdf-viewer-modal {
@@ -220,13 +173,12 @@
             text-align: center;
             padding: 1rem;
             position: relative;
-            margin-top: auto;
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="menu-toggle"></div>
+        <div class="menu-toggle">&#9776;</div>
         <nav>
             <ul>
                 <li><a href="#" data-page="home">Home</a></li>
@@ -260,10 +212,6 @@
     <script>
         const pageContent = {
             home: `
-                <video class="video-background" autoplay muted loop>
-                    <source src="path/to/video.mp4" type="video/mp4">
-                    Seu navegador não suporta o elemento de vídeo.
-                </video>
                 <h1>Bem-vindo à Página Inicial</h1>
                 <p>Este é um projeto responsivo com um menu na parte superior e quatro páginas diferentes.</p>
             `,
@@ -295,87 +243,13 @@
                 }
             }
 
-            function loadPDFs() {
-                const pdfContainer = document.querySelector('.pdf-container');
-                const pdfs = [
-                    { name: 'PDF 1', path: 'path/to/pdf1.pdf', cover: 'path/to/cover1.jpg' },
-                    { name: 'PDF 2', path: 'path/to/pdf2.pdf', cover: 'path/to/cover2.jpg' },
-                    { name: 'PDF 3', path: 'path/to/pdf3.pdf', cover: 'path/to/cover3.jpg' }
-                ];
-
-                pdfs.forEach(pdf => {
-                    const pdfItem = document.createElement('div');
-                    pdfItem.classList.add('pdf-item');
-                    pdfItem.style.backgroundImage = `url(${pdf.cover})`;
-                    pdfItem.textContent = pdf.name;
-                    pdfItem.addEventListener('click', () => {
-                        openPDF(pdf.path);
-                    });
-                    pdfContainer.appendChild(pdfItem);
-                });
-            }
-
-            function openPDF(pdfPath) {
-                const modal = document.getElementById('pdfViewerModal');
-                const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
-                let currentPage = 1;
-
-                modal.style.display = 'flex';
-
-                pdfCanvasContainer.innerHTML = '';
-
-                jsLib.getDocument(pdfPath).promise.then(pdf => {
-                    function renderPage(pageNum) {
-                        pdf.getPage(pageNum).then(page => {
-                            const scale = 1.5;
-                            const viewport = page.getViewport({ scale });
-                            const canvas = document.createElement('canvas');
-                            canvas.height = viewport.height;
-                            canvas.width = viewport.width;
-                            const context = canvas.getContext('2d');
-                            const renderContext = {
-                                canvasContext: context,
-                                viewport: viewport
-                            };
-                            page.render(renderContext).promise.then(() => {
-                                pdfCanvasContainer.innerHTML = '';
-                                pdfCanvasContainer.appendChild(canvas);
-                            });
-                        });
-                    }
-
-                    renderPage(currentPage);
-
-                    document.getElementById('prevPage').addEventListener('click', () => {
-                        if (currentPage > 1) {
-                            currentPage--;
-                            renderPage(currentPage);
-                        }
-                    });
-
-                    document.getElementById('nextPage').addEventListener('click', () => {
-                        if (currentPage < pdf.numPages) {
-                            currentPage++;
-                            renderPage(currentPage);
-                        }
-                    });
-                });
-
-                document.getElementById('pdfViewerClose').addEventListener('click', () => {
-                    modal.style.display = 'none';
-                });
-            }
-
             navLinks.forEach(link => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    const page = event.target.dataset.page;
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = e.target.getAttribute('data-page');
                     loadPage(page);
-
-                    navLinks.forEach(link => link.classList.remove('active'));
-                    event.target.classList.add('active');
-
-                    nav.style.maxHeight = null; // Fecha o menu ao selecionar
+                    // Fecha o menu ao selecionar uma opção
+                    nav.style.maxHeight = null;
                     body.classList.remove('expanded');
                 });
             });
@@ -385,14 +259,86 @@
                     nav.style.maxHeight = null;
                     body.classList.remove('expanded');
                 } else {
-                    nav.style.maxHeight = nav.scrollHeight + 'px';
+                    nav.style.maxHeight = nav.scrollHeight + "px";
                     body.classList.add('expanded');
                 }
             });
 
-            // Carrega a página inicial
+            // Carregar a página inicial
             loadPage('home');
         });
+
+        function loadPDFs() {
+            const pdfContainer = document.querySelector('.pdf-container');
+            const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf', 'documento4.pdf', 'documento5.pdf'];
+            const covers = [
+                'https://via.placeholder.com/100x140.png?text=Capa+1',
+                'https://via.placeholder.com/100x140.png?text=Capa+2',
+                'https://via.placeholder.com/100x140.png?text=Capa+3',
+                'https://via.placeholder.com/100x140.png?text=Capa+4',
+                'https://via.placeholder.com/100x140.png?text=Capa+5'
+            ];
+
+            pdfs.forEach((pdf, index) => {
+                const pdfItem = document.createElement('div');
+                pdfItem.classList.add('pdf-item');
+                pdfItem.style.backgroundImage = `url(${covers[index]})`; // Adiciona a imagem de capa
+                pdfItem.addEventListener('click', () => openPDFModal(pdf));
+                pdfContainer.appendChild(pdfItem);
+            });
+        }
+
+        function openPDFModal(pdfName) {
+            const modal = document.getElementById('pdfViewerModal');
+            modal.style.display = 'flex';
+
+            const pdfPath = 'path/to/pdf/' + pdfName;
+
+            pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
+                const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
+                let currentPage = 1;
+                const numPages = pdf.numPages;
+
+                function renderPage(pageNum) {
+                    pdf.getPage(pageNum).then(page => {
+                        const scale = 1.5;
+                        const viewport = page.getViewport({ scale });
+                        const canvas = document.createElement('canvas');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        const context = canvas.getContext('2d');
+                        const renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+                        page.render(renderContext).promise.then(() => {
+                            pdfCanvasContainer.innerHTML = '';
+                            pdfCanvasContainer.appendChild(canvas);
+                        });
+                    });
+                }
+
+                renderPage(currentPage);
+
+                document.getElementById('prevPage').addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderPage(currentPage);
+                    }
+                });
+
+                document.getElementById('nextPage').addEventListener('click', () => {
+                    if (currentPage < numPages) {
+                        currentPage++;
+                        renderPage(currentPage);
+                    }
+                });
+            });
+
+            document.getElementById('pdfViewerClose').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+        }
     </script>
 </body>
 </html>
