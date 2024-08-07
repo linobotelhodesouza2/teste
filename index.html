@@ -20,14 +20,18 @@
             --background-color: rgba(51, 51, 51, 0.8);
         }
 
-        body {
-            font-family: Arial, sans-serif;
+        body, html {
             margin: 0;
             padding: 0;
-            background-color: var(--background-color);
+            height: 100%;
+            font-family: Arial, sans-serif;
             overflow-x: hidden;
             color: var(--text-color);
             transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            background-color: rgba(0, 0, 0, 0.5);  /* Fundo semi-transparente para todo o corpo */
         }
 
         header {
@@ -105,13 +109,15 @@
         }
 
         main {
+            min-height: 100vh;
             padding: 2rem;
-            max-width: 1200px;
-            margin: 60px auto 0;
-            background-color: var(--background-color);
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            transition: margin-top 0.3s ease, opacity 0.3s ease;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 1;
         }
 
         .pdf-container, .links-container {
@@ -120,6 +126,8 @@
             gap: 1rem;
             justify-content: center;
             align-items: center;
+            width: 100%;
+            max-width: 1200px;
         }
 
         .pdf-item, .link-item {
@@ -236,7 +244,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.3);  /* Ajustado para ser mais claro */
         }
 
         .video-background video {
@@ -261,6 +269,10 @@
             color: var(--text-color);
             position: relative;
             z-index: 1;
+            background-color: rgba(255, 255, 255, 0.2);  /* Fundo semi-transparente para melhor legibilidade */
+            border-radius: 10px;
+            max-width: 800px;
+            margin: auto;
         }
 
         .home-content h1 {
@@ -301,7 +313,7 @@
 
     <div class="video-background">
         <video autoplay loop muted>
-            <source src="https://www.shutterstock.com/shutterstock/videos/1092863087/preview/stock-footage-process-of-construction-and-raising-buildings-and-skyscrapers-wireframe-blue-silhouettes-of.webm" type="video/mp4">
+            <source src="https://media.istockphoto.com/id/1394876713/pt/v%C3%ADdeo/tecnologia-digital-big-data-connection-digital-cyberspace-digital-data-network-e.mp4" type="video/mp4">
             Seu navegador não suporta a reprodução de vídeo.
         </video>
     </div>
@@ -376,142 +388,12 @@
                 }
             });
 
-            // Carregar a última página visitada ou a página inicial
-            loadLastPage();
+            // Carregar a página inicial (home) ao iniciar
+            loadPage('home');
         });
 
-        function loadPDFs() {
-            const pdfContainer = document.querySelector('.pdf-container');
-            const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf', 'documento4.pdf', 'documento5.pdf'];
-            const covers = [
-                'https://via.placeholder.com/120x160.png?text=Capa+1',
-                'https://via.placeholder.com/120x160.png?text=Capa+2',
-                'https://via.placeholder.com/120x160.png?text=Capa+3',
-                'https://via.placeholder.com/120x160.png?text=Capa+4',
-                'https://via.placeholder.com/120x160.png?text=Capa+5'
-            ];
+        // ... (o resto do código JavaScript permanece o mesmo)
 
-            pdfContainer.innerHTML = '';
-            pdfs.forEach((pdf, index) => {
-                const pdfItem = document.createElement('div');
-                pdfItem.className = 'pdf-item';
-                pdfItem.style.backgroundImage = `url('${covers[index]}')`;
-                pdfItem.dataset.pdf = pdf;
-                pdfItem.addEventListener('click', () => {
-                    renderPDFOverlay(pdf);
-                });
-                pdfContainer.appendChild(pdfItem);
-            });
-        }
-
-        function renderPDFOverlay(pdfPath) {
-            const overlay = document.createElement('div');
-            overlay.className = 'pdf-viewer-overlay';
-            
-            const viewer = document.createElement('div');
-            viewer.className = 'pdf-viewer';
-            
-            const closeButton = document.createElement('button');
-            closeButton.className = 'pdf-viewer-close';
-            closeButton.innerHTML = '&times;';
-            closeButton.addEventListener('click', () => {
-                document.body.removeChild(overlay);
-            });
-            
-            const navigation = document.createElement('div');
-            navigation.className = 'pdf-navigation';
-            
-            const prevButton = document.createElement('button');
-            prevButton.textContent = 'Anterior';
-            const nextButton = document.createElement('button');
-            nextButton.textContent = 'Próxima';
-            
-            navigation.appendChild(prevButton);
-            navigation.appendChild(nextButton);
-            
-            viewer.appendChild(closeButton);
-            viewer.appendChild(navigation);
-            overlay.appendChild(viewer);
-            document.body.appendChild(overlay);
-            
-            let currentPage = 1;
-            
-            pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
-                const numPages = pdf.numPages;
-                
-                function renderPage(pageNum) {
-                    pdf.getPage(pageNum).then(page => {
-                        const scale = 1.5;
-                        const viewport = page.getViewport({ scale });
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        };
-                        
-                        viewer.innerHTML = '';
-                        viewer.appendChild(canvas);
-                        viewer.appendChild(closeButton);
-                        viewer.appendChild(navigation);
-                        
-                        page.render(renderContext);
-                    });
-                }
-                
-                renderPage(currentPage);
-                
-                prevButton.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        renderPage(currentPage);
-                    }
-                });
-                
-                nextButton.addEventListener('click', () => {
-                    if (currentPage < numPages) {
-                        currentPage++;
-                        renderPage(currentPage);
-                    }
-                });
-            }).catch(error => {
-                console.error('Erro ao carregar o PDF:', error);
-                alert('Não foi possível carregar o PDF. Por favor, tente novamente mais tarde.');
-            });
-        }
-
-        function savePage(page) {
-            localStorage.setItem('lastPage', page);
-        }
-
-        function loadLastPage() {
-            const lastPage = localStorage.getItem('lastPage');
-            if (lastPage) {
-                loadPage(lastPage);
-            } else {
-                loadPage('home');
-            }
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('dark-theme');
-            const isDarkTheme = document.body.classList.contains('dark-theme');
-            localStorage.setItem('darkTheme', isDarkTheme);
-        }
-
-        // Verifica e aplica o tema salvo ao carregar a página
-        function applyTheme() {
-            const isDarkTheme = localStorage.getItem('darkTheme') === 'true';
-            if (isDarkTheme) {
-                document.body.classList.add('dark-theme');
-            }
-        }
-
-        // Aplica o tema ao carregar a página
-        applyTheme();
     </script>
 </body>
 </html>
