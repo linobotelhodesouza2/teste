@@ -12,6 +12,7 @@
             padding: 0;
             background-color: #f4f4f4;
             overflow-x: hidden;
+            color: white;
         }
 
         header {
@@ -73,7 +74,7 @@
         }
 
         .expanded main {
-            margin-top: 6px;
+            margin-top: 6px; /* Altura ajustada quando o menu estiver expandido */
         }
 
         .pdf-container, .links-container {
@@ -141,7 +142,7 @@
 
         .iframe-container {
             width: 100%;
-            height: calc(100vh - 60px);
+            height: calc(100vh - 60px); /* Ajusta a altura do iframe para preencher a tela */
             border: none;
             background-color: #fff;
             border-radius: 8px;
@@ -154,7 +155,7 @@
             border: none;
         }
 
-        /* Estilo para o vídeo em tela cheia */
+        /* Estilos para a página inicial com vídeo */
         .video-background {
             position: fixed;
             top: 0;
@@ -171,16 +172,14 @@
             object-fit: cover;
         }
 
-        /* Estilo para o footer */
         footer {
-            position: relative;
+            position: fixed;
             bottom: 0;
             width: 100%;
-            background-color: #333;
-            color: white;
             text-align: center;
-            padding: 1rem 0;
-            z-index: 1;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
         }
     </style>
 </head>
@@ -202,13 +201,13 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 Meu Projeto. Todos os direitos reservados.</p>
+        &copy; 2024 Meu Projeto Responsivo
     </footer>
 
     <div class="video-background">
-        <video autoplay muted loop>
-            <source src="https://cdn.coverr.co/videos/coverr-digital-technology-big-data-connection-5725/1080p.mp4" type="video/mp4">
-            Seu navegador não suporta o elemento de vídeo.
+        <video autoplay loop muted>
+            <source src="https://media.istockphoto.com/id/1394876713/pt/v%C3%ADdeo/tecnologia-digital-big-data-connection-digital-cyberspace-digital-data-network-e.mp4" type="video/mp4">
+            Seu navegador não suporta a reprodução de vídeo.
         </video>
     </div>
 
@@ -256,6 +255,7 @@
                     e.preventDefault();
                     const page = e.target.getAttribute('data-page');
                     loadPage(page);
+                    // Fecha o menu ao selecionar uma opção
                     nav.style.maxHeight = null;
                     body.classList.remove('expanded');
                 });
@@ -271,6 +271,7 @@
                 }
             });
 
+            // Carregar a página inicial
             loadPage('home');
         });
 
@@ -285,25 +286,25 @@
                 'https://via.placeholder.com/100x140.png?text=Capa+5'
             ];
 
+            pdfContainer.innerHTML = '';
             pdfs.forEach((pdf, index) => {
                 const pdfItem = document.createElement('div');
                 pdfItem.className = 'pdf-item';
-                pdfItem.style.backgroundImage = `url(${covers[index]})`;
+                pdfItem.style.backgroundImage = `url('${covers[index]}')`;
                 pdfItem.addEventListener('click', () => {
-                    openPDF(pdf);
+                    renderPDF(pdf);
                 });
                 pdfContainer.appendChild(pdfItem);
             });
         }
 
-        function openPDF(pdfPath) {
-            const viewer = document.querySelector('.pdf-viewer');
-            viewer.innerHTML = ''; // Limpa o visualizador antes de carregar um novo PDF
+        function renderPDF(pdfPath) {
             const loadingTask = pdfjsLib.getDocument(pdfPath);
             loadingTask.promise.then(pdf => {
                 let currentPage = 1;
                 const numPages = pdf.numPages;
-                
+                const viewer = document.querySelector('.pdf-viewer');
+
                 function renderPage(pageNum) {
                     pdf.getPage(pageNum).then(page => {
                         const scale = 1.5;
