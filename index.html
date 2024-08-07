@@ -30,13 +30,33 @@
             align-items: center;
             z-index: 10;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        header:hover {
+            background-color: #0069d9;
         }
 
         nav {
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            max-height: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
             background-color: #007bff;
+            transition: max-height 0.3s ease, visibility 0.3s ease, opacity 0.3s ease;
+            max-height: 0;
+            visibility: hidden;
+            opacity: 0;
+            overflow: hidden;
+            z-index: 9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 8px 8px;
+        }
+
+        nav.expanded {
+            max-height: 300px; /* Ajuste conforme necessário */
+            visibility: visible;
+            opacity: 1;
         }
 
         nav ul {
@@ -56,8 +76,8 @@
             text-decoration: none;
             padding: 10px 20px;
             display: block;
-            border-bottom: 1px solid #0056b3;
             transition: background-color 0.3s ease, padding-left 0.3s ease;
+            border-bottom: 1px solid #0056b3;
         }
 
         nav ul li a:hover {
@@ -72,10 +92,36 @@
         .menu-toggle {
             font-size: 1.5rem;
             cursor: pointer;
+            transition: transform 0.3s ease;
+            background: none;
+            border: none;
+            color: white;
+            padding: 0;
         }
 
-        .menu-toggle:hover {
-            color: #ccc;
+        .menu-toggle.active {
+            transform: rotate(90deg);
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
         }
 
         main {
@@ -208,7 +254,11 @@
 </head>
 <body>
     <header>
-        <div class="menu-toggle">&#9776;</div>
+        <button class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <nav>
             <ul>
                 <li><a href="#" data-page="home">Home</a></li>
@@ -243,53 +293,48 @@
         const pageContent = {
             home: `
                 <video class="video-background" autoplay muted loop>
-                    <source src=" https://media.istockphoto.com/id/1045167478/pt/v%C3%ADdeo/light-survive-tree-eucalyptus-tree.mp4?s=mp4-640x640-is&k=20&c=8CnUOx-bGayHHpeo80bpGHhmfAzmBPzSl0_avqj-Hus= " type="video/mp4">
+                    <source src="path/to/video.mp4" type="video/mp4">
                     Seu navegador não suporta o elemento de vídeo.
                 </video>
                 <h1>Bem-vindo à Página Inicial</h1>
                 <p>Este é um projeto responsivo com um menu na parte superior e quatro páginas diferentes.</p>
+                <div class="pdf-container" id="pdfContainer"></div>
             `,
-            leitura: `
-                <h1>Leitura de PDFs</h1>
-                <div class="pdf-container"></div>
-            `,
-            links: `
-                <h1>Links Úteis</h1>
-                <p>Aqui você pode adicionar links úteis.</p>
-            `,
-            pagina3: `
-                <h1>Página 3</h1>
-                <p>Conteúdo da página 3.</p>
-            `
+            leitura: `<h1>Página de Leitura</h1><p>Conteúdo da página de leitura aqui.</p>`,
+            links: `<h1>Links Úteis</h1><p>Conteúdo da página de links úteis aqui.</p>`,
+            pagina3: `<h1>Página 3</h1><a href="https://lino-b.web.app">Visite o site</a>`
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            const content = document.getElementById('content');
-            const navLinks = document.querySelectorAll('nav ul li a');
-            const menuToggle = document.querySelector('.menu-toggle');
             const nav = document.querySelector('nav');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelectorAll('nav ul li a');
             const body = document.body;
+            const mainContent = document.getElementById('content');
 
             function loadPage(page) {
-                content.innerHTML = pageContent[page];
-                if (page === 'leitura') {
-                    loadPDFGallery();
+                mainContent.innerHTML = pageContent[page] || '<h1>Página não encontrada</h1>';
+
+                if (page === 'home') {
+                    loadPDFs();
                 }
             }
 
-            function loadPDFGallery() {
-                const pdfContainer = document.querySelector('.pdf-container');
-                const pdfList = [
-                    {name: "PDF 1", path: "path/to/pdf1.pdf"},
-                    {name: "PDF 2", path: "path/to/pdf2.pdf"},
-                    {name: "PDF 3", path: "path/to/pdf3.pdf"}
+            function loadPDFs() {
+                const pdfContainer = document.getElementById('pdfContainer');
+                const pdfs = [
+                    { name: 'PDF 1', path: 'path/to/pdf1.pdf', cover: 'path/to/cover1.jpg' },
+                    { name: 'PDF 2', path: 'path/to/pdf2.pdf', cover: 'path/to/cover2.jpg' },
+                    { name: 'PDF 3', path: 'path/to/pdf3.pdf', cover: 'path/to/cover3.jpg' },
+                    // Adicione mais PDFs conforme necessário
                 ];
 
-                pdfList.forEach(pdf => {
+                pdfContainer.innerHTML = '';
+
+                pdfs.forEach(pdf => {
                     const pdfItem = document.createElement('div');
-                    pdfItem.className = 'pdf-item';
-                    pdfItem.style.backgroundImage = `url('path/to/cover.jpg')`; // Substitua pela URL da capa do PDF
-                    pdfItem.textContent = pdf.name;
+                    pdfItem.classList.add('pdf-item');
+                    pdfItem.style.backgroundImage = `url(${pdf.cover})`; // Imagem de capa do PDF
                     pdfItem.addEventListener('click', () => {
                         openPDF(pdf.path);
                     });
@@ -306,7 +351,7 @@
 
                 pdfCanvasContainer.innerHTML = '';
 
-                jsLib.getDocument(pdfPath).promise.then(pdf => {
+                pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
                     function renderPage(pageNum) {
                         pdf.getPage(pageNum).then(page => {
                             const scale = 1.5;
@@ -358,6 +403,7 @@
                     event.target.classList.add('active');
 
                     nav.style.maxHeight = null; // Fecha o menu ao selecionar
+                    menuToggle.classList.remove('active');
                     body.classList.remove('expanded');
                 });
             });
@@ -365,9 +411,11 @@
             menuToggle.addEventListener('click', () => {
                 if (nav.style.maxHeight) {
                     nav.style.maxHeight = null;
+                    menuToggle.classList.remove('active');
                     body.classList.remove('expanded');
                 } else {
                     nav.style.maxHeight = nav.scrollHeight + 'px';
+                    menuToggle.classList.add('active');
                     body.classList.add('expanded');
                 }
             });
