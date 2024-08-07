@@ -6,39 +6,70 @@
     <title>Projeto Responsivo com Leitor de PDF</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
+        :root {
+            --primary-color: #333;
+            --secondary-color: #4CAF50;
+            --text-color: #fff;
+            --background-color: #f4f4f4;
+        }
+
+        .dark-theme {
+            --primary-color: #1a1a1a;
+            --secondary-color: #45a049;
+            --text-color: #f4f4f4;
+            --background-color: #333;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: var(--background-color);
             overflow-x: hidden;
-            color: white;
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         header {
-            background-color: #333;
-            color: white;
+            background-color: rgba(51, 51, 51, 0.8);
+            color: var(--text-color);
             padding: 1rem;
-            position: relative;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 10;
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        header.scrolled {
+            background-color: rgba(51, 51, 51, 1);
         }
 
         nav {
-            overflow: hidden;
-            transition: max-height 0.3s ease;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: rgba(51, 51, 51, 0.9);
             max-height: 0;
-            background-color: #333;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            opacity: 0;
+        }
+
+        nav.active {
+            max-height: 300px;
+            opacity: 1;
         }
 
         nav ul {
             list-style-type: none;
             padding: 0;
             margin: 0;
-            display: flex;
-            flex-direction: column;
         }
 
         nav ul li {
@@ -46,48 +77,52 @@
         }
 
         nav ul li a {
-            color: white;
+            color: var(--text-color);
             text-decoration: none;
-            padding: 8px 16px;
+            padding: 12px 16px;
             display: block;
-            border-bottom: 1px solid #444;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
         nav ul li a:hover {
-            background-color: #555;
+            background-color: rgba(85, 85, 85, 0.8);
+            transform: translateX(10px);
         }
 
         .menu-toggle {
             font-size: 1.5rem;
             cursor: pointer;
+            transition: transform 0.3s ease;
+            background: none;
+            border: none;
+            color: var(--text-color);
+        }
+
+        .menu-toggle:hover {
+            transform: rotate(90deg);
         }
 
         main {
             padding: 2rem;
             max-width: 1200px;
-            margin: 0 auto;
-            background-color: white;
+            margin: 60px auto 0;
+            background-color: rgba(255, 255, 255, 0.9);
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            transition: margin-top 0.3s ease;
-        }
-
-        .expanded main {
-            margin-top: 6px; /* Altura ajustada quando o menu estiver expandido */
+            transition: margin-top 0.3s ease, opacity 0.3s ease;
         }
 
         .pdf-container, .links-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 1rem;
             justify-content: center;
             align-items: center;
         }
 
         .pdf-item, .link-item {
-            width: 100px;
-            height: 140px;
+            width: 100%;
+            height: 160px;
             border: 1px solid #ccc;
             cursor: pointer;
             display: flex;
@@ -96,13 +131,14 @@
             text-align: center;
             background-color: white;
             border-radius: 4px;
-            transition: box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             background-size: cover;
             background-position: center;
         }
 
         .pdf-item:hover, .link-item:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .link-item {
@@ -127,22 +163,23 @@
 
         .pdf-viewer button {
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: var(--secondary-color);
             color: white;
             border: none;
             cursor: pointer;
             margin: 10px 5px;
             border-radius: 4px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
         .pdf-viewer button:hover {
             background-color: #45a049;
+            transform: translateY(-2px);
         }
 
         .iframe-container {
             width: 100%;
-            height: calc(100vh - 60px); /* Ajusta a altura do iframe para preencher a tela */
+            height: calc(100vh - 60px);
             border: none;
             background-color: #fff;
             border-radius: 8px;
@@ -155,7 +192,6 @@
             border: none;
         }
 
-        /* Estilos para a página inicial com vídeo */
         .video-background {
             position: fixed;
             top: 0;
@@ -164,6 +200,16 @@
             height: 100%;
             z-index: -1;
             overflow: hidden;
+        }
+
+        .video-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
         }
 
         .video-background video {
@@ -179,13 +225,52 @@
             text-align: center;
             padding: 1rem;
             background-color: rgba(0, 0, 0, 0.5);
+            color: var(--text-color);
+        }
+
+        .home-content {
+            text-align: center;
+            padding: 50px;
+            color: var(--text-color);
+            position: relative;
+            z-index: 1;
+        }
+
+        .home-content h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .home-content p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1001;
+            background-color: var(--secondary-color);
             color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="menu-toggle">&#9776;</div>
+        <button aria-label="Alternar menu" class="menu-toggle">&#9776;</button>
         <nav>
             <ul>
                 <li><a href="#" data-page="home">Home</a></li>
@@ -195,6 +280,8 @@
             </ul>
         </nav>
     </header>
+
+    <button class="theme-toggle" onclick="toggleTheme()">Alternar Tema</button>
 
     <main id="content">
         <!-- O conteúdo das páginas será carregado aqui -->
@@ -206,14 +293,19 @@
 
     <div class="video-background">
         <video autoplay loop muted>
-            <source src="https://www.istockphoto.com/br/v%C3%ADdeo/fundo-de-linhas-abstratas-4k-loopable-gm1469875556-500921145" type="video/mp4">
+            <source src="https://media.istockphoto.com/id/1394876713/pt/v%C3%ADdeo/tecnologia-digital-big-data-connection-digital-cyberspace-digital-data-network-e.mp4" type="video/mp4">
             Seu navegador não suporta a reprodução de vídeo.
         </video>
     </div>
 
     <script>
         const pageContent = {
-            home: ``,
+            home: `
+                <div class="home-content">
+                    <h1>Bem-vindo ao Nosso Projeto</h1>
+                    <p>Explore nosso site para descobrir uma variedade de recursos, incluindo leitura de PDFs, links úteis e muito mais.</p>
+                </div>
+            `,
             leitura: `
                 <h1>Leitura de PDFs</h1>
                 <div class="pdf-container"></div>
@@ -241,13 +333,18 @@
             const navLinks = document.querySelectorAll('nav ul li a');
             const menuToggle = document.querySelector('.menu-toggle');
             const nav = document.querySelector('nav');
-            const body = document.body;
+            const header = document.querySelector('header');
 
             function loadPage(page) {
-                content.innerHTML = pageContent[page];
-                if (page === 'leitura') {
-                    loadPDFs();
-                }
+                content.style.opacity = 0;
+                setTimeout(() => {
+                    content.innerHTML = pageContent[page];
+                    if (page === 'leitura') {
+                        loadPDFs();
+                    }
+                    content.style.opacity = 1;
+                    savePage(page);
+                }, 300);
             }
 
             navLinks.forEach(link => {
@@ -255,35 +352,35 @@
                     e.preventDefault();
                     const page = e.target.getAttribute('data-page');
                     loadPage(page);
-                    // Fecha o menu ao selecionar uma opção
-                    nav.style.maxHeight = null;
-                    body.classList.remove('expanded');
+                    nav.classList.remove('active');
                 });
             });
 
             menuToggle.addEventListener('click', () => {
-                if (nav.style.maxHeight) {
-                    nav.style.maxHeight = null;
-                    body.classList.remove('expanded');
+                nav.classList.toggle('active');
+            });
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
                 } else {
-                    nav.style.maxHeight = nav.scrollHeight + "px";
-                    body.classList.add('expanded');
+                    header.classList.remove('scrolled');
                 }
             });
 
-            // Carregar a página inicial
-            loadPage('home');
+            // Carregar a última página visitada ou a página inicial
+            loadLastPage();
         });
 
         function loadPDFs() {
             const pdfContainer = document.querySelector('.pdf-container');
             const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf', 'documento4.pdf', 'documento5.pdf'];
             const covers = [
-                'https://via.placeholder.com/100x140.png?text=Capa+1',
-                'https://via.placeholder.com/100x140.png?text=Capa+2',
-                'https://via.placeholder.com/100x140.png?text=Capa+3',
-                'https://via.placeholder.com/100x140.png?text=Capa+4',
-                'https://via.placeholder.com/100x140.png?text=Capa+5'
+                'https://via.placeholder.com/120x160.png?text=Capa+1',
+                'https://via.placeholder.com/120x160.png?text=Capa+2',
+                'https://via.placeholder.com/120x160.png?text=Capa+3',
+                'https://via.placeholder.com/120x160.png?text=Capa+4',
+                'https://via.placeholder.com/120x160.png?text=Capa+5'
             ];
 
             pdfContainer.innerHTML = '';
@@ -291,10 +388,29 @@
                 const pdfItem = document.createElement('div');
                 pdfItem.className = 'pdf-item';
                 pdfItem.style.backgroundImage = `url('${covers[index]}')`;
-                pdfItem.addEventListener('click', () => {
-                    renderPDF(pdf);
-                });
+                pdfItem.dataset.pdf = pdf;
                 pdfContainer.appendChild(pdfItem);
+            });
+
+            lazyLoadPDFs();
+        }
+
+        function lazyLoadPDFs() {
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const pdfItem = entry.target;
+                        const pdfPath = pdfItem.dataset.pdf;
+                        pdfItem.addEventListener('click', () => {
+                            renderPDF(pdfPath);
+                        });
+                        observer.unobserve(pdfItem);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.pdf-item').forEach(item => {
+                observer.observe(item);
             });
         }
 
@@ -303,7 +419,8 @@
             loadingTask.promise.then(pdf => {
                 let currentPage = 1;
                 const numPages = pdf.numPages;
-                const viewer = document.querySelector('.pdf-viewer');
+                const viewer = document.createElement('div');
+                viewer.className = 'pdf-viewer';
 
                 function renderPage(pageNum) {
                     pdf.getPage(pageNum).then(page => {
@@ -320,9 +437,7 @@
                             canvasContext: context,
                             viewport: viewport
                         };
-                        page.render(renderContext).promise.then(() => {
-                            viewer.appendChild(canvas);
-                        });
+                        page.render(renderContext);
                     });
                 }
 
@@ -352,8 +467,43 @@
                 buttonContainer.appendChild(prevButton);
                 buttonContainer.appendChild(nextButton);
                 viewer.appendChild(buttonContainer);
+
+                document.querySelector('.pdf-container').appendChild(viewer);
+            }).catch(error => {
+                console.error('Erro ao carregar o PDF:', error);
+                alert('Não foi possível carregar o PDF. Por favor, tente novamente mais tarde.');
             });
         }
+
+        function savePage(page) {
+            localStorage.setItem('lastPage', page);
+        }
+
+        function loadLastPage() {
+            const lastPage = localStorage.getItem('lastPage');
+            if (lastPage) {
+                loadPage(lastPage);
+            } else {
+                loadPage('home');
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const isDarkTheme = document.body.classList.contains('dark-theme');
+            localStorage.setItem('darkTheme', isDarkTheme);
+        }
+
+        // Verifica e aplica o tema salvo ao carregar a página
+        function applyTheme() {
+            const isDarkTheme = localStorage.getItem('darkTheme') === 'true';
+            if (isDarkTheme) {
+                document.body.classList.add('dark-theme');
+            }
+        }
+
+        // Aplica o tema ao carregar a página
+        applyTheme();
     </script>
 </body>
 </html>
