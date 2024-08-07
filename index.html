@@ -311,207 +311,122 @@
             home: `
                 <div class="home-content">
                     <h1>Bem-vindo ao Nosso Projeto</h1>
-                    <p>Explore nosso site para descobrir uma variedade de recursos, incluindo leitura de PDFs, links úteis e muito mais.</p>
+                    <p>Explore os recursos e funcionalidades da nossa aplicação responsiva.</p>
                 </div>
             `,
             leitura: `
-                <h1>Leitura de PDFs</h1>
-                <div class="pdf-container"></div>
+                <div class="iframe-container">
+                    <iframe src="https://www.example.com" title="Leitura de PDF"></iframe>
+                </div>
             `,
             links: `
-                <h1>Links Úteis</h1>
                 <div class="links-container">
-                    <div class="link-item"><a href="https://uol.com" target="_blank">UOL</a></div>
-                    <div class="link-item"><a href="https://uol.com" target="_blank">Exemplo 2</a></div>
-                    <div class="link-item"><a href="https://example.com" target="_blank">Exemplo 3</a></div>
-                    <div class="link-item"><a href="https://example.com" target="_blank">Exemplo 4</a></div>
-                    <div class="link-item"><a href="https://example.com" target="_blank">Exemplo 5</a></div>
+                    <div class="link-item" style="background-image: url('link1.png');">Link 1</div>
+                    <div class="link-item" style="background-image: url('link2.png');">Link 2</div>
+                    <div class="link-item" style="background-image: url('link3.png');">Link 3</div>
                 </div>
             `,
-            pagina3: `
-                <h1>Página 3</h1>
-                <div class="iframe-container">
-                    <iframe src="https://lino-b.web.app"></iframe>
-                </div>
-            `
+            pagina3: `<p>Conteúdo da Página 3.</p>`,
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const content = document.getElementById('content');
-            const navLinks = document.querySelectorAll('nav ul li a');
-            const menuToggle = document.querySelector('.menu-toggle');
-            const nav = document.querySelector('nav');
-            const header = document.querySelector('header');
-
-            function loadPage(page) {
-                content.style.opacity = 0;
-                setTimeout(() => {
-                    content.innerHTML = pageContent[page];
-                    if (page === 'leitura') {
-                        loadPDFs();
-                    }
-                    content.style.opacity = 1;
-                    savePage(page);
-                }, 300);
-            }
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const page = e.target.getAttribute('data-page');
-                    loadPage(page);
-                    nav.classList.remove('active');
-                });
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = e.target.getAttribute('data-page');
+                document.getElementById('content').innerHTML = pageContent[page] || '<p>Página não encontrada.</p>';
+                closeMenu();
             });
-
-            menuToggle.addEventListener('click', () => {
-                nav.classList.toggle('active');
-            });
-
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            });
-
-            // Carregar a última página visitada ou a página inicial
-            loadLastPage();
         });
-
-        function loadPDFs() {
-            const pdfContainer = document.querySelector('.pdf-container');
-            const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf', 'documento4.pdf', 'documento5.pdf'];
-            const covers = [
-                'https://via.placeholder.com/120x160.png?text=Capa+1',
-                'https://via.placeholder.com/120x160.png?text=Capa+2',
-                'https://via.placeholder.com/120x160.png?text=Capa+3',
-                'https://via.placeholder.com/120x160.png?text=Capa+4',
-                'https://via.placeholder.com/120x160.png?text=Capa+5'
-            ];
-
-            pdfContainer.innerHTML = '';
-            pdfs.forEach((pdf, index) => {
-                const pdfItem = document.createElement('div');
-                pdfItem.className = 'pdf-item';
-                pdfItem.style.backgroundImage = `url('${covers[index]}')`;
-                pdfItem.dataset.pdf = pdf;
-                pdfItem.addEventListener('click', () => {
-                    renderPDFOverlay(pdf);
-                });
-                pdfContainer.appendChild(pdfItem);
-            });
-        }
-
-        function renderPDFOverlay(pdfPath) {
-            const overlay = document.createElement('div');
-            overlay.className = 'pdf-viewer-overlay';
-            
-            const viewer = document.createElement('div');
-            viewer.className = 'pdf-viewer';
-            
-            const closeButton = document.createElement('button');
-            closeButton.className = 'pdf-viewer-close';
-            closeButton.innerHTML = '&times;';
-            closeButton.addEventListener('click', () => {
-                document.body.removeChild(overlay);
-            });
-            
-            const navigation = document.createElement('div');
-            navigation.className = 'pdf-navigation';
-            
-            const prevButton = document.createElement('button');
-            prevButton.textContent = 'Anterior';
-            const nextButton = document.createElement('button');
-            nextButton.textContent = 'Próxima';
-            
-            navigation.appendChild(prevButton);
-            navigation.appendChild(nextButton);
-            
-            viewer.appendChild(closeButton);
-            viewer.appendChild(navigation);
-            overlay.appendChild(viewer);
-            document.body.appendChild(overlay);
-            
-            let currentPage = 1;
-            
-            pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
-                const numPages = pdf.numPages;
-                
-                function renderPage(pageNum) {
-                    pdf.getPage(pageNum).then(page => {
-                        const scale = 1.5;
-                        const viewport = page.getViewport({ scale });
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        };
-                        
-                        viewer.innerHTML = '';
-                        viewer.appendChild(canvas);
-                        viewer.appendChild(closeButton);
-                        viewer.appendChild(navigation);
-                        
-                        page.render(renderContext);
-                    });
-                }
-                
-                renderPage(currentPage);
-                
-                prevButton.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        renderPage(currentPage);
-                    }
-                });
-                
-                nextButton.addEventListener('click', () => {
-                    if (currentPage < numPages) {
-                        currentPage++;
-                        renderPage(currentPage);
-                    }
-                });
-            }).catch(error => {
-                console.error('Erro ao carregar o PDF:', error);
-                alert('Não foi possível carregar o PDF. Por favor, tente novamente mais tarde.');
-            });
-        }
-
-        function savePage(page) {
-            localStorage.setItem('lastPage', page);
-        }
-
-        function loadLastPage() {
-            const lastPage = localStorage.getItem('lastPage');
-            if (lastPage) {
-                loadPage(lastPage);
-            } else {
-                loadPage('home');
-            }
-        }
 
         function toggleTheme() {
             document.body.classList.toggle('dark-theme');
-            const isDarkTheme = document.body.classList.contains('dark-theme');
-            localStorage.setItem('darkTheme', isDarkTheme);
         }
 
-        // Verifica e aplica o tema salvo ao carregar a página
-        function applyTheme() {
-            const isDarkTheme = localStorage.getItem('darkTheme') === 'true';
-            if (isDarkTheme) {
-                document.body.classList.add('dark-theme');
+        function closeMenu() {
+            document.querySelector('nav').classList.remove('active');
+            document.querySelector('.menu-toggle').style.transform = 'rotate(0deg)';
+        }
+
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            document.querySelector('nav').classList.toggle('active');
+            document.querySelector('.menu-toggle').style.transform = document.querySelector('nav').classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
+        });
+
+        function renderPDFOverlay(pdfUrl) {
+            const overlay = document.createElement('div');
+            overlay.className = 'pdf-viewer-overlay';
+            overlay.innerHTML = `
+                <div class="pdf-viewer">
+                    <button class="pdf-viewer-close" onclick="closePDFViewer()">×</button>
+                    <canvas id="pdf-canvas"></canvas>
+                    <div class="pdf-navigation">
+                        <button onclick="previousPage()">Página Anterior</button>
+                        <button onclick="nextPage()">Página Seguinte</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            const canvas = document.getElementById('pdf-canvas');
+            const context = canvas.getContext('2d');
+            let pdfDoc = null;
+            let pageNum = 1;
+            let pageRendering = false;
+            let pageNumPending = null;
+
+            pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+                pdfDoc = pdf;
+                renderPage(pageNum);
+            });
+
+            function renderPage(num) {
+                pageRendering = true;
+                pdfDoc.getPage(num).then(page => {
+                    const viewport = page.getViewport({ scale: 1 });
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    page.render(renderContext).promise.then(() => {
+                        pageRendering = false;
+                        if (pageNumPending !== null) {
+                            renderPage(pageNumPending);
+                            pageNumPending = null;
+                        }
+                    });
+                });
             }
+
+            function queueRenderPage(num) {
+                if (pageRendering) {
+                    pageNumPending = num;
+                } else {
+                    renderPage(num);
+                }
+            }
+
+            function previousPage() {
+                if (pageNum <= 1) return;
+                pageNum--;
+                queueRenderPage(pageNum);
+            }
+
+            function nextPage() {
+                if (pageNum >= pdfDoc.numPages) return;
+                pageNum++;
+                queueRenderPage(pageNum);
+            }
+
+            window.previousPage = previousPage;
+            window.nextPage = nextPage;
         }
 
-        // Aplica o tema ao carregar a página
-        applyTheme();
+        function closePDFViewer() {
+            document.querySelector('.pdf-viewer-overlay').remove();
+            document.body.style.overflow = '';
+        }
     </script>
 </body>
 </html>
