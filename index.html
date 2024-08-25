@@ -1,370 +1,247 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LINO APOLLO NOVO SUPABASE</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body {
-            background-color: #f0f2f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .app-container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border-radius: 15px;
-        }
-        @media (min-width: 768px) {
-            .app-container {
-                max-width: 750px;
-            }
-        }
-        .product-image {
-            width: 200px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .form-control, .form-select, .btn {
-            border-radius: 8px;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-        #produtoDetalhes {
-            display: none;
-        }
-        .comment-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        #successMessage {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-        }
-        @media (max-width: 576px) {
-            .produto-detalhes-mobile {
-                display: flex;
-                flex-direction: column-reverse;
-            }
-            .product-image {
-                width: 100px;
-                height: 100px;
-                margin-bottom: 15px;
-                align-self: center;
-            }
-        }
-    </style>
+    <title>Cadastro de Produtos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="app-container mt-4">
-        <h2 class="mb-4 text-center">APOLLO</h2>
-        <div id="successMessage" class="alert alert-success" role="alert">
-            Dados salvos com sucesso!
-        </div>
-        <form id="produtoForm" class="mb-4">
-            <div class="row mb-3">
-                <div class="col">
-                    <input type="text" class="form-control" id="produto" placeholder="Produto" required>
-                </div>
+    <div class="container mt-5">
+        <h1 class="mb-4">Cadastro de Produtos</h1>
+        <form id="produtoForm">
+            <div class="mb-3">
+                <label for="produto" class="form-label">Produto</label>
+                <input type="text" class="form-control" id="produto" required>
             </div>
             <div class="row mb-3">
                 <div class="col">
-                    <input type="number" class="form-control" id="perimetro" placeholder="Perímetro" required>
+                    <label for="perimetro" class="form-label">Perímetro</label>
+                    <input type="text" class="form-control" id="perimetro" maxlength="5" required>
                 </div>
                 <div class="col">
-                    <input type="text" class="form-control" id="corte" placeholder="Corte" required>
+                    <label for="corte" class="form-label">Corte</label>
+                    <input type="text" class="form-control" id="corte" maxlength="5" required>
                 </div>
                 <div class="col">
-                    <select class="form-select" id="chagrim">
-                        <option value="">Chagrim</option>
-                        <option value="sim">Sim</option>
-                        <option value="nao">Não</option>
-                    </select>
+                    <label for="velocidade" class="form-label">Velocidade</label>
+                    <input type="text" class="form-control" id="velocidade" maxlength="5" required>
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col">
-                    <input type="number" class="form-control" id="repeticao" placeholder="Repetição" required>
+                    <label for="chagrim" class="form-label">Chagrim</label>
+                    <input type="text" class="form-control" id="chagrim" maxlength="5" required>
                 </div>
                 <div class="col">
-                    <input type="number" class="form-control" id="velocidade" placeholder="Velocidade" required>
-                </div>
-                <div class="col">
-                    <input type="file" class="form-control" id="imagemProduto" accept="image/jpeg">
+                    <label for="repeticao" class="form-label">Repetição</label>
+                    <input type="text" class="form-control" id="repeticao" maxlength="5" required>
                 </div>
             </div>
-            <div class="row mb-3">
-                <div class="col">
-                    <textarea class="form-control" id="comentario" rows="3" placeholder="Comentário"></textarea>
-                </div>
+            <div class="mb-3">
+                <label for="comentario" class="form-label">Comentário</label>
+                <textarea class="form-control" id="comentario" rows="3"></textarea>
             </div>
-            <div class="row">
-                <div class="col">
-                    <button type="submit" class="btn btn-primary w-100">Salvar Dados</button>
-                </div>
+            <div class="mb-3">
+                <label for="imagemProduto" class="form-label">Imagem do Produto</label>
+                <input type="file" class="form-control" id="imagemProduto" accept="image/*">
             </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
         </form>
 
-        <div class="dropdown mb-3">
-            <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                Produtos Salvos
-            </button>
-            <ul class="dropdown-menu w-100" id="produtosSalvos" aria-labelledby="dropdownMenuButton">
-            </ul>
+        <h2 class="mt-5">Produtos Salvos</h2>
+        <ul id="produtosSalvos" class="list-group">
+            <!-- Produtos serão listados aqui -->
+        </ul>
+
+        <div id="produtoDetalhes" style="display: none;">
+            <h3 class="mt-5">Detalhes do Produto</h3>
+            <p><strong>Produto:</strong> <span id="detNome"></span></p>
+            <p><strong>Perímetro:</strong> <span id="detPerimetro"></span></p>
+            <p><strong>Corte:</strong> <input type="text" id="detCorte"></p>
+            <p><strong>Chagrim:</strong> <span id="detChagrim"></span></p>
+            <p><strong>Repetição:</strong> <span id="detRepeticao"></span></p>
+            <p><strong>Velocidade:</strong> <input type="text" id="detVelocidade"></p>
+            <img id="detImagem" src="" alt="Imagem do Produto" style="max-width: 100%; height: auto;">
+            <button id="salvarEdicao" class="btn btn-success mt-3">Salvar Edição</button>
+            <button id="excluirProduto" class="btn btn-danger mt-3">Excluir Produto</button>
         </div>
 
-        <div id="produtoDetalhes" class="mt-4">
-            <h3>Detalhes do Produto</h3>
-            <div class="row produto-detalhes-mobile">
-                <div class="col-md-8">
-                    <p><strong>Produto:</strong> <span id="detNome"></span></p>
-                    <p><strong>Perímetro:</strong> <span id="detPerimetro"></span></p>
-                    <p><strong>Corte:</strong> <input type="text" id="detCorte" class="form-control"></p>
-                    <p><strong>Chagrim:</strong> <span id="detChagrim"></span></p>
-                    <p><strong>Repetição:</strong> <span id="detRepeticao"></span></p>
-                    <p><strong>Velocidade:</strong> <input type="number" id="detVelocidade" class="form-control"></p>
-                    <button id="salvarEdicao" class="btn btn-primary mt-2">Salvar Edição</button>
-                    <button id="excluirProduto" class="btn btn-danger mt-2 ms-2">Excluir Produto</button>
-                </div>
-                <div class="col-md-4">
-                    <img id="detImagem" src="" alt="Imagem do Produto" class="product-image">
-                </div>
-            </div>
-            <div class="mt-4">
-                <h4>Comentários</h4>
-                <div id="comentariosList" class="comment-list mb-3"></div>
-                <form id="novoComentarioForm">
-                    <div class="mb-3">
-                        <textarea class="form-control" id="novoComentario" rows="3" placeholder="Adicionar novo comentário" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Adicionar Comentário</button>
-                </form>
-            </div>
+        <div id="successMessage" class="alert alert-success mt-3" style="display: none;">
+            <!-- Mensagem de sucesso será exibida aqui -->
         </div>
+
+        <h2 class="mt-5">Comentários</h2>
+        <ul id="comentariosList" class="list-group">
+            <!-- Comentários serão listados aqui -->
+        </ul>
+
+        <form id="novoComentarioForm" class="mt-3">
+            <div class="mb-3">
+                <label for="novoComentario" class="form-label">Novo Comentário</label>
+                <textarea class="form-control" id="novoComentario" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Adicionar Comentário</button>
+        </form>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
-        // Inicializar Supabase
-        const supabaseUrl = 'https://vvllgovellxentijblzw.supabase.co'
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2bGxnb3ZlbGx4ZW50aWpibHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjQ2MTM2NDcsImV4cCI6MjA0MDE4OTY0N30.KIMgXbDpDDb_JjmgC35r18g86QX2YhlLPYVNEF03aFk'
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+        // Inicialização do Supabase
+        const supabaseUrl = 'https://vvllgovellxentijblzw.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2bGxnb3ZlbGx4ZW50aWpibHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjQ2MTM2NDcsImV4cCI6MjA0MDE4OTY0N30.KIMgXbDpDDb_JjmgC35r18g86QX2YhlLPYVNEF03aFk';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let produtoAtual = null;
         let produtoKey = null;
 
         document.getElementById('produtoForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            const imageFile = document.getElementById('imagemProduto').files[0];
-            const reader = new FileReader();
+            const produto = document.getElementById('produto').value;
+            const perimetro = document.getElementById('perimetro').value;
+            const corte = document.getElementById('corte').value;
+            const chagrim = document.getElementById('chagrim').value;
+            const repeticao = document.getElementById('repeticao').value;
+            const velocidade = document.getElementById('velocidade').value;
+            const comentario = document.getElementById('comentario').value;
+            const imagemProduto = document.getElementById('imagemProduto').files[0];
 
-            reader.onload = async function(event) {
-                const produto = {
-                    nome: document.getElementById('produto').value,
-                    perimetro: document.getElementById('perimetro').value,
-                    corte: document.getElementById('corte').value,
-                    chagrim: document.getElementById('chagrim').value,
-                    repeticao: document.getElementById('repeticao').value,
-                    velocidade: document.getElementById('velocidade').value,
-                    imagem: event.target.result,
-                    comentarios: []
-                };
+            let imagemBase64 = null;
+            if (imagemProduto) {
+                imagemBase64 = await toBase64(imagemProduto);
+            }
 
-                const comentario = document.getElementById('comentario').value;
-                if (comentario) {
-                    produto.comentarios.push({
-                        texto: comentario,
-                        data: new Date().toLocaleString()
-                    });
-                }
+            const { data, error } = await supabase.from('produtos').insert([
+                { produto, perimetro, corte, chagrim, repeticao, velocidade, comentario, imagem: imagemBase64 }
+            ]);
 
-                // Salvar no Supabase
-                const { data, error } = await supabase
-                    .from('produtos')
-                    .insert([produto])
-
-                if (error) {
-                    console.error("Erro ao salvar dados: ", error);
-                } else {
-                    console.log("Dados salvos com sucesso!");
-                    mostrarMensagemSucesso();
-                    limparCampos();
-                    atualizarMenuSuspenso();
-                }
-            };
-
-            if (imageFile) {
-                reader.readAsDataURL(imageFile);
+            if (error) {
+                console.error('Erro ao salvar os dados:', error);
             } else {
-                reader.onload({ target: { result: null } });
+                console.log('Dados salvos:', data);
+                atualizarListaProdutos();
+                document.getElementById('produtoForm').reset();
+                mostrarMensagemSucesso('Dados salvos com sucesso!');
             }
         });
 
-        function limparCampos() {
-            document.getElementById('produtoForm').reset();
-            document.getElementById('imagemProduto').value = '';
+        function toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         }
 
-        function mostrarMensagemSucesso() {
+        async function atualizarListaProdutos() {
+            const { data, error } = await supabase.from('produtos').select('*');
+            if (error) {
+                console.error('Erro ao carregar produtos:', error);
+                return;
+            }
+
+            const produtosSalvos = document.getElementById('produtosSalvos');
+            produtosSalvos.innerHTML = '';
+            data.forEach(produto => {
+                const li = document.createElement('li');
+                li.classList.add('dropdown-item');
+                li.textContent = produto.produto;
+                li.addEventListener('click', () => mostrarDetalhesProduto(produto));
+                produtosSalvos.appendChild(li);
+            });
+        }
+
+        async function mostrarDetalhesProduto(produto) {
+            produtoKey = produto.id;
+
+            document.getElementById('detNome').textContent = produto.produto;
+            document.getElementById('detPerimetro').textContent = produto.perimetro;
+            document.getElementById('detCorte').value = produto.corte;
+            document.getElementById('detChagrim').textContent = produto.chagrim;
+            document.getElementById('detRepeticao').textContent = produto.repeticao;
+            document.getElementById('detVelocidade').value = produto.velocidade;
+            document.getElementById('detImagem').src = produto.imagem;
+
+            document.getElementById('produtoDetalhes').style.display = 'block';
+            atualizarListaComentarios(produtoKey);
+        }
+
+        async function atualizarListaComentarios(produtoId) {
+            const { data, error } = await supabase.from('comentarios').select('*').eq('produto_id', produtoId);
+            if (error) {
+                console.error('Erro ao carregar comentários:', error);
+                return;
+            }
+
+            const comentariosList = document.getElementById('comentariosList');
+            comentariosList.innerHTML = '';
+            data.forEach(comentario => {
+                const li = document.createElement('li');
+                li.classList.add('list-group-item');
+                li.textContent = comentario.comentario;
+                comentariosList.appendChild(li);
+            });
+        }
+
+        document.getElementById('novoComentarioForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const novoComentario = document.getElementById('novoComentario').value;
+
+            const { data, error } = await supabase.from('comentarios').insert([
+                { comentario: novoComentario, produto_id: produtoKey }
+            ]);
+
+            if (error) {
+                console.error('Erro ao adicionar comentário:', error);
+            } else {
+                console.log('Comentário adicionado:', data);
+                atualizarListaComentarios(produtoKey);
+                document.getElementById('novoComentarioForm').reset();
+            }
+        });
+
+        document.getElementById('salvarEdicao').addEventListener('click', async function() {
+            const novoCorte = document.getElementById('detCorte').value;
+            const novaVelocidade = document.getElementById('detVelocidade').value;
+
+            const { data, error } = await supabase.from('produtos').update({
+                corte: novoCorte,
+                velocidade: novaVelocidade
+            }).eq('id', produtoKey);
+
+            if (error) {
+                console.error('Erro ao salvar edição:', error);
+            } else {
+                console.log('Produto atualizado:', data);
+                mostrarMensagemSucesso('Produto atualizado com sucesso!');
+                atualizarListaProdutos();
+            }
+        });
+
+        document.getElementById('excluirProduto').addEventListener('click', async function() {
+            const { data, error } = await supabase.from('produtos').delete().eq('id', produtoKey);
+
+            if (error) {
+                console.error('Erro ao excluir produto:', error);
+            } else {
+                console.log('Produto excluído:', data);
+                document.getElementById('produtoDetalhes').style.display = 'none';
+                mostrarMensagemSucesso('Produto excluído com sucesso!');
+                atualizarListaProdutos();
+            }
+        });
+
+        function mostrarMensagemSucesso(mensagem) {
             const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = mensagem;
             successMessage.style.display = 'block';
             setTimeout(() => {
                 successMessage.style.display = 'none';
             }, 3000);
         }
 
-        async function atualizarMenuSuspenso() {
-            const dropdownMenu = document.getElementById('produtosSalvos');
-            dropdownMenu.innerHTML = '';
-
-            const { data, error } = await supabase
-                .from('produtos')
-                .select()
-
-            if (error) {
-                console.error("Erro ao buscar dados: ", error);
-                return;
-            }
-
-            if (data && data.length > 0) {
-                data.forEach((produto) => {
-                    const li = document.createElement('li');
-                    const button = document.createElement('button');
-                    button.className = 'dropdown-item';
-                    button.textContent = produto.nome;
-                    button.onclick = () => mostrarDetalhesProduto(produto.id);
-                    li.appendChild(button);
-                    dropdownMenu.appendChild(li);
-                });
-            } else {
-                const li = document.createElement('li');
-                li.textContent = 'Nenhum produto salvo';
-                dropdownMenu.appendChild(li);
-            }
-        }
-
-        async function mostrarDetalhesProduto(id) {
-            const { data, error } = await supabase
-                .from('produtos')
-                .select()
-                .eq('id', id)
-                .single()
-
-            if (error) {
-                console.error("Erro ao buscar detalhes do produto: ", error);
-                return;
-            }
-
-            if (data) {
-                produtoAtual = data;
-                produtoKey = id;
-
-                document.getElementById('detNome').textContent = data.nome;
-                document.getElementById('detPerimetro').textContent = data.perimetro;
-                document.getElementById('detCorte').value = data.corte;
-                document.getElementById('detChagrim').textContent = data.chagrim;
-                document.getElementById('detRepeticao').textContent = data.repeticao;
-                document.getElementById('detVelocidade').value = data.velocidade;
-                document.getElementById('detImagem').src = data.imagem || '';
-
-                atualizarListaComentarios(data.comentarios);
-
-                document.getElementById('produtoDetalhes').style.display = 'block';
-            }
-        }
-
-        function atualizarListaComentarios(comentarios) {
-            const comentariosList = document.getElementById('comentariosList');
-            comentariosList.innerHTML = '';
-
-            if (comentarios && comentarios.length > 0) {
-                comentarios.forEach((comentario, index) => {
-                    const comentarioDiv = document.createElement('div');
-                    comentarioDiv.className = 'mb-2';
-                    comentarioDiv.textContent = `${comentario.texto} (${comentario.data})`;
-                    comentariosList.appendChild(comentarioDiv);
-                });
-            } else {
-                comentariosList.textContent = 'Nenhum comentário adicionado.';
-            }
-        }
-
-        document.getElementById('salvarEdicao').addEventListener('click', async function() {
-            const updates = {
-                corte: document.getElementById('detCorte').value,
-                velocidade: document.getElementById('detVelocidade').value
-            };
-
-            const { data, error } = await supabase
-                .from('produtos')
-                .update(updates)
-                .eq('id', produtoKey)
-
-            if (error) {
-                console.error("Erro ao atualizar dados: ", error);
-            } else {
-                mostrarMensagemSucesso();
-            }
-        });
-
-        document.getElementById('excluirProduto').addEventListener('click', async function() {
-            const { data, error } = await supabase
-                .from('produtos')
-                .delete()
-                .eq('id', produtoKey)
-
-            if (error) {
-                console.error("Erro ao excluir produto: ", error);
-            } else {
-                atualizarMenuSuspenso();
-                document.getElementById('produtoDetalhes').style.display = 'none';
-            }
-        });
-
-        document.getElementById('novoComentarioForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const novoComentario = document.getElementById('novoComentario').value;
-            const comentario = {
-                texto: novoComentario,
-                data: new Date().toLocaleString()
-            };
-
-            if (!produtoAtual.comentarios) {
-                produtoAtual.comentarios = [];
-            }
-            produtoAtual.comentarios.push(comentario);
-
-            const { data, error } = await supabase
-                .from('produtos')
-                .update({ comentarios: produtoAtual.comentarios })
-                .eq('id', produtoKey)
-
-            if (error) {
-                console.error("Erro ao adicionar comentário: ", error);
-            } else {
-                atualizarListaComentarios(produtoAtual.comentarios);
-                document.getElementById('novoComentario').value = '';
-            }
-        });
-
-        atualizarMenuSuspenso();
+        // Atualiza a lista de produtos ao carregar a página
+        atualizarListaProdutos();
     </script>
 </body>
 </html>
