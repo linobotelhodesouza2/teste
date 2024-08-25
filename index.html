@@ -3,515 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeto Responsivo com Leitor de PDF</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <title>LINO APOLLO NOVO SUPABASE</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root {
-            --primary-color: #333;
-            --secondary-color: #4CAF50;
-            --text-color: #fff;
-            --background-color: rgba(244, 244, 244, 0.8);
-        }
-
-        .dark-theme {
-            --primary-color: #1a1a1a;
-            --secondary-color: #45a049;
-            --text-color: #f4f4f4;
-            --background-color: rgba(51, 51, 51, 0.8);
-        }
-
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-color);
-            overflow-x: hidden;
-            color: var(--text-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        header {
-            background-color: var(--primary-color);
-            color: var(--text-color);
-            padding: 1rem;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            transition: background-color 0.3s ease;
+        .app-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
         }
-
-        nav {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background-color: var(--primary-color);
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease, opacity 0.5s ease;
-            opacity: 0;
+        @media (min-width: 768px) {
+            .app-container {
+                max-width: 750px;
+            }
         }
-
-        nav.active {
-            max-height: 300px;
-            opacity: 1;
-        }
-
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        nav ul li {
-            margin: 0;
-        }
-
-        nav ul li a, nav ul li button {
-            color: var(--text-color);
-            text-decoration: none;
-            padding: 12px 16px;
-            display: block;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            width: 100%;
-            text-align: left;
-            background: none;
-            border: none;
-            font-size: 1em;
-            cursor: pointer;
-        }
-
-        nav ul li a:hover, nav ul li button:hover {
-            background-color: rgba(85, 85, 85, 0.8);
-            transform: translateX(10px);
-        }
-
-        .menu-toggle {
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            background: none;
-            border: none;
-            color: var(--text-color);
-        }
-
-        .menu-toggle:hover {
-            transform: rotate(90deg);
-        }
-
-        main {
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 60px auto 0;
-            background-color: var(--background-color);
+        .product-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            transition: margin-top 0.3s ease, opacity 0.3s ease;
         }
-
-        .pdf-container, .links-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-            justify-content: center;
-            align-items: center;
+        .form-control, .form-select, .btn {
+            border-radius: 8px;
         }
-
-        .pdf-item, .link-item {
-            width: 100%;
-            height: 160px;
-            border: 1px solid #ccc;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background-color: white;
-            border-radius: 4px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background-size: cover;
-            background-position: center;
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
         }
-
-        .pdf-item:hover, .link-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
         }
-
-        .link-item {
-            background-image: none;
+        #produtoDetalhes {
+            display: none;
         }
-
-        .pdf-viewer-overlay {
+        .comment-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        #successMessage {
+            display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .pdf-viewer {
-            width: 90%;
-            max-width: 800px;
-            height: 90%;
-            background-color: white;
-            border-radius: 4px;
-            overflow: auto;
-            position: relative;
-        }
-
-        .pdf-viewer canvas {
-            width: 100%;
-            height: auto;
-        }
-
-        .pdf-viewer-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
-            color: #333;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        .pdf-navigation {
-            position: absolute;
-            bottom: 10px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
+            z-index: 1000;
         }
-
-        .pdf-navigation button {
-            padding: 5px 10px;
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .iframe-container {
-            width: 100%;
-            height: calc(100vh - 60px);
-            border: none;
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .video-background::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .video-background video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            text-align: center;
-            padding: 1rem;
-            background-color: var(--primary-color);
-            color: var(--text-color);
-        }
-
-        .home-content {
-            text-align: center;
-            padding: 50px;
-            color: var(--text-color);
-            position: relative;
-            z-index: 1;
-        }
-
-        .home-content h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .home-content p {
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        @media (max-width: 576px) {
+            .produto-detalhes-mobile {
+                display: flex;
+                flex-direction: column-reverse;
+            }
+            .product-image {
+                width: 100px;
+                height: 100px;
+                margin-bottom: 15px;
+                align-self: center;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <button aria-label="Alternar menu" class="menu-toggle">&#9776;</button>
-        <nav>
-            <ul>
-                <li><a href="#" data-page="home">Home</a></li>
-                <li><a href="#" data-page="leitura">Leitura</a></li>
-                <li><a href="#" data-page="links">Links Úteis</a></li>
-                <li><a href="#" data-page="pagina3">Página 3</a></li>
-                <li><button onclick="toggleTheme()">Alternar Tema</button></li>
+    <div class="app-container mt-4">
+        <h2 class="mb-4 text-center">APOLLO</h2>
+        <div id="successMessage" class="alert alert-success" role="alert">
+            Dados salvos com sucesso!
+        </div>
+        <form id="produtoForm" class="mb-4">
+            <div class="row mb-3">
+                <div class="col">
+                    <input type="text" class="form-control" id="produto" placeholder="Produto" required>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <input type="number" class="form-control" id="perimetro" placeholder="Perímetro" required>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" id="corte" placeholder="Corte" required>
+                </div>
+                <div class="col">
+                    <select class="form-select" id="chagrim">
+                        <option value="">Chagrim</option>
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <input type="number" class="form-control" id="repeticao" placeholder="Repetição" required>
+                </div>
+                <div class="col">
+                    <input type="number" class="form-control" id="velocidade" placeholder="Velocidade" required>
+                </div>
+                <div class="col">
+                    <input type="file" class="form-control" id="imagemProduto" accept="image/jpeg">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <textarea class="form-control" id="comentario" rows="3" placeholder="Comentário"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary w-100">Salvar Dados</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="dropdown mb-3">
+            <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Produtos Salvos
+            </button>
+            <ul class="dropdown-menu w-100" id="produtosSalvos" aria-labelledby="dropdownMenuButton">
             </ul>
-        </nav>
-    </header>
+        </div>
 
-    <main id="content">
-        <!-- O conteúdo das páginas será carregado aqui -->
-    </main>
-
-    <footer>
-        &copy; 2024 Meu Projeto Responsivo
-    </footer>
-
-    <div class="video-background">
-        <video autoplay loop muted>
-            <source src="https://www.shutterstock.com/shutterstock/videos/1092863087/preview/stock-footage-process-of-construction-and-raising-buildings-and-skyscrapers-wireframe-blue-silhouettes-of.webm" type="video/mp4">
-            Seu navegador não suporta a reprodução de vídeo.
-        </video>
+        <div id="produtoDetalhes" class="mt-4">
+            <h3>Detalhes do Produto</h3>
+            <div class="row produto-detalhes-mobile">
+                <div class="col-md-8">
+                    <p><strong>Produto:</strong> <span id="detNome"></span></p>
+                    <p><strong>Perímetro:</strong> <span id="detPerimetro"></span></p>
+                    <p><strong>Corte:</strong> <input type="text" id="detCorte" class="form-control"></p>
+                    <p><strong>Chagrim:</strong> <span id="detChagrim"></span></p>
+                    <p><strong>Repetição:</strong> <span id="detRepeticao"></span></p>
+                    <p><strong>Velocidade:</strong> <input type="number" id="detVelocidade" class="form-control"></p>
+                    <button id="salvarEdicao" class="btn btn-primary mt-2">Salvar Edição</button>
+                    <button id="excluirProduto" class="btn btn-danger mt-2 ms-2">Excluir Produto</button>
+                </div>
+                <div class="col-md-4">
+                    <img id="detImagem" src="" alt="Imagem do Produto" class="product-image">
+                </div>
+            </div>
+            <div class="mt-4">
+                <h4>Comentários</h4>
+                <div id="comentariosList" class="comment-list mb-3"></div>
+                <form id="novoComentarioForm">
+                    <div class="mb-3">
+                        <textarea class="form-control" id="novoComentario" rows="3" placeholder="Adicionar novo comentário" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Adicionar Comentário</button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
-        const pageContent = {
-            home: `
-                <div class="home-content">
-                    <h1>Bem-vindo ao Nosso Projeto</h1>
-                    <p>Explore nosso site para descobrir uma variedade de recursos, incluindo leitura de PDFs, links úteis e muito mais.</p>
-                </div>
-            `,
-            leitura: `
-                <h1>Leitura de PDFs</h1>
-                <div class="pdf-container"></div>
-            `,
-            links: `
-                <h1>Links Úteis</h1>
-                <div class="links-container">
-                    <div class="link-item"><a href="https://uol.com" target="_blank">UOL</a></div>
-                    <div class="link-item"><a href="https://uol.com" target="_blank">Exemplo 2</a></div>
-                    <div class="link-item"><a href="https://example.com" target="_blank">Exemplo 3</a></div>
-                    <div class="link-item"><a href="https://example.com" target="_blank">Exemplo 4</a></div>
-                    <div class="link-item"><a href="https://example.com" target="_blank">Exemplo 5</a></div>
-                </div>
-            `,
-            pagina3: `
-                <h1>Página 3</h1>
-                <div class="iframe-container">
-                    <iframe src="https://lino-b.web.app"></iframe>
-                </div>
-            `
-        };
+        // Inicializar Supabase
+        const supabaseUrl = 'https://vvllgovellxentijblzw.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2bGxnb3ZlbGx4ZW50aWpibHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjQ2MTM2NDcsImV4cCI6MjA0MDE4OTY0N30.KIMgXbDpDDb_JjmgC35r18g86QX2YhlLPYVNEF03aFk'
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey)
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const content = document.getElementById('content');
-            const navLinks = document.querySelectorAll('nav ul li a');
-            const menuToggle = document.querySelector('.menu-toggle');
-            const nav = document.querySelector('nav');
-            const header = document.querySelector('header');
+        let produtoAtual = null;
+        let produtoKey = null;
 
-            function loadPage(page) {
-                content.style.opacity = 0;
-                setTimeout(() => {
-                    content.innerHTML = pageContent[page];
-                    if (page === 'leitura') {
-                        loadPDFs();
-                    }
-                    content.style.opacity = 1;
-                    savePage(page);
-                }, 300);
-            }
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const page = e.target.getAttribute('data-page');
-                    loadPage(page);
-                    nav.classList.remove('active');
-                });
-            });
-
-            menuToggle.addEventListener('click', () => {
-                nav.classList.toggle('active');
-            });
-
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            });
-
-            // Carregar a última página visitada ou a página inicial
-            loadLastPage();
-        });
-
-        function loadPDFs() {
-            const pdfContainer = document.querySelector('.pdf-container');
-            const pdfs = ['documento1.pdf', 'documento2.pdf', 'documento3.pdf', 'documento4.pdf', 'documento5.pdf'];
-            const covers = [
-                'https://via.placeholder.com/120x160.png?text=Capa+1',
-                'https://via.placeholder.com/120x160.png?text=Capa+2',
-                'https://via.placeholder.com/120x160.png?text=Capa+3',
-                'https://via.placeholder.com/120x160.png?text=Capa+4',
-                'https://via.placeholder.com/120x160.png?text=Capa+5'
-            ];
-
-            pdfContainer.innerHTML = '';
-            pdfs.forEach((pdf, index) => {
-                const pdfItem = document.createElement('div');
-                pdfItem.className = 'pdf-item';
-                pdfItem.style.backgroundImage = `url('${covers[index]}')`;
-                pdfItem.dataset.pdf = pdf;
-                pdfItem.addEventListener('click', () => {
-                    renderPDFOverlay(pdf);
-                });
-                pdfContainer.appendChild(pdfItem);
-            });
-        }
-
-        function renderPDFOverlay(pdfPath) {
-            const overlay = document.createElement('div');
-            overlay.className = 'pdf-viewer-overlay';
+        document.getElementById('produtoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            const viewer = document.createElement('div');
-            viewer.className = 'pdf-viewer';
-            
-            const closeButton = document.createElement('button');
-            closeButton.className = 'pdf-viewer-close';
-            closeButton.innerHTML = '&times;';
-            closeButton.addEventListener('click', () => {
-                document.body.removeChild(overlay);
-            });
-            
-            const navigation = document.createElement('div');
-            navigation.className = 'pdf-navigation';
-            
-            const prevButton = document.createElement('button');
-            prevButton.textContent = 'Anterior';
-            const nextButton = document.createElement('button');
-            nextButton.textContent = 'Próxima';
-            
-            navigation.appendChild(prevButton);
-            navigation.appendChild(nextButton);
-            
-            viewer.appendChild(closeButton);
-            viewer.appendChild(navigation);
-            overlay.appendChild(viewer);
-            document.body.appendChild(overlay);
-            
-            let currentPage = 1;
-            
-            pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
-                const numPages = pdf.numPages;
-                
-                function renderPage(pageNum) {
-                    pdf.getPage(pageNum).then(page => {
-                        const scale = 1.5;
-                        const viewport = page.getViewport({ scale });
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        };
-                        
-                        viewer.innerHTML = '';
-                        viewer.appendChild(canvas);
-                        viewer.appendChild(closeButton);
-                        viewer.appendChild(navigation);
-                        
-                        page.render(renderContext);
+            const imageFile = document.getElementById('imagemProduto').files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(event) {
+                const produto = {
+                    nome: document.getElementById('produto').value,
+                    perimetro: document.getElementById('perimetro').value,
+                    corte: document.getElementById('corte').value,
+                    chagrim: document.getElementById('chagrim').value,
+                    repeticao: document.getElementById('repeticao').value,
+                    velocidade: document.getElementById('velocidade').value,
+                    imagem: event.target.result,
+                    comentarios: []
+                };
+
+                const comentario = document.getElementById('comentario').value;
+                if (comentario) {
+                    produto.comentarios.push({
+                        texto: comentario,
+                        data: new Date().toLocaleString()
                     });
                 }
-                
-                renderPage(currentPage);
-                
-                prevButton.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        renderPage(currentPage);
-                    }
-                });
-                
-                nextButton.addEventListener('click', () => {
-                    if (currentPage < numPages) {
-                        currentPage++;
-                        renderPage(currentPage);
-                    }
-                });
-            }).catch(error => {
-                console.error('Erro ao carregar o PDF:', error);
-                alert('Não foi possível carregar o PDF. Por favor, tente novamente mais tarde.');
-            });
-        }
 
-        function savePage(page) {
-            localStorage.setItem('lastPage', page);
-        }
+                // Salvar no Supabase
+                const { data, error } = await supabase
+                    .from('produtos')
+                    .insert([produto])
 
-        function loadLastPage() {
-            const lastPage = localStorage.getItem('lastPage');
-            if (lastPage) {
-                loadPage(lastPage);
+                if (error) {
+                    console.error("Erro ao salvar dados: ", error);
+                } else {
+                    console.log("Dados salvos com sucesso!");
+                    mostrarMensagemSucesso();
+                    limparCampos();
+                    atualizarMenuSuspenso();
+                }
+            };
+
+            if (imageFile) {
+                reader.readAsDataURL(imageFile);
             } else {
-                loadPage('home');
+                reader.onload({ target: { result: null } });
+            }
+        });
+
+        function limparCampos() {
+            document.getElementById('produtoForm').reset();
+            document.getElementById('imagemProduto').value = '';
+        }
+
+        function mostrarMensagemSucesso() {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        async function atualizarMenuSuspenso() {
+            const dropdownMenu = document.getElementById('produtosSalvos');
+            dropdownMenu.innerHTML = '';
+
+            const { data, error } = await supabase
+                .from('produtos')
+                .select()
+
+            if (error) {
+                console.error("Erro ao buscar dados: ", error);
+                return;
+            }
+
+            if (data && data.length > 0) {
+                data.forEach((produto) => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.className = 'dropdown-item';
+                    button.textContent = produto.nome;
+                    button.onclick = () => mostrarDetalhesProduto(produto.id);
+                    li.appendChild(button);
+                    dropdownMenu.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'Nenhum produto salvo';
+                dropdownMenu.appendChild(li);
             }
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark-theme');
-            const isDarkTheme = document.body.classList.contains('dark-theme');
-            localStorage.setItem('darkTheme', isDarkTheme);
-        }
+        async function mostrarDetalhesProduto(id) {
+            const { data, error } = await supabase
+                .from('produtos')
+                .select()
+                .eq('id', id)
+                .single()
 
-        // Verifica e aplica o tema salvo ao carregar a página
-        function applyTheme() {
-            const isDarkTheme = localStorage.getItem('darkTheme') === 'true';
-            if (isDarkTheme) {
-                document.body.classList.add('dark-theme');
+            if (error) {
+                console.error("Erro ao buscar detalhes do produto: ", error);
+                return;
+            }
+
+            if (data) {
+                produtoAtual = data;
+                produtoKey = id;
+
+                document.getElementById('detNome').textContent = data.nome;
+                document.getElementById('detPerimetro').textContent = data.perimetro;
+                document.getElementById('detCorte').value = data.corte;
+                document.getElementById('detChagrim').textContent = data.chagrim;
+                document.getElementById('detRepeticao').textContent = data.repeticao;
+                document.getElementById('detVelocidade').value = data.velocidade;
+                document.getElementById('detImagem').src = data.imagem || '';
+
+                atualizarListaComentarios(data.comentarios);
+
+                document.getElementById('produtoDetalhes').style.display = 'block';
             }
         }
 
-        // Aplica o tema ao carregar a página
-        applyTheme();
+        function atualizarListaComentarios(comentarios) {
+            const comentariosList = document.getElementById('comentariosList');
+            comentariosList.innerHTML = '';
+
+            if (comentarios && comentarios.length > 0) {
+                comentarios.forEach((comentario, index) => {
+                    const comentarioDiv = document.createElement('div');
+                    comentarioDiv.className = 'mb-2';
+                    comentarioDiv.textContent = `${comentario.texto} (${comentario.data})`;
+                    comentariosList.appendChild(comentarioDiv);
+                });
+            } else {
+                comentariosList.textContent = 'Nenhum comentário adicionado.';
+            }
+        }
+
+        document.getElementById('salvarEdicao').addEventListener('click', async function() {
+            const updates = {
+                corte: document.getElementById('detCorte').value,
+                velocidade: document.getElementById('detVelocidade').value
+            };
+
+            const { data, error } = await supabase
+                .from('produtos')
+                .update(updates)
+                .eq('id', produtoKey)
+
+            if (error) {
+                console.error("Erro ao atualizar dados: ", error);
+            } else {
+                mostrarMensagemSucesso();
+            }
+        });
+
+        document.getElementById('excluirProduto').addEventListener('click', async function() {
+            const { data, error } = await supabase
+                .from('produtos')
+                .delete()
+                .eq('id', produtoKey)
+
+            if (error) {
+                console.error("Erro ao excluir produto: ", error);
+            } else {
+                atualizarMenuSuspenso();
+                document.getElementById('produtoDetalhes').style.display = 'none';
+            }
+        });
+
+        document.getElementById('novoComentarioForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const novoComentario = document.getElementById('novoComentario').value;
+            const comentario = {
+                texto: novoComentario,
+                data: new Date().toLocaleString()
+            };
+
+            if (!produtoAtual.comentarios) {
+                produtoAtual.comentarios = [];
+            }
+            produtoAtual.comentarios.push(comentario);
+
+            const { data, error } = await supabase
+                .from('produtos')
+                .update({ comentarios: produtoAtual.comentarios })
+                .eq('id', produtoKey)
+
+            if (error) {
+                console.error("Erro ao adicionar comentário: ", error);
+            } else {
+                atualizarListaComentarios(produtoAtual.comentarios);
+                document.getElementById('novoComentario').value = '';
+            }
+        });
+
+        atualizarMenuSuspenso();
     </script>
 </body>
 </html>
